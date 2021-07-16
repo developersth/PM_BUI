@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  target: 'static',
   serverMiddleware: ['~/server/index.js'],
   env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000'
@@ -70,9 +71,6 @@ export default {
       }
     }
   },
-  'vue/valid-v-slot': ['error', {
-    allowModifiers: true,
-  }],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }
