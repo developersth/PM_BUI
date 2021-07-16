@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  target: 'static',
+  target: 'server',
   serverMiddleware: ['~/server/index.js'],
   env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000'
