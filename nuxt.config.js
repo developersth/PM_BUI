@@ -41,7 +41,7 @@ export default {
   ],
   googleFonts: {
     families: {
-      Kanit:[300,500,700],
+      Niramit:[300,500,700],
     }
   },
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -57,7 +57,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: false,
+      dark: true,
       themes: {
         dark: {
           primary: colors.blue.darken2,

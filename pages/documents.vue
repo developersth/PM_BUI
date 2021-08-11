@@ -1,9 +1,15 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <v-btn depressed color="primary" @click="addItem">
-        + เพิ่มข้อมูล
+    <v-card width="100vw">
+    <v-app-bar dark color="pink">
+      <v-toolbar-title>จัดการเอกสาร</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn depressed color="green" @click="addItem">
+        เพิ่มข้อมูล <v-icon> mdi-plus</v-icon>
       </v-btn>
+    </v-app-bar>
+    <v-card-title>
       <v-spacer />
       <v-text-field
         v-model="search"
@@ -34,7 +40,7 @@
         </v-icon>
       </template>
     </v-data-table>
-    <MojiForm ref="MojiForm" @add="submitAdd" @edit="submitEdit" />
+    <DocumentsForm ref="DocumentsForm" @add="submitAdd" @edit="submitEdit" />
     <v-snackbar
       v-model="snackbar.show"
       :color="snackbar.type"
@@ -85,10 +91,10 @@
 </template>
 
 <script>
-import MojiForm from '~/components/forms/MojiForm'
+import DocumentsForm from '~/components/forms/DocumentsForm'
 
 export default {
-  components: { MojiForm },
+  components: { DocumentsForm },
   data () {
     return {
       search: '',
@@ -116,11 +122,11 @@ export default {
       this.desserts = await this.$axios.$get('/api/moji')
     },
     addItem () {
-      this.$refs.MojiForm.open('add')
+      this.$refs.DocumentsForm.open('add')
     },
     editItem (item) {
       this.currentPK = item.id
-      this.$refs.MojiForm.open('edit', item)
+      this.$refs.DocumentsForm.open('edit', item)
     },
     deleteItem (item) {
       this.currentPK = item.id
@@ -135,7 +141,7 @@ export default {
             text: 'Success',
             type: 'success'
           }
-          this.$refs.MojiForm.close()
+          this.$refs.DocumentsForm.close()
           this.fetchData()
         }
       } catch (e) {
@@ -155,7 +161,7 @@ export default {
             text: 'Success',
             type: 'success'
           }
-          this.$refs.MojiForm.close()
+          this.$refs.DocumentsForm.close()
           this.fetchData()
         }
       } catch (e) {

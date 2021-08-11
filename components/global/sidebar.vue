@@ -36,8 +36,8 @@ export default {
         },
         {
           icon: 'mdi-cloud-upload',
-          title: 'รายการ',
-          to: '/job'
+          title: 'จัดการเอกสาร',
+          to: '/documents'
         },
         {
           icon: 'mdi-account',
