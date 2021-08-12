@@ -1,14 +1,23 @@
 <template>
-  <v-app-bar  :clipped-left=clipped  fixed app>
+  <v-app-bar :clipped-left="clipped" fixed app>
     <v-app-bar-nav-icon @click.stop="toggleDrawer()" />
-      <v-btn icon @click.stop="toggleMiniVariant()">
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
+    <v-btn icon @click.stop="toggleMiniVariant()">
+      <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
+    </v-btn>
     <v-btn icon @click.stop="toggleClipped()">
       <v-icon>mdi-application</v-icon>
     </v-btn>
+
     <v-toolbar-title v-text="title" />
     <v-spacer />
+    <v-switch
+      class="mt-5"
+      v-model="swtheme"
+      v-on:click="toggleDarkMode()"
+      inset
+       prepend-icon="mdi-white-balance-sunny"
+      persistent-hint
+    ></v-switch>
   </v-app-bar>
 </template>
 
@@ -17,10 +26,23 @@ export default {
   data() {
     return {
       title: 'Inter Purchasing',
+      swtheme: false,
+    }
+  },
+  mounted() {
+    const theme = localStorage.getItem('dark_theme')
+    if (theme) {
+      if (theme == 'true') {
+        this.$vuetify.theme.dark = true
+        this.swtheme=true
+      } else {
+        this.$vuetify.theme.dark = false
+        this.swtheme=false
+      }
     }
   },
   computed: {
-      clipped: {
+    clipped: {
       get() {
         return this.$store.state.clipped
       },
@@ -38,12 +60,16 @@ export default {
     },
   },
   methods: {
+    toggleDarkMode() {
+      this.$vuetify.theme.dark = !this.$vuetify.theme.dark
+      localStorage.setItem('dark_theme', this.$vuetify.theme.dark.toString())
+    },
     toggleDrawer() {
       console.log(this.$store.state.drawer)
       this.$store.commit('set_drawer', !this.$store.state.drawer)
     },
     toggleClipped() {
-        console.log(this.$store.state.clipped)
+      console.log(this.$store.state.clipped)
       this.$store.commit('set_clipped', !this.$store.state.clipped)
     },
     toggleMiniVariant() {
