@@ -101,10 +101,19 @@ export default {
   methods: {
     async fetchData() {
       this.loading = true
-      await service.getAllUsers().then((response) => {
-        this.desserts = response
+      try {
+        await service.getAllUsers().then((response) => {
+          this.desserts = response
+          this.loading = false
+        })
+      } catch (e) {
         this.loading = false
-      })
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
     },
     addItem() {
       this.$refs.UsersForm.open('add')
@@ -139,7 +148,7 @@ export default {
     },
     async submitEdit(data) {
       try {
-        const result = await service.updateUsers(this.currentPK,data)
+        const result = await service.updateUsers(this.currentPK, data)
         if (result) {
           this.snackbar = {
             show: true,
@@ -160,7 +169,7 @@ export default {
     async submitDelete() {
       this.confirm = false
       try {
-       const result= await service.deleteUsers(this.currentPK)
+        const result = await service.deleteUsers(this.currentPK)
         if (result) {
           this.snackbar = {
             show: true,

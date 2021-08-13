@@ -90,9 +90,7 @@
                   </v-menu>
                 </v-col>
                 <v-col cols="12" md="12">
-                  <div class="font-weight-medium text-decoration-underline">
-                    Status
-                  </div>
+                  <div class="text-h6 text-decoration-underline">Status</div>
                   <v-radio-group v-model="form.status" row>
                     <v-radio
                       outlined
@@ -128,13 +126,7 @@
                   </v-radio-group>
                 </v-col>
                 <v-col cols="12" lg="12">
-                  <!--               <v-card>
-                  <v-app-bar dark color="info">
-                    <v-toolbar-title>Purchase Order</v-toolbar-title>
-
-                    <v-spacer></v-spacer>
-                  </v-app-bar> -->
-                  <div class="font-weight-medium text-decoration-underline">
+                  <div class="text-h6 text-decoration-underline">
                     Purchase Order
                   </div>
                   <v-row>
@@ -162,14 +154,14 @@
                         v-for="(itemPR, k) in form.itemPR"
                         :key="k"
                       >
-                        <v-col cols="12" md="4">
+                        <v-col cols="12" md="3">
                           <v-text-field
                             v-model="itemPR.PRNo"
                             prepend-icon="mdi-file-document"
                             :label="`เลขที่ใบสั่งขอซื้อ (PR) #${k + 1}`"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" md="4">
+                        <v-col class="d-flex" cols="12" md="3">
                           <v-text-field
                             v-model="itemPR.JobNo"
                             prepend-icon="mdi-account-hard-hat"
@@ -177,23 +169,23 @@
                             required
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="8" md="2">
+                        <v-col class="d-flex" cols="8" md="3">
                           <v-file-input
                             v-model="itemPR.PRFile"
                             prepend-icon="mdi-file-multiple"
                             chips
-                            multiple
-                            label="ไฟล์แนบ (PR)"
+                            :label="`
+                             (PR) #${k + 1}`"
                           ></v-file-input>
                         </v-col>
-                        <v-col cols="4" md="2">
+                        <v-col class="d-flex" cols="4" md="2">
                           <v-btn
                             v-if="k > 0"
                             depressed
                             color="red"
                             @click="removePR(k)"
                           >
-                            <v-icon> mdi-delete</v-icon>ลบ PR
+                            <v-icon> mdi-delete</v-icon>ลบ PR #{{ k + 1 }}
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -212,9 +204,9 @@
                             type="number"
                           ></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="4" md="3">
+                        <v-col class="d-flex" cols="4" md="2">
                           <v-select
-                          v-model="form.currency"
+                            v-model="form.currency"
                             :items="currency"
                             label="สกุลเงิน"
                             dense
@@ -321,8 +313,169 @@
                       </v-row>
                     </v-col>
                   </v-row>
-
-                  <!-- </v-card> -->
+                </v-col>
+                <v-col cols="12" md="12">
+                  <div class="text-h6 text-decoration-underline">
+                    From Supplier
+                  </div>
+                </v-col>
+                <v-col cols="12" lg="12">
+                  <v-row>
+                    <v-col cols="12" md="4">
+                      <v-file-input
+                        prepend-icon="mdi-attachment"
+                        truncate-length="30"
+                        label="ไฟล์แนบ Order Acknowledgement"
+                      ></v-file-input>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                      <v-menu
+                        v-model="menuDeliveryDate"
+                        :close-on-content-click="false"
+                        max-width="290"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="form.DeliveryDate"
+                            clearable
+                            label="Delivery Date"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            @click:clear="date = null"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="form.DeliveryDate"
+                          @change="menuDeliveryDate = false"
+                        ></v-date-picker>
+                      </v-menu>
+                    </v-col>
+                    <v-col cols="12" lg="12">
+                      <v-row>
+                        <v-col cols="12" md="3">
+                          <v-text-field
+                            v-model="po"
+                            prepend-icon="mdi-file-document"
+                            label="Invoice No."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="3">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (Inv)"
+                          ></v-file-input>
+                        </v-col>
+                        <v-col cols="12" md="3">
+                          <v-text-field
+                            v-model="po"
+                            prepend-icon="mdi-file-document"
+                            label="Packing List No."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="3">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (PL)"
+                          ></v-file-input>
+                        </v-col>
+                        <v-col cols="12" md="12">
+                          <div class="text-h6 text-decoration-underline">
+                            From Freight forwarder
+                          </div>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="4">
+                          <v-select
+                            v-model="form.currency"
+                            :items="currency"
+                            label="Freight Forwarder"
+                            dense
+                            small-chips
+                            outlined
+                          ></v-select>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="2">
+                          <v-btn depressed color="primary">
+                            <v-icon> mdi-plus</v-icon>
+                          </v-btn>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="4">
+                          <v-text-field
+                            prepend-icon="mdi-file-document"
+                            label="เลขที่ใบขน"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="2">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (เลขที่ใบขน)"
+                          ></v-file-input>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="2">
+                          <v-text-field
+                            prepend-icon="mdi-file-document"
+                            label="Air Waybill No."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="3">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (Air Waybill No)"
+                          ></v-file-input>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="2">
+                          <v-text-field
+                            prepend-icon="mdi-file-document"
+                            label="Tax Invoice No."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="3">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (Tax Invoice)"
+                          ></v-file-input>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="2">
+                          <v-text-field
+                            prepend-icon="mdi-file-document"
+                            label="มูลค่าของ Tax Inv."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="3">
+                          <v-text-field
+                            prepend-icon="mdi-file-document"
+                            label="Freight Invoice No."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="3">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (Freight Invoice)"
+                          ></v-file-input>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="3">
+                          <v-text-field
+                            prepend-icon="mdi-file-document"
+                            label="มูลค่าของ Freight Inv."
+                          ></v-text-field>
+                        </v-col>
+                        <v-col class="d-flex" cols="6" md="3">
+                          <v-file-input
+                            prepend-icon="mdi-attachment"
+                            truncate-length="30"
+                            label="ไฟล์แนบ (แจ้งรับสินค้า)"
+                          ></v-file-input>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
                 </v-col>
               </v-row>
             </v-container>
@@ -333,9 +486,6 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
-          <!--      <v-btn color="blue darken-1" text @click="dialog = false">
-            Save
-          </v-btn> -->
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -351,15 +501,17 @@ export default {
           .toISOString()
           .substr(0, 10),
         itemPR: [{ PRNo: '', JobNo: '', PRFile: null }],
-        currency:'THB',
+        currency: 'THB',
         status: 'Incomplete',
+        DeliveryDate: null,
       },
 
       dialog: false,
       dialogLoading: false,
       menu2: false,
+      menuDeliveryDate: false,
       alignments: ['start', 'center', 'end'],
-      currency: ['THB', 'USD','CNY','EUR'],
+      currency: ['THB', 'USD', 'CNY', 'EUR'],
       items: ['Suchanya Sripumkai (Ning)', 'FMC', 'end'],
       loading: false,
       firstname: '',
@@ -392,7 +544,7 @@ export default {
       }
     },
     save(date) {
-      this.$refs.menu.save(date)
+      this.$refs.menu2.save(date)
     },
     open(mode, data) {
       this.dialog = true

@@ -41,7 +41,7 @@ export default {
   ],
   googleFonts: {
     families: {
-      Niramit:[300,500,700],
+      Kanit:[300,500,700],
     }
   },
   // Modules: https://go.nuxtjs.dev/config-modules
