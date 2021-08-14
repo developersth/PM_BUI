@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const  usersRouter = require('./routers/users');
 const  userController = require('./controllers/users');
-
+const  documentsRouter = require('./routers/documents');
 const mockToken =
   'e9f83342e47d658b9c64a02fc6503c2736d333d151595b273b525653ba1cebc2'
 const mockUser = {
@@ -18,7 +18,7 @@ app.use(express.json())
 
 app.use('/users',usersRouter)
 app.get('/show', userController.index)
-
+app.use('/documents',documentsRouter)
 app.get('/me', (req, res) => {
   const headers = req.headers.authorization
 

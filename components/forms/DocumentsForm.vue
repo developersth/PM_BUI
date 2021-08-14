@@ -13,10 +13,15 @@
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>จัดการเอกสาร</v-toolbar-title>
+          <v-toolbar-title>จัดการเอกสาร #{{ mode }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn text @click="dialog = false"
+            <v-btn
+              text
+              :disabled="dialogLoading"
+              :loading="dialogLoading"
+              class="white--text"
+              @click="save()"
               >Save <v-icon> mdi-content-save</v-icon>
             </v-btn>
           </v-toolbar-items>
@@ -24,15 +29,6 @@
         <v-divider></v-divider>
         <v-card-text>
           <div class="text-center">
-            <v-btn
-              :disabled="dialogLoading"
-              :loading="dialogLoading"
-              class="white--text"
-              color="purple darken-2"
-              @click="dialogLoading = true"
-            >
-              Start loading
-            </v-btn>
             <v-dialog
               v-model="dialogLoading"
               hide-overlay
@@ -51,47 +47,31 @@
               </v-card>
             </v-dialog>
           </div>
-          <v-form>
+          <v-form ref="form" v-model="valid" lazy-validation>
             <v-container fluid>
               <v-row>
                 <v-col cols="12" md="4">
                   <v-text-field
-                    v-model="firstname"
+                    v-model="form.DocNo"
                     prepend-icon="mdi-text-box-outline"
-                    :counter="10"
-                    label="เลขที่เอกสาร"
-                    required
+                    :counter="20"
+                    label="เลขที่เอกสาร (Auto)"
+                    readonly
+                    :disabled=true
                   ></v-text-field>
                 </v-col>
 
                 <v-col cols="12" md="2">
-                  <v-menu
-                    v-model="menu2"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="auto"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                        v-model="form.DocDate"
-                        label="วันที่เอกสาร"
-                        prepend-icon="mdi-calendar"
-                        readonly
-                        v-bind="attrs"
-                        v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="date"
-                      @input="menu2 = false"
-                    ></v-date-picker>
-                  </v-menu>
+                  <v-text-field
+                    v-model="form.DocDate"
+                    label="วันที่เอกสาร"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                  ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12">
                   <div class="text-h6 text-decoration-underline">Status</div>
-                  <v-radio-group v-model="form.status" row>
+                  <v-radio-group v-model="form.Status" row>
                     <v-radio
                       outlined
                       color="secondary"
@@ -134,14 +114,16 @@
                       <v-row>
                         <v-col cols="12" md="4">
                           <v-text-field
-                            v-model="po"
+                            v-model="form.PoNo"
+                            :rules="PoNoRules"
                             prepend-icon="mdi-file-document"
                             label="เลขที่ใบสั่งซื้อ (PO)"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
                           <v-file-input
-                            prepend-icon="mdi-file-multiple"
+                            v-model="form.PoFile"
+                            prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PO)"
                           ></v-file-input>
@@ -172,7 +154,7 @@
                         <v-col class="d-flex" cols="8" md="3">
                           <v-file-input
                             v-model="itemPR.PRFile"
-                            prepend-icon="mdi-file-multiple"
+                            prepend-icon="mdi-attachment"
                             chips
                             :label="`
                              (PR) #${k + 1}`"
@@ -199,6 +181,7 @@
                       <v-row>
                         <v-col class="d-flex" cols="8" md="3">
                           <v-text-field
+                            v-model="form.ProductValue"
                             prepend-icon="mdi-cash-100"
                             label="มูลค่าสินค้า (ทั้งหมด)"
                             type="number"
@@ -206,7 +189,7 @@
                         </v-col>
                         <v-col class="d-flex" cols="4" md="2">
                           <v-select
-                            v-model="form.currency"
+                            v-model="form.Currency"
                             :items="currency"
                             label="สกุลเงิน"
                             dense
@@ -221,7 +204,8 @@
                           <v-row>
                             <v-col cols="10" md="10">
                               <v-autocomplete
-                                :items="items"
+                                v-model="form.Buyer"
+                                :items="itemsBuyer"
                                 prepend-icon="mdi-account-tie-voice"
                                 outlined
                                 dense
@@ -239,7 +223,8 @@
                           <v-row>
                             <v-col class="d-flex" cols="10" md="10">
                               <v-autocomplete
-                                :items="items"
+                                v-model="form.Supplier"
+                                :items="itemsSupplier"
                                 prepend-icon="mdi-account-switch"
                                 outlined
                                 dense
@@ -257,6 +242,7 @@
                         </v-col>
                         <v-col class="d-flex" cols="12" md="6">
                           <v-textarea
+                            v-model="form.Details"
                             label="รายละเอียด"
                             prepend-icon="mdi-card-account-details"
                           >
@@ -269,7 +255,8 @@
                           <v-row>
                             <v-col class="d-flex" cols="10" md="10">
                               <v-autocomplete
-                                :items="items"
+                                v-model="form.PaymentTerm"
+                                :items="itemsPaymentTerm"
                                 prepend-icon="mdi-contactless-payment"
                                 outlined
                                 dense
@@ -287,7 +274,8 @@
                           <v-row>
                             <v-col class="d-flex" cols="10" md="10">
                               <v-autocomplete
-                                :items="items"
+                                v-model="form.DeliveryTerm"
+                                :items="itemsDeliveryTerm"
                                 prepend-icon="mdi-truck-delivery"
                                 outlined
                                 dense
@@ -305,6 +293,7 @@
                         </v-col>
                         <v-col class="d-flex" cols="12" md="6">
                           <v-textarea
+                            v-model="form.Remarks"
                             label="หมายเหตุ"
                             prepend-icon="mdi-card-account-details"
                           >
@@ -323,6 +312,7 @@
                   <v-row>
                     <v-col cols="12" md="4">
                       <v-file-input
+                        v-model="form.OrderAckFile"
                         prepend-icon="mdi-attachment"
                         truncate-length="30"
                         label="ไฟล์แนบ Order Acknowledgement"
@@ -356,13 +346,14 @@
                       <v-row>
                         <v-col cols="12" md="3">
                           <v-text-field
-                            v-model="po"
+                            v-model="form.TaxInvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Invoice No."
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" md="3">
                           <v-file-input
+                            v-model="form.InvoiceFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Inv)"
@@ -370,13 +361,14 @@
                         </v-col>
                         <v-col cols="12" md="3">
                           <v-text-field
-                            v-model="po"
+                            v-model="form.PackingListNo"
                             prepend-icon="mdi-file-document"
                             label="Packing List No."
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12" md="3">
                           <v-file-input
+                            v-model="form.PackingListFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PL)"
@@ -389,8 +381,8 @@
                         </v-col>
                         <v-col class="d-flex" cols="6" md="4">
                           <v-select
-                            v-model="form.currency"
-                            :items="currency"
+                            v-model="form.FreightForworder"
+                            :items="itemsFreightForworder"
                             label="Freight Forwarder"
                             dense
                             small-chips
@@ -404,12 +396,14 @@
                         </v-col>
                         <v-col class="d-flex" cols="6" md="4">
                           <v-text-field
+                            v-model="form.BillOfLadingNo"
                             prepend-icon="mdi-file-document"
                             label="เลขที่ใบขน"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-file-input
+                            v-model="form.BillOfLadingFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (เลขที่ใบขน)"
@@ -417,12 +411,14 @@
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
+                            v-model="form.AirWayBillNo"
                             prepend-icon="mdi-file-document"
                             label="Air Waybill No."
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
+                            v-model="form.AirWayBillFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Air Waybill No)"
@@ -430,12 +426,14 @@
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
+                            v-model="form.TaxInvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Tax Invoice No."
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
+                            v-model="form.TaxInvoiceFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Tax Invoice)"
@@ -443,18 +441,22 @@
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
-                            prepend-icon="mdi-file-document"
+                            v-model="form.TaxValue"
+                            prepend-icon="mdi-cash-100"
                             label="มูลค่าของ Tax Inv."
+                            type="number"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
+                            v-model="form.FreightInvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Freight Invoice No."
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
+                            v-model="form.FreightInvoiceFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Freight Invoice)"
@@ -462,12 +464,15 @@
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
-                            prepend-icon="mdi-file-document"
+                            v-model="form.FreightInvoiceValue"
+                            prepend-icon="mdi-cash-100"
                             label="มูลค่าของ Freight Inv."
+                            type="number"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
+                            v-model="form.DeliveryNoticeFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (แจ้งรับสินค้า)"
@@ -500,12 +505,43 @@ export default {
         DocDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
           .toISOString()
           .substr(0, 10),
+        Status: 'Incomplete',
+        PoNo: '',
+        PoFile: null,
         itemPR: [{ PRNo: '', JobNo: '', PRFile: null }],
-        currency: 'THB',
-        status: 'Incomplete',
+        ProductValue: '',
+        Currency: 'THB',
+        Buyer: '',
+        Supplier: '',
+        Details: '',
+        PaymentTerm: '',
+        DeliveryTerm: '',
+        Remarks: '',
+        OrderAckFile: null,
         DeliveryDate: null,
+        InvoiceNo: '',
+        InvoiceFile: null,
+        PackingListNo: '',
+        PackingListFile: null,
+        FreightForworder: '',
+        BillOfLadingNo: '',
+        BillOfLadingFile: null,
+        AirWayBillNo: '',
+        AirWayBillFile: null,
+        TaxInvoiceNo: '',
+        TaxInvoiceFile: null,
+        TaxValue: '',
+        FreightInvoiceNo: '',
+        FreightInvoiceFile: null,
+        FreightInvoiceValue: '',
+        DeliveryNoticeFile: null,
       },
-
+      valid: true,
+      PoNoRules: [
+        (v) => !!v || 'กรุณากรอก เลขที่ใบสั่งซื้อ',
+        (v) =>
+          (v && v.length <= 20) || 'เลขที่ใบสั่งซื้อใส่ได้เกิน 20 ตัวอักษร',
+      ],
       dialog: false,
       dialogLoading: false,
       menu2: false,
@@ -513,16 +549,13 @@ export default {
       alignments: ['start', 'center', 'end'],
       currency: ['THB', 'USD', 'CNY', 'EUR'],
       items: ['Suchanya Sripumkai (Ning)', 'FMC', 'end'],
+      itemsBuyer: ['Suchanya Sripumkai', 'Kritsadee'],
+      itemsSupplier: ['FMC', 'Scully', 'CIRCOR', 'Chemtec', 'Alptec', 'SSRST'],
+      itemsPaymentTerm: ['ชำระภายใน 30 วัน', 'ชำระภายใน 90 วัน'],
+      itemsDeliveryTerm: ['ส่งของภายใน 30 วัน', 'ส่งของภายใน 90 วัน'],
+      itemsFreightForworder: ['DHL', 'Penanshin', 'FedEx', 'AIL'],
       loading: false,
-      firstname: '',
-      po: '',
       mode: '',
-      users: {
-        username: '',
-        name: '',
-        email: '',
-        mobile: '',
-      },
       activePicker: null,
       date: null,
       menu: false,
@@ -532,7 +565,7 @@ export default {
     dialogLoading(val) {
       if (!val) return
       setTimeout(() => (this.dialogLoading = false), 4000)
-    },
+    }
   },
   methods: {
     addPR(index) {
@@ -550,23 +583,53 @@ export default {
       this.dialog = true
       this.mode = mode
       if (data) {
-        this.users = { ...data }
+        this.form = { ...data }
+      } else {
       }
     },
     close() {
       this.dialog = false
-      this.clearData()
     },
     clearData() {
-      this.users = {
-        username: '',
-        name: '',
-        email: '',
-        mobile: '',
+      form = {
+        DocNo: '',
+        DocDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10),
+        Status: 'Incomplete',
+        PoNo: '',
+        PoFile: null,
+        itemPR: [{ PRNo: '', JobNo: '', PRFile: null }],
+        ProductValue: '',
+        Currency: 'THB',
+        Buyer: '',
+        Supplier: '',
+        Details: '',
+        PaymentTerm: '',
+        DeliveryTerm: '',
+        Remarks: '',
+        OrderAckFile: null,
+        DeliveryDate: null,
+        InvoiceNo: '',
+        InvoiceFile: null,
+        PackingListNo: '',
+        PackingListFile: null,
+        FreightForworder: '',
+        BillOfLadingNo: '',
+        BillOfLadingFile: null,
+        AirWayBillNo: '',
+        AirWayBillFile: null,
+        TaxInvoiceNo: '',
+        TaxInvoiceFile: null,
+        TaxValue: '',
+        FreightInvoiceNo: '',
+        FreightInvoiceFile: null,
+        FreightInvoiceValue: '',
+        DeliveryNoticeFile: null,
       }
     },
     save() {
-      this.$emit(this.mode, this.users)
+      this.$emit(this.mode, this.form)
     },
   },
 }

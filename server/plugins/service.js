@@ -16,6 +16,15 @@ class apiService extends axios {
     const  {data}  = await this.update(`/api/users/${id}`,body)
     return data;
   }
+  // Documents
+  async getAllDocuments() {
+    const  {data}  = await this.get('/api/documents')
+    return data;
+  }
+  async addDocuments(body) {
+    const  {data}  = await this.create('/api/documents',body)
+    return data;
+  }
 }
 
 export default apiService;
