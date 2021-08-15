@@ -1,6 +1,6 @@
 const db = require('../models');
-module.exports = {
-    formatDate: (date) => {
+class Functions {
+    formatDate(date)  {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -12,8 +12,12 @@ module.exports = {
             day = '0' + day
 
         return `${year.toString().substr(-2)}${month}${day}`
-    },
-    padLeft: (nr, n, str) => {
+    }
+    padLeft(nr, n, str) {
         return Array(n - String(nr).length + 1).join(str || '0') + nr;
     }
+    formatDocNo(id) {
+        return `DOC${this.formatDate(new Date())}-${this.padLeft(id, 5)}`
+    }
 }
+export default new Functions();

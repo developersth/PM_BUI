@@ -19,26 +19,36 @@
         hide-details
       />
     </v-card-title>
-    <v-data-table  :headers="headers"
+    <v-data-table
+      :headers="headers"
       :items="desserts"
       :search="search"
       class="elevation-1"
       :loading="loading"
-      loading-text="Loading... Please wait">
-     <template v-slot:[`item.Status`]="{ item }">
-      <v-chip
-        :color="getColor(item.Status)"
-        dark
-      >
-        {{ item.Status }}
-      </v-chip>
-    </template>
+      loading-text="Loading... Please wait"
+    >
+      <template v-slot:[`item.Status`]="{ item }">
+        <v-chip :color="getColor(item.Status)" dark>
+          {{ item.Status }}
+        </v-chip>
+      </template>
       <template v-slot:[`item.DocDate`]="{ item }">
-        <span>{{$dateFns.format(item.DocDate, 'dd/MM/yyyy')}}</span>
+        <span v-if="item.DocDate">{{ $dateFns.format(item.DocDate, 'dd/MM/yyyy') }}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+        <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
+          <v-icon dark> mdi-pencil </v-icon>
+        </v-btn>
+        <v-btn
+          class="mx-2"
+          fab
+          dark
+          small
+          color="red"
+          @click="deleteItem(item)"
+        >
+          <v-icon dark> mdi-delete </v-icon>
+        </v-btn>
       </template>
     </v-data-table>
     <DocumentsForm ref="DocumentsForm" @add="submitAdd" @edit="submitEdit" />
@@ -90,10 +100,10 @@ export default {
         { text: 'ผู้สั่งซื้อ', value: 'Buyer' },
         { text: 'Supplier', value: 'Supplier' },
         { text: 'Invoice No', value: 'InvoiceNo' },
-        { text: 'Actions', value: 'action', sortable: false },
+        { text: 'Actions', value: 'actions', sortable: false },
       ],
       desserts: [],
-      loading:false
+      loading: false,
     }
   },
   mounted() {
@@ -129,7 +139,7 @@ export default {
     },
     async submitAdd(data) {
       try {
-        this.$refs.DocumentsForm.dialogLoading=true
+        this.$refs.DocumentsForm.dialogLoading = true
         const result = await service.addDocuments(data)
         if (result.success) {
           this.snackbar = {
@@ -137,7 +147,7 @@ export default {
             text: result.message,
             type: 'success',
           }
-          this.$refs.DocumentsForm.dialogLoading=false
+          this.$refs.DocumentsForm.dialogLoading = false
           this.$refs.DocumentsForm.close()
           this.fetchData()
         } else {
@@ -146,7 +156,7 @@ export default {
             text: result.message,
             type: 'warning',
           }
-          this.$refs.DocumentsForm.dialogLoading=false
+          this.$refs.DocumentsForm.dialogLoading = false
         }
       } catch (e) {
         this.snackbar = {
@@ -154,7 +164,7 @@ export default {
           text: e.message,
           type: 'error',
         }
-        this.$refs.DocumentsForm.dialogLoading=false
+        this.$refs.DocumentsForm.dialogLoading = false
       }
     },
     async submitEdit(data) {
@@ -183,30 +193,38 @@ export default {
     async submitDelete() {
       this.confirm = false
       try {
-        await this.$axios.$delete(`/api/moji/${this.currentPK}`)
-        this.snackbar = {
-          show: true,
-          text: 'Success',
-          type: 'success',
+        const result = await service.deleteDocuments(this.currentPK)
+        if (result.success) {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'success',
+          }
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'warning',
+          }
         }
         this.fetchData()
       } catch (e) {
         this.snackbar = {
           show: true,
-          text: 'Fail',
+          text: e.message,
           type: 'error',
         }
       }
     },
-     getColor (status) {
-        if (status == 'Incomplete') return 'secondary'
-        else if (status == 'Acknowledged') return 'primary'
-        else if (status == 'In Progress') return 'orange'
-        else if (status == 'Shipped') return 'info'
-        else if (status == 'Received') return 'red'
-        else if (status == 'Completed') return 'green'
-        else return 'indigo'
-      },
+    getColor(status) {
+      if (status == 'Incomplete') return 'secondary'
+      else if (status == 'Acknowledged') return 'primary'
+      else if (status == 'In Progress') return 'orange'
+      else if (status == 'Shipped') return 'pink'
+      else if (status == 'Received') return 'red'
+      else if (status == 'Completed') return 'green'
+      else return 'indigo'
+    },
   },
 }
 </script>

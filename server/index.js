@@ -1,5 +1,7 @@
 const express = require('express')
 const cors = require('cors')
+const connect = require('connect')
+const http = require('http')
 const  usersRouter = require('./routers/users');
 const  userController = require('./controllers/users');
 const  documentsRouter = require('./routers/documents');
@@ -10,11 +12,14 @@ const mockUser = {
   name: 'John Doe',
   email: 'john@doe.com',
 }
-
+const bodyParser = require('body-parser');
 const app = express()
+//const app = connect()
 const router = express.Router();
 app.use(cors())
 app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 app.use('/users',usersRouter)
 app.get('/show', userController.index)
@@ -44,7 +49,6 @@ app.post('/login', (req, res) => {
     return res.status(401).json({ message: 'Invalid password' })
   }
 })
-
 module.exports = {
   path: '/api',
   handler: app,

@@ -4,7 +4,7 @@ export default {
   target: 'server',
   serverMiddleware: ['~/server/index.js'],
   env: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+    baseUrl: process.env.BASE_URL || 'http://localhost:5000'
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -42,7 +42,7 @@ export default {
   ],
   googleFonts: {
     families: {
-      Kanit:[300,500,700],
+      Prompt:[400,500,700],
     }
   },
   // Modules: https://go.nuxtjs.dev/config-modules

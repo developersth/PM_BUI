@@ -47,7 +47,12 @@
               </v-card>
             </v-dialog>
           </div>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+            enctype="multipart/form-data"
+          >
             <v-container fluid>
               <v-row>
                 <v-col cols="12" md="4">
@@ -57,7 +62,7 @@
                     :counter="20"
                     label="เลขที่เอกสาร (Auto)"
                     readonly
-                    :disabled=true
+                    :disabled="true"
                   ></v-text-field>
                 </v-col>
 
@@ -89,7 +94,7 @@
                       value="In Progress"
                     ></v-radio>
                     <v-radio
-                      color="info"
+                      color="pink"
                       label="Shipped"
                       value="Shipped"
                     ></v-radio>
@@ -123,6 +128,7 @@
                         <v-col cols="12" md="4">
                           <v-file-input
                             v-model="form.PoFile"
+                            small-chips
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PO)"
@@ -154,6 +160,7 @@
                         <v-col class="d-flex" cols="8" md="3">
                           <v-file-input
                             v-model="itemPR.PRFile"
+                            small-chips
                             prepend-icon="mdi-attachment"
                             chips
                             :label="`
@@ -565,7 +572,7 @@ export default {
     dialogLoading(val) {
       if (!val) return
       setTimeout(() => (this.dialogLoading = false), 4000)
-    }
+    },
   },
   methods: {
     addPR(index) {
@@ -599,7 +606,7 @@ export default {
         Status: 'Incomplete',
         PoNo: '',
         PoFile: null,
-        itemPR: [{ PRNo: '', JobNo: '', PRFile: null }],
+        itemPR: { PRNo: '', JobNo: '', PRFile: null },
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -629,7 +636,19 @@ export default {
       }
     },
     save() {
-      this.$emit(this.mode, this.form)
+      let formData = new FormData()
+      /*   for (var key in this.form) {
+        formData.append(key, this.form[key])
+      } */
+      //formData.append('files', this.form.PoFile)
+      //formData.append('files', this.form.PoFile)
+      /* for (let i = 0; i < this.form.itemPR.PRFile.length; i++) {
+         formData.append('files', this.form.itemPR.PRFile[i])
+      } */
+        for (const key in this.form.itemPR) {
+          formData.append('files', this.form.itemPR[key].PRFile,this.form.itemPR[key].PRNo+".pdf")
+        }
+      this.$emit(this.mode, formData)
     },
   },
 }
