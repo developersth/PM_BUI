@@ -1,6 +1,13 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  build: {
+    extend(config, ctx) {
+      if (ctx.isDev) {
+        config.devtool = ctx.isClient ? 'source-map' : 'inline-source-map'
+      }
+    }
+  },
   target: 'server',
   serverMiddleware: ['~/server/index.js'],
   env: {
@@ -39,6 +46,7 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     '@nuxtjs/date-fns',
+    
   ],
   googleFonts: {
     families: {

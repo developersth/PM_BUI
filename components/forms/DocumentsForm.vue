@@ -146,6 +146,7 @@
                           <v-text-field
                             v-model="itemPR.PRNo"
                             prepend-icon="mdi-file-document"
+                            :rules="PRNoRules"
                             :label="`เลขที่ใบสั่งขอซื้อ (PR) #${k + 1}`"
                           ></v-text-field>
                         </v-col>
@@ -504,6 +505,7 @@
   </v-row>
 </template>
 <script>
+import { v4 as uuidv4 } from 'uuid'
 export default {
   data() {
     return {
@@ -549,6 +551,10 @@ export default {
         (v) =>
           (v && v.length <= 20) || 'เลขที่ใบสั่งซื้อใส่ได้เกิน 20 ตัวอักษร',
       ],
+      PRNoRules: [
+        (v) => !!v || 'กรุณากรอก เลขที่ใบขอซื้อ',
+        (v) => (v && v.length <= 20) || 'เลขที่ใบขอซื้อใส่ได้เกิน 20 ตัวอักษร',
+      ],
       dialog: false,
       dialogLoading: false,
       menu2: false,
@@ -566,6 +572,7 @@ export default {
       activePicker: null,
       date: null,
       menu: false,
+      fileManage: [{ name: '', filename: '' }],
     }
   },
   watch: {
@@ -576,7 +583,12 @@ export default {
   },
   methods: {
     addPR(index) {
-      this.form.itemPR.push({ PRNo: '', JobNo: '', PRFile: null })
+      this.form.itemPR.push({
+        PRNo: '',
+        JobNo: '',
+        PRFile: null,
+        PRFileName: '',
+      })
     },
     removePR(index) {
       if (this.form.itemPR.length > 1) {
@@ -606,7 +618,7 @@ export default {
         Status: 'Incomplete',
         PoNo: '',
         PoFile: null,
-        itemPR: { PRNo: '', JobNo: '', PRFile: null },
+        itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRFileName: '' }],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -636,18 +648,40 @@ export default {
       }
     },
     save() {
+      let fileName = ''
+      this.$refs.form.validate()
+      if (!this.valid) return
       let formData = new FormData()
-      /*   for (var key in this.form) {
+  
+      //File Management
+      if (this.form.PoFile) {
+        fileName='PO-' +uuidv4() +'.' +this.form.PoFile.name.split('.')[this.form.PoFile.name.split('.').length - 1]
+        console.log(fileName)
+        //formData.append('files', this.form.PoFile,fileName)
+         formData.append('files',this.form.PoFile, fileName)
+      }
+
+ /*       for (var key in this.form) {
         formData.append(key, this.form[key])
       } */
-      //formData.append('files', this.form.PoFile)
-      //formData.append('files', this.form.PoFile)
-      /* for (let i = 0; i < this.form.itemPR.PRFile.length; i++) {
-         formData.append('files', this.form.itemPR.PRFile[i])
-      } */
-        for (const key in this.form.itemPR) {
-          formData.append('files', this.form.itemPR[key].PRFile,this.form.itemPR[key].PRNo+".pdf")
+      let itemPR = this.form.itemPR
+      let doc = 1
+      for (const key in itemPR) {
+        if (itemPR[key].PRFile) {
+          fileName =
+            'PR-' +
+            uuidv4() +
+            '.' +
+            itemPR[key].PRFile.name.split('.')[
+              itemPR[key].PRFile.name.split('.').length - 1
+            ]
+          formData.append('files', itemPR[key].PRFile, fileName)
+          itemPR[key].PRFileName = fileName
         }
+        doc++
+      }
+      formData.append('itemPR', JSON.stringify(this.form.itemPR))
+      //formData.append('fileManage', JSON.stringify(this.fileManage))
       this.$emit(this.mode, formData)
     },
   },
