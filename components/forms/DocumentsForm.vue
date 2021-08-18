@@ -354,7 +354,7 @@
                       <v-row>
                         <v-col cols="12" md="3">
                           <v-text-field
-                            v-model="form.TaxInvoiceNo"
+                            v-model="form.InvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Invoice No."
                           ></v-text-field>
@@ -708,7 +708,31 @@ export default {
         }
         doc++
       }
-      //formData.append('itemPR', JSON.stringify(this.form.itemPR))
+        //Data
+        formData.append('DocNo',this.form.DocNo)
+        formData.append('DocDate',this.form.DocDate)
+        formData.append('Status',this.form.Status)
+        formData.append('PoNo',this.form.PoNo)     
+        formData.append('ProductValue',this.form.ProductValue)
+        formData.append('Currency',this.form.Currency)     
+        formData.append('Buyer',this.form.Buyer)
+        formData.append('Supplier',this.form.Supplier)     
+        formData.append('Details',this.form.Details)
+        formData.append('PaymentTerm',this.form.PaymentTerm)     
+        formData.append('DeliveryTerm',this.form.DeliveryTerm)
+        formData.append('Remarks',this.form.Remarks)     
+        formData.append('DeliveryDate',this.form.DeliveryDate)
+        formData.append('InvoiceNo',this.form.InvoiceNo)     
+        formData.append('PackingListNo',this.form.PackingListNo)
+        formData.append('FreightForworder',this.form.FreightForworder)     
+        formData.append('BillOfLadingNo',this.form.BillOfLadingNo)
+        formData.append('AirWayBillNo',this.form.AirWayBillNo)     
+        formData.append('TaxInvoiceNo',this.form.TaxInvoiceNo)
+        formData.append('TaxValue',this.form.TaxValue)     
+        formData.append('FreightInvoiceNo',this.form.FreightInvoiceNo)
+        formData.append('FreightInvoiceValue',this.form.FreightInvoiceValue)         
+
+      formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))
       this.$emit(this.mode, formData)
     },
