@@ -11,7 +11,7 @@ export default {
   target: 'server',
   serverMiddleware: ['~/server/index.js'],
   env: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:5000'
+    baseUrl: process.env.BASE_URL || 'http://ktd-dev.ddns.net:5000/'
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {

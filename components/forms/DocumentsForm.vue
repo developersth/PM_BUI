@@ -47,6 +47,7 @@
               </v-card>
             </v-dialog>
           </div>
+          <ShowFileForm ref="ShowFileForm" />
           <v-form
             ref="form"
             v-model="valid"
@@ -125,14 +126,25 @@
                             label="เลขที่ใบสั่งซื้อ (PO)"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" md="4">
+                        <v-col cols="8" md="4">
                           <v-file-input
-                            v-model="form.PoFile"
+                            v-model="form.PoFiles"
                             small-chips
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PO)"
                           ></v-file-input>
+                        </v-col>
+                        <v-col cols="4" md="4" v-if="form.PoFile">
+                          <v-btn
+                            depressed
+                            small
+                            color="pink"
+                            @click="showFileModal(form.PoFile)"
+                          >
+                            <v-icon> mdi-clipboard-text-search-outline</v-icon
+                            >แสดงไฟล์
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -506,7 +518,9 @@
 </template>
 <script>
 import { v4 as uuidv4 } from 'uuid'
+import ShowFileForm from '~/components/forms/ShowFileForm.vue'
 export default {
+  components: { ShowFileForm },
   data() {
     return {
       form: {
@@ -516,7 +530,7 @@ export default {
           .substr(0, 10),
         Status: 'Incomplete',
         PoNo: '',
-        PoFile: null,
+        PoFiles: null,
         itemPR: [{ PRNo: '', JobNo: '', PRFile: null }],
         ProductValue: '',
         Currency: 'THB',
@@ -571,7 +585,7 @@ export default {
       mode: '',
       activePicker: null,
       date: null,
-      menu: false
+      menu: false,
     }
   },
   watch: {
@@ -597,12 +611,14 @@ export default {
     save(date) {
       this.$refs.menu2.save(date)
     },
+    showFileModal(file) {
+      this.$refs.ShowFileForm.open(file)
+    },
     open(mode, data) {
       this.dialog = true
       this.mode = mode
       if (data) {
         this.form = { ...data }
-      } else {
       }
     },
     close() {
@@ -646,9 +662,15 @@ export default {
         DeliveryNoticeFile: null,
       }
     },
-    selectFile(){
-        if (this.form.OrderAckFile) {
-        let fileName='OrderAckFile-' +uuidv4() +'.' +this.form.OrderAckFile.name.split('.')[this.form.OrderAckFile.name.split('.').length - 1]
+    selectFile() {
+      if (this.form.OrderAckFile) {
+        let fileName =
+          'OrderAckFile-' +
+          uuidv4() +
+          '.' +
+          this.form.OrderAckFile.name.split('.')[
+            this.form.OrderAckFile.name.split('.').length - 1
+          ]
         console.log(fileName)
       }
     },
@@ -658,79 +680,140 @@ export default {
       this.$refs.form.validate()
       if (!this.valid) return
       let formData = new FormData()
-  
+
       //File Management
       if (this.form.PoFile) {
-        fileName='PoFile-' +uuidv4() +'.' +this.form.PoFile.name.split('.')[this.form.PoFile.name.split('.').length - 1]
+        fileName =
+          'PoFile-' +
+          uuidv4() +
+          '.' +
+          this.form.PoFile.name.split('.')[
+            this.form.PoFile.name.split('.').length - 1
+          ]
         //formData.append('PoFile',this.form.PoFile, fileName)
-        fileManage.push({name: 'PoFile', filename:fileName})
-        formData.append('files',this.form.PoFile, fileName)
+        fileManage.push({ name: 'PoFile', filename: fileName })
+        formData.append('files', this.form.PoFile, fileName)
       }
       if (this.form.OrderAckFile) {
-        fileName='OrderAckFile-' +uuidv4() +'.' +this.form.OrderAckFile.name.split('.')[this.form.OrderAckFile.name.split('.').length - 1]
-       // formData.append('OrderAckFile',this.form.OrderAckFile, fileName)
-        formData.append('files',this.form.OrderAckFile, fileName)
-        fileManage.push({name: 'OrderAckFile', filename:fileName})
+        fileName =
+          'OrderAckFile-' +
+          uuidv4() +
+          '.' +
+          this.form.OrderAckFile.name.split('.')[
+            this.form.OrderAckFile.name.split('.').length - 1
+          ]
+        // formData.append('OrderAckFile',this.form.OrderAckFile, fileName)
+        formData.append('files', this.form.OrderAckFile, fileName)
+        fileManage.push({ name: 'OrderAckFile', filename: fileName })
       }
       if (this.form.InvoiceFile) {
-        fileName='InvoiceFile-' +uuidv4() +'.' +this.form.InvoiceFile.name.split('.')[this.form.InvoiceFile.name.split('.').length - 1]
-        formData.append('files',this.form.InvoiceFile, fileName)
-        fileManage.push({name: 'InvoiceFile', filename:fileName})
+        fileName =
+          'InvoiceFile-' +
+          uuidv4() +
+          '.' +
+          this.form.InvoiceFile.name.split('.')[
+            this.form.InvoiceFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.InvoiceFile, fileName)
+        fileManage.push({ name: 'InvoiceFile', filename: fileName })
       }
       if (this.form.PackingListFile) {
-        fileName='PackingListFile-' +uuidv4() +'.' +this.form.PackingListFile.name.split('.')[this.form.PackingListFile.name.split('.').length - 1]
-        formData.append('files',this.form.PackingListFile, fileName)
-        fileManage.push({name: 'PackingListFile', filename:fileName})
+        fileName =
+          'PackingListFile-' +
+          uuidv4() +
+          '.' +
+          this.form.PackingListFile.name.split('.')[
+            this.form.PackingListFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.PackingListFile, fileName)
+        fileManage.push({ name: 'PackingListFile', filename: fileName })
       }
       if (this.form.BillOfLadingFile) {
-        fileName='BillOfLadingFile-' +uuidv4() +'.' +this.form.BillOfLadingFile.name.split('.')[this.form.BillOfLadingFile.name.split('.').length - 1]
-        formData.append('files',this.form.BillOfLadingFile, fileName)
-        fileManage.push({name: 'PackingListFile', filename:fileName})
+        fileName =
+          'BillOfLadingFile-' +
+          uuidv4() +
+          '.' +
+          this.form.BillOfLadingFile.name.split('.')[
+            this.form.BillOfLadingFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.BillOfLadingFile, fileName)
+        fileManage.push({ name: 'BillOfLadingFile', filename: fileName })
+      }
+      if (this.form.AirWayBillFile) {
+        fileName =
+          'AirWayBillFile-' +
+          uuidv4() +
+          '.' +
+          this.form.AirWayBillFile.name.split('.')[
+            this.form.AirWayBillFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.AirWayBillFile, fileName)
+        fileManage.push({ name: 'AirWayBillFile', filename: fileName })
       }
       if (this.form.FreightInvoiceFile) {
-        fileName='FreightInvoiceFile-' +uuidv4() +'.' +this.form.FreightInvoiceFile.name.split('.')[this.form.FreightInvoiceFile.name.split('.').length - 1]
-        formData.append('files',this.form.FreightInvoiceFile, fileName)
-        fileManage.push({name: 'FreightInvoiceFile', filename:fileName})
+        fileName =
+          'FreightInvoiceFile-' +
+          uuidv4() +
+          '.' +
+          this.form.FreightInvoiceFile.name.split('.')[
+            this.form.FreightInvoiceFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.FreightInvoiceFile, fileName)
+        fileManage.push({ name: 'FreightInvoiceFile', filename: fileName })
       }
       if (this.form.DeliveryNoticeFile) {
-        fileName='DeliveryNoticeFile-' +uuidv4() +'.' +this.form.DeliveryNoticeFile.name.split('.')[this.form.DeliveryNoticeFile.name.split('.').length - 1]
-        formData.append('files',this.form.DeliveryNoticeFile, fileName)
-        fileManage.push({name: 'DeliveryNoticeFile', filename:fileName})
-      } 
+        fileName =
+          'DeliveryNoticeFile-' +
+          uuidv4() +
+          '.' +
+          this.form.DeliveryNoticeFile.name.split('.')[
+            this.form.DeliveryNoticeFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.DeliveryNoticeFile, fileName)
+        fileManage.push({ name: 'DeliveryNoticeFile', filename: fileName })
+      }
       let itemPR = this.form.itemPR
       let doc = 1
       for (const key in itemPR) {
         if (itemPR[key].PRFile) {
-          fileName ='PR-' + uuidv4() + '-'+doc+ '.' + itemPR[key].PRFile.name.split('.')[itemPR[key].PRFile.name.split('.').length - 1]
+          fileName =
+            'PR-' +
+            uuidv4() +
+            '-' +
+            doc +
+            '.' +
+            itemPR[key].PRFile.name.split('.')[
+              itemPR[key].PRFile.name.split('.').length - 1
+            ]
           formData.append('files', itemPR[key].PRFile, fileName)
           itemPR[key].PRFileName = fileName
-          fileManage.push({name: 'PRFile', filename:fileName})
+          fileManage.push({ name: 'PRFile', filename: fileName })
         }
         doc++
       }
-        //Data
-        formData.append('DocNo',this.form.DocNo)
-        formData.append('DocDate',this.form.DocDate)
-        formData.append('Status',this.form.Status)
-        formData.append('PoNo',this.form.PoNo)     
-        formData.append('ProductValue',this.form.ProductValue)
-        formData.append('Currency',this.form.Currency)     
-        formData.append('Buyer',this.form.Buyer)
-        formData.append('Supplier',this.form.Supplier)     
-        formData.append('Details',this.form.Details)
-        formData.append('PaymentTerm',this.form.PaymentTerm)     
-        formData.append('DeliveryTerm',this.form.DeliveryTerm)
-        formData.append('Remarks',this.form.Remarks)     
-        formData.append('DeliveryDate',this.form.DeliveryDate)
-        formData.append('InvoiceNo',this.form.InvoiceNo)     
-        formData.append('PackingListNo',this.form.PackingListNo)
-        formData.append('FreightForworder',this.form.FreightForworder)     
-        formData.append('BillOfLadingNo',this.form.BillOfLadingNo)
-        formData.append('AirWayBillNo',this.form.AirWayBillNo)     
-        formData.append('TaxInvoiceNo',this.form.TaxInvoiceNo)
-        formData.append('TaxValue',this.form.TaxValue)     
-        formData.append('FreightInvoiceNo',this.form.FreightInvoiceNo)
-        formData.append('FreightInvoiceValue',this.form.FreightInvoiceValue)         
+      //Data
+      formData.append('DocNo', this.form.DocNo)
+      formData.append('DocDate', this.form.DocDate)
+      formData.append('Status', this.form.Status)
+      formData.append('PoNo', this.form.PoNo)
+      formData.append('ProductValue', this.form.ProductValue)
+      formData.append('Currency', this.form.Currency)
+      formData.append('Buyer', this.form.Buyer)
+      formData.append('Supplier', this.form.Supplier)
+      formData.append('Details', this.form.Details)
+      formData.append('PaymentTerm', this.form.PaymentTerm)
+      formData.append('DeliveryTerm', this.form.DeliveryTerm)
+      formData.append('Remarks', this.form.Remarks)
+      formData.append('DeliveryDate', this.form.DeliveryDate)
+      formData.append('InvoiceNo', this.form.InvoiceNo)
+      formData.append('PackingListNo', this.form.PackingListNo)
+      formData.append('FreightForworder', this.form.FreightForworder)
+      formData.append('BillOfLadingNo', this.form.BillOfLadingNo)
+      formData.append('AirWayBillNo', this.form.AirWayBillNo)
+      formData.append('TaxInvoiceNo', this.form.TaxInvoiceNo)
+      formData.append('TaxValue', this.form.TaxValue)
+      formData.append('FreightInvoiceNo', this.form.FreightInvoiceNo)
+      formData.append('FreightInvoiceValue', this.form.FreightInvoiceValue)
 
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))

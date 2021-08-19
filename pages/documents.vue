@@ -33,7 +33,9 @@
         </v-chip>
       </template>
       <template v-slot:[`item.DocDate`]="{ item }">
-        <span v-if="item.DocDate">{{ $dateFns.format(item.DocDate, 'dd/MM/yyyy') }}</span>
+        <span v-if="item.DocDate">{{
+          $dateFns.format(item.DocDate, 'dd/MM/yyyy')
+        }}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
@@ -129,9 +131,23 @@ export default {
     addItem() {
       this.$refs.DocumentsForm.open('add')
     },
-    editItem(item) {
-      this.currentPK = item.id
-      this.$refs.DocumentsForm.open('edit', item)
+    async editItem(item) {
+      try {
+        this.currentPK = item.id
+        await service
+          .getDocumentsById(this.currentPK)
+          .then((response) => {
+            this.$refs.DocumentsForm.open('edit', response)
+            this.loading = false
+          })
+      } catch (e) {
+        this.loading = false
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
     },
     deleteItem(item) {
       this.currentPK = item.id
