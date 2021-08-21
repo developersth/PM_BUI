@@ -6,7 +6,7 @@
       <v-spacer></v-spacer>
 
       <v-btn depressed color="green" @click="addItem">
-        เพิ่มข้อมูล <v-icon> mdi-plus</v-icon>
+        <v-icon> mdi-plus</v-icon> Add New
       </v-btn>
     </v-app-bar>
     <v-card-title>
@@ -134,12 +134,10 @@ export default {
     async editItem(item) {
       try {
         this.currentPK = item.id
-        await service
-          .getDocumentsById(this.currentPK)
-          .then((response) => {
-            this.$refs.DocumentsForm.open('edit', response)
-            this.loading = false
-          })
+        await service.getDocumentsById(this.currentPK).then((response) => {
+          this.$refs.DocumentsForm.open('edit', response)
+          this.loading = false
+        })
       } catch (e) {
         this.loading = false
         this.snackbar = {

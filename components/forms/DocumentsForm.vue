@@ -128,22 +128,22 @@
                         </v-col>
                         <v-col cols="8" md="4">
                           <v-file-input
-                            v-model="form.PoFiles"
+                            v-model="form.PoFile"
                             small-chips
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PO)"
                           ></v-file-input>
                         </v-col>
-                        <v-col cols="4" md="4" v-if="form.PoFile">
+                        <v-col cols="4" md="4" v-if="docsItems.PoFile">
                           <v-btn
+                            class="mt-6"
                             depressed
                             small
                             color="pink"
-                            @click="showFileModal(form.PoFile)"
+                            @click="showFileModal(docsItems.PoFile)"
                           >
-                            <v-icon> mdi-clipboard-text-search-outline</v-icon
-                            >แสดงไฟล์
+                            <v-icon> mdi-eye-settings-outline</v-icon>
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -162,7 +162,7 @@
                             :label="`เลขที่ใบสั่งขอซื้อ (PR) #${k + 1}`"
                           ></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="12" md="3">
+                        <v-col class="d-flex" cols="12" md="2">
                           <v-text-field
                             v-model="itemPR.JobNo"
                             prepend-icon="mdi-account-hard-hat"
@@ -179,9 +179,22 @@
                             :label="`
                              (PR) #${k + 1}`"
                           ></v-file-input>
+                          <div v-if="itemPR.PRUrl">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(itemPR.PRUrl)"
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
-                        <v-col class="d-flex" cols="4" md="2">
+
+                        <v-col class="d-flex" cols="4" md="3">
                           <v-btn
+                            class="mt-4"
                             v-if="k > 0"
                             depressed
                             color="red"
@@ -209,6 +222,7 @@
                         </v-col>
                         <v-col class="d-flex" cols="4" md="2">
                           <v-select
+                            class="mt-3"
                             v-model="form.Currency"
                             :items="currency"
                             label="สกุลเงิน"
@@ -224,6 +238,7 @@
                           <v-row>
                             <v-col cols="10" md="10">
                               <v-autocomplete
+                                class="mt-4"
                                 v-model="form.Buyer"
                                 :items="itemsBuyer"
                                 prepend-icon="mdi-account-tie-voice"
@@ -234,7 +249,7 @@
                                 label="ผู้ขอซื้อ"
                               ></v-autocomplete>
                             </v-col>
-                            <v-col cols="2" md="2">
+                            <v-col cols="2" md="2" class="mt-4">
                               <v-btn depressed color="primary">
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
@@ -330,15 +345,27 @@
                 </v-col>
                 <v-col cols="12" lg="12">
                   <v-row>
-                    <v-col cols="12" md="4">
+                    <v-col class="d-flex" cols="8" md="6">
                       <v-file-input
                         v-model="form.OrderAckFile"
                         prepend-icon="mdi-attachment"
                         truncate-length="30"
                         label="ไฟล์แนบ Order Acknowledgement"
                       ></v-file-input>
+                      <div v-if="docsItems.OrderAckFile">
+                        <v-btn
+                          class="mt-6"
+                          depressed
+                          small
+                          color="pink"
+                          @click="showFileModal(docsItems.OrderAckFile)"
+                        >
+                          <v-icon> mdi-eye-settings-outline</v-icon>
+                        </v-btn>
+                      </div>
                     </v-col>
-                    <v-col cols="12" md="4">
+
+                    <v-col class="d-flex" cols="12" md="6">
                       <v-menu
                         v-model="menuDeliveryDate"
                         :close-on-content-click="false"
@@ -364,20 +391,31 @@
                     </v-col>
                     <v-col cols="12" lg="12">
                       <v-row>
-                        <v-col cols="12" md="3">
+                        <v-col class="d-flex" cols="12" md="3">
                           <v-text-field
                             v-model="form.InvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Invoice No."
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" md="3">
+                        <v-col class="d-flex" cols="12" md="3">
                           <v-file-input
                             v-model="form.InvoiceFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Inv)"
                           ></v-file-input>
+                          <div v-if="docsItems.InvoiceFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(docsItems.InvoiceFile)"
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                         <v-col cols="12" md="3">
                           <v-text-field
@@ -386,13 +424,24 @@
                             label="Packing List No."
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" md="3">
+                        <v-col class="d-flex" cols="12" md="3">
                           <v-file-input
                             v-model="form.PackingListFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PL)"
                           ></v-file-input>
+                          <div v-if="docsItems.PackingListFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(docsItems.PackingListFile)"
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                         <v-col cols="12" md="12">
                           <div class="text-h6 text-decoration-underline">
@@ -428,6 +477,17 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (เลขที่ใบขน)"
                           ></v-file-input>
+                          <div v-if="docsItems.BillOfLadingFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(docsItems.BillOfLadingFile)"
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
@@ -443,6 +503,17 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (Air Waybill No)"
                           ></v-file-input>
+                          <div v-if="docsItems.AirWayBillFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(docsItems.AirWayBillFile)"
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
@@ -458,6 +529,17 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (Tax Invoice)"
                           ></v-file-input>
+                          <div v-if="docsItems.TaxInvoiceFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(docsItems.TaxInvoiceFile)"
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
@@ -481,6 +563,19 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (Freight Invoice)"
                           ></v-file-input>
+                          <div v-if="docsItems.FreightInvoiceFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="
+                                showFileModal(docsItems.FreightInvoiceFile)
+                              "
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
@@ -497,6 +592,19 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (แจ้งรับสินค้า)"
                           ></v-file-input>
+                          <div v-if="docsItems.DeliveryNoticeFile">
+                            <v-btn
+                              class="mt-6"
+                              depressed
+                              small
+                              color="pink"
+                              @click="
+                                showFileModal(docsItems.DeliveryNoticeFile)
+                              "
+                            >
+                              <v-icon> mdi-eye-settings-outline</v-icon>
+                            </v-btn>
+                          </div>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -510,6 +618,9 @@
         <v-card-actions>
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
+          </v-btn>
+          <v-btn color="warning darken-1" @click="ResetForm">
+            Reset Form
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -525,13 +636,10 @@ export default {
     return {
       form: {
         DocNo: '',
-        DocDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
         Status: 'Incomplete',
         PoNo: '',
-        PoFiles: null,
-        itemPR: [{ PRNo: '', JobNo: '', PRFile: null }],
+        itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -575,6 +683,7 @@ export default {
       menuDeliveryDate: false,
       alignments: ['start', 'center', 'end'],
       currency: ['THB', 'USD', 'CNY', 'EUR'],
+      docsItems: [],
       items: ['Suchanya Sripumkai (Ning)', 'FMC', 'end'],
       itemsBuyer: ['Suchanya Sripumkai', 'Kritsadee'],
       itemsSupplier: ['FMC', 'Scully', 'CIRCOR', 'Chemtec', 'Alptec', 'SSRST'],
@@ -588,12 +697,7 @@ export default {
       menu: false,
     }
   },
-  watch: {
-    dialogLoading(val) {
-      if (!val) return
-      setTimeout(() => (this.dialogLoading = false), 4000)
-    },
-  },
+  watch: {},
   methods: {
     addPR(index) {
       this.form.itemPR.push({
@@ -611,6 +715,7 @@ export default {
     save(date) {
       this.$refs.menu2.save(date)
     },
+    //ShowFileForm
     showFileModal(file) {
       this.$refs.ShowFileForm.open(file)
     },
@@ -618,22 +723,70 @@ export default {
       this.dialog = true
       this.mode = mode
       if (data) {
-        this.form = { ...data }
+        this.assignValue(data)
+      } else {
+        //mode add
+        this.clearData()
       }
     },
     close() {
       this.dialog = false
     },
+    assignValue(data) {
+      this.clearData()
+      this.docsItems = data
+      if (this.docsItems.DocDate)
+        this.form.DocDate = this.$dateFns.format(
+          this.docsItems.DocDate,
+          'yyyy-MM-dd'
+        )
+
+      this.form.Status = this.docsItems.Status
+      this.form.PoNo = this.docsItems.PoNo
+      if (this.docsItems.itemPR) {
+        this.form.itemPR = []
+        for (var key in this.docsItems.itemPR) {
+          this.form.itemPR.push({
+            PRNo: this.docsItems.itemPR[key].PRNo,
+            JobNo: this.docsItems.itemPR[key].JobNo,
+            PRFile: null,
+            PRFileName: this.docsItems.itemPR[key].PRFileName,
+            PRUrl: this.docsItems.itemPR[key].PRFile,
+          })
+        }
+      }
+      this.docsItems.Buyer = this.docsItems.Buyer
+      this.form.Supplier = this.docsItems.Supplier
+      this.form.Details = this.docsItems.Details
+      this.form.PaymentTerm = this.docsItems.PaymentTerm
+      this.form.Remarks = this.docsItems.Remarks
+      this.form.DeliveryDate = this.docsItems.DeliveryDate
+      if (this.docsItems.DeliveryDate)
+        this.form.DeliveryDate = this.$dateFns.format(
+          this.docsItems.DeliveryDate,
+          'yyyy-MM-dd'
+        )
+      this.form.InvoiceNo = this.docsItems.InvoiceNo
+      this.form.PackingListNo = this.docsItems.PackingListNo
+      this.form.BillOfLadingNo = this.docsItems.BillOfLadingNo
+      this.form.AirWayBillNo = this.docsItems.AirWayBillNo
+      this.form.TaxInvoiceNo = this.docsItems.TaxInvoiceNo
+      this.form.TaxValue = this.docsItems.TaxValue
+      this.form.FreightInvoiceNo = this.docsItems.FreightInvoiceNo
+      this.form.FreightInvoiceValue = this.docsItems.FreightInvoiceValue
+      this.form.DocNo = this.docsItems.DocNo
+    },
+    ResetForm() {
+      this.$refs.form.reset()
+    },
     clearData() {
-      form = {
+      this.form = {
         DocNo: '',
-        DocDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
-          .toISOString()
-          .substr(0, 10),
+        DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
         Status: 'Incomplete',
         PoNo: '',
         PoFile: null,
-        itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRFileName: '' }],
+        itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -675,10 +828,9 @@ export default {
       }
     },
     save() {
+      if (!this.$refs.form.validate()) return //chek validate
       let fileName = ''
       let fileManage = []
-      this.$refs.form.validate()
-      if (!this.valid) return
       let formData = new FormData()
 
       //File Management

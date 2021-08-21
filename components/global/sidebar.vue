@@ -35,7 +35,7 @@ export default {
           to: '/inspire'
         },
         {
-          icon: 'mdi-cloud-upload',
+          icon: 'mdi-file-document',
           title: 'จัดการเอกสาร',
           to: '/documents'
         },
