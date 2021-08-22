@@ -48,7 +48,7 @@
             </v-dialog>
           </div>
           <ShowFileForm ref="ShowFileForm" />
-          <v-form
+          <v-form class="mt-4"
             ref="form"
             v-model="valid"
             lazy-validation
@@ -824,7 +824,6 @@ export default {
           this.form.OrderAckFile.name.split('.')[
             this.form.OrderAckFile.name.split('.').length - 1
           ]
-        console.log(fileName)
       }
     },
     save() {
@@ -941,31 +940,33 @@ export default {
           itemPR[key].PRFileName = fileName
           fileManage.push({ name: 'PRFile', filename: fileName })
         }
+        this.form.itemPR[key].PRNo =this.form.itemPR[key].PRNo.trim()
+        this.form.itemPR[key].JobNo =this.form.itemPR[key].JobNo.trim()
         doc++
       }
       //Data
       formData.append('DocNo', this.form.DocNo)
       formData.append('DocDate', this.form.DocDate)
       formData.append('Status', this.form.Status)
-      formData.append('PoNo', this.form.PoNo)
-      formData.append('ProductValue', this.form.ProductValue)
-      formData.append('Currency', this.form.Currency)
-      formData.append('Buyer', this.form.Buyer)
-      formData.append('Supplier', this.form.Supplier)
-      formData.append('Details', this.form.Details)
-      formData.append('PaymentTerm', this.form.PaymentTerm)
-      formData.append('DeliveryTerm', this.form.DeliveryTerm)
-      formData.append('Remarks', this.form.Remarks)
+      formData.append('PoNo', this.form.PoNo.trim())
+      formData.append('ProductValue', this.form.ProductValue.trim())
+      formData.append('Currency', this.form.Currency.trim())
+      formData.append('Buyer', this.form.Buyer.trim())
+      formData.append('Supplier', this.form.Supplier.trim())
+      formData.append('Details', this.form.Details.trim())
+      formData.append('PaymentTerm', this.form.PaymentTerm.trim())
+      formData.append('DeliveryTerm', this.form.DeliveryTerm.trim())
+      formData.append('Remarks', this.form.Remarks.trim())
       formData.append('DeliveryDate', this.form.DeliveryDate)
-      formData.append('InvoiceNo', this.form.InvoiceNo)
-      formData.append('PackingListNo', this.form.PackingListNo)
-      formData.append('FreightForworder', this.form.FreightForworder)
-      formData.append('BillOfLadingNo', this.form.BillOfLadingNo)
-      formData.append('AirWayBillNo', this.form.AirWayBillNo)
-      formData.append('TaxInvoiceNo', this.form.TaxInvoiceNo)
-      formData.append('TaxValue', this.form.TaxValue)
-      formData.append('FreightInvoiceNo', this.form.FreightInvoiceNo)
-      formData.append('FreightInvoiceValue', this.form.FreightInvoiceValue)
+      formData.append('InvoiceNo', this.form.InvoiceNo.trim())
+      formData.append('PackingListNo', this.form.PackingListNo.trim())
+      formData.append('FreightForworder', this.form.FreightForworder.trim())
+      formData.append('BillOfLadingNo', this.form.BillOfLadingNo.trim())
+      formData.append('AirWayBillNo', this.form.AirWayBillNo.trim())
+      formData.append('TaxInvoiceNo', this.form.TaxInvoiceNo.trim())
+      formData.append('TaxValue', this.form.TaxValue.trim())
+      formData.append('FreightInvoiceNo', this.form.FreightInvoiceNo.trim())
+      formData.append('FreightInvoiceValue', this.form.FreightInvoiceValue.trim())
 
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))

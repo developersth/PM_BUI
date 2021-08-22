@@ -29,10 +29,19 @@ class apiService extends axios {
     const { data } = await this.create('/api/documents', body)
     return data;
   }
+  async editDocuments(id,body) {
+    const { data } = await this.update(`/api/documents/${id}`, body)
+    return data;
+  }
   async deleteDocuments(id) {
     const { data } = await this.delete(`/api/documents/${id}`)
     return data;
   }
+  async deleteDocumentsItems(items) {
+    const { data } = await this.delete(`/api/documents/`,items)
+    return data;
+  }
+  
 }
 
 export default apiService;

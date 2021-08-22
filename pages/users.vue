@@ -70,7 +70,7 @@
 
 <script>
 import UsersForm from '~/components/forms/UsersForm'
-import apiService from '~/server/plugins/service'
+import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
   components: { UsersForm },

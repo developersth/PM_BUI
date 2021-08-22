@@ -9,7 +9,7 @@ export default {
     }
   },
   target: 'server',
-  serverMiddleware: ['~/server/index.js'],
+  //serverMiddleware: ['~/server/index.js'],
   env: {
     baseUrl: process.env.BASE_URL || 'http://ktd-dev.ddns.net:5000/'
   },

@@ -1,4 +1,3 @@
-const db = require('../models');
 class Functions {
     formatDate(date)  {
         var d = new Date(date),

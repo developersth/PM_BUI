@@ -23,15 +23,18 @@
       :headers="headers"
       :items="desserts"
       :search="search"
+      v-model="selected"
       class="elevation-1"
       :loading="loading"
       loading-text="Loading... Please wait"
+      show-select
     >
       <template v-slot:[`item.Status`]="{ item }">
         <v-chip :color="getColor(item.Status)" dark>
           {{ item.Status }}
         </v-chip>
       </template>
+
       <template v-slot:[`item.DocDate`]="{ item }">
         <span v-if="item.DocDate">{{
           $dateFns.format(item.DocDate, 'dd/MM/yyyy')
@@ -75,25 +78,54 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="confirmAction" max-width="350">
+      <v-card>
+        <v-card-title class="headline"> ยืนยันการลบ? </v-card-title>
+
+        <v-card-text> เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้ </v-card-text>
+
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn text @click="confirmAction = false"> Cancel </v-btn>
+
+          <v-btn color="green darken-1" text @click="vadidateAction()">
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-card-actions>
+      <v-col class="d-flex" cols="12" sm="2">
+        <v-select v-model="action" :items="itemsAction"></v-select>
+        <v-btn class="mt-4" color="secondary" @click="deleteItemAction()">
+          ทำกับที่เลือก
+        </v-btn>
+      </v-col>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import DocumentsForm from '~/components/forms/DocumentsForm'
-import apiService from '~/server/plugins/service'
+import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
   components: { DocumentsForm },
   data() {
     return {
+      selected: [],
       search: '',
       snackbar: {
         show: false,
         text: '',
         type: '',
       },
+      action: 'ลบ',
+      itemsAction: ['ลบ'],
       currentPK: null,
       confirm: false,
+      confirmAction:false,
       headers: [
         { text: 'เลขที่เอกสาร', value: 'DocNo' },
         { text: 'สถานะ', value: 'Status' },
@@ -112,6 +144,18 @@ export default {
     this.fetchData()
   },
   methods: {
+    vadidateAction() {
+      let formData = new FormData()
+      if (this.action === 'ลบ') {
+        const data=[]
+        for (var key in this.selected){
+          data.push({id:this.selected[key].id})
+        }
+        console.log(data)
+        formData.append('data',data)
+        this.submitDeleteItems(data)
+      }
+    },
     async fetchData() {
       this.loading = true
       try {
@@ -151,6 +195,9 @@ export default {
       this.currentPK = item.id
       this.confirm = true
     },
+    deleteItemAction(item) {
+      this.confirmAction = true
+    },
     async submitAdd(data) {
       try {
         this.$refs.DocumentsForm.dialogLoading = true
@@ -183,31 +230,65 @@ export default {
     },
     async submitEdit(data) {
       try {
-        const result = await this.$axios.$put(
-          `/api/moji/${this.currentPK}`,
-          data
-        )
-        if (result) {
+        this.$refs.DocumentsForm.dialogLoading = true
+        const result = await service.editDocuments(this.currentPK, data)
+        if (result.success) {
           this.snackbar = {
             show: true,
-            text: 'Success',
+            text: result.message,
             type: 'success',
           }
+          this.$refs.DocumentsForm.dialogLoading = false
           this.$refs.DocumentsForm.close()
           this.fetchData()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'warning',
+          }
+          this.$refs.DocumentsForm.dialogLoading = false
         }
       } catch (e) {
         this.snackbar = {
           show: true,
-          text: 'Fail',
+          text: e.message,
           type: 'error',
         }
+        this.$refs.DocumentsForm.dialogLoading = false
       }
     },
     async submitDelete() {
       this.confirm = false
       try {
         const result = await service.deleteDocuments(this.currentPK)
+        if (result.success) {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'success',
+          }
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'warning',
+          }
+        }
+        this.fetchData()
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    async submitDeleteItems(items) {
+      console.log(items)
+      this.confirm = false
+      try {
+        const result = await service.deleteDocumentsItems(items)
         if (result.success) {
           this.snackbar = {
             show: true,
