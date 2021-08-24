@@ -98,7 +98,7 @@
     <v-card-actions>
       <v-col class="d-flex" cols="12" sm="2">
         <v-select v-model="action" :items="itemsAction"></v-select>
-        <v-btn class="mt-4" color="secondary" @click="deleteItemAction()">
+        <v-btn class="mt-4" color="info" @click="deleteItemAction()">
           ทำกับที่เลือก
         </v-btn>
       </v-col>
@@ -125,7 +125,7 @@ export default {
       itemsAction: ['ลบ'],
       currentPK: null,
       confirm: false,
-      confirmAction:false,
+      confirmAction: false,
       headers: [
         { text: 'เลขที่เอกสาร', value: 'DocNo' },
         { text: 'สถานะ', value: 'Status' },
@@ -147,13 +147,30 @@ export default {
     vadidateAction() {
       let formData = new FormData()
       if (this.action === 'ลบ') {
-        const data=[]
-        for (var key in this.selected){
-          data.push({id:this.selected[key].id})
+        const data = []
+        for (var key in this.selected) {
+          data.push({ id: this.selected[key].id })
         }
         console.log(data)
-        formData.append('data',data)
-        this.submitDeleteItems(data)
+        formData.append('data', data)
+        this.submitDeleteItems(formData)
+      }
+    },
+    //DocumentsForm
+    async getNameUsers() {
+      try {
+        const items = await service.getNameUsers()
+        var keys = [];
+        for (var item in items) {
+            keys.push(items[item].name)
+        }
+        this.$refs.DocumentsForm.itemsBuyer = keys
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: 'getNameUsers '+e.message,
+          type: 'error',
+        }
       }
     },
     async fetchData() {
@@ -174,6 +191,8 @@ export default {
     },
     addItem() {
       this.$refs.DocumentsForm.open('add')
+      this.getNameUsers()
+      this.$refs.DocumentsForm.getSupplier()
     },
     async editItem(item) {
       try {
@@ -319,6 +338,32 @@ export default {
       else if (status == 'Received') return 'red'
       else if (status == 'Completed') return 'green'
       else return 'indigo'
+    },
+      //Supplierform
+  async submitAddSupplier(items) {
+      try {
+
+        const result = await service.addSupplier(items)
+        if (result.success) {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'success',
+          }
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'warning',
+          }
+        }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
     },
   },
 }

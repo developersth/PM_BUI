@@ -48,7 +48,8 @@
             </v-dialog>
           </div>
           <ShowFileForm ref="ShowFileForm" />
-          <v-form class="mt-4"
+          <v-form
+            class="mt-4"
             ref="form"
             v-model="valid"
             lazy-validation
@@ -250,7 +251,11 @@
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2" class="mt-4">
-                              <v-btn depressed color="primary">
+                              <v-btn
+                                depressed
+                                color="primary"
+                                @click="$refs.UsersForm.open('add')"
+                              >
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
                             </v-col>
@@ -269,7 +274,11 @@
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
-                              <v-btn depressed color="primary">
+                              <v-btn
+                                depressed
+                                color="primary"
+                                @click="$refs.SupplierForm.open('add')"
+                              >
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
                             </v-col>
@@ -623,6 +632,7 @@
             Reset Form
           </v-btn>
         </v-card-actions>
+        <SupplierForm ref="SupplierForm" @add="submitAddSupplier" />
       </v-card>
     </v-dialog>
   </v-row>
@@ -630,8 +640,11 @@
 <script>
 import { v4 as uuidv4 } from 'uuid'
 import ShowFileForm from '~/components/forms/ShowFileForm.vue'
+import SupplierForm from '~/components/forms/SupplierForm.vue'
+import apiService from '~/plugins/service'
+const service = new apiService()
 export default {
-  components: { ShowFileForm },
+  components: { ShowFileForm, SupplierForm },
   data() {
     return {
       form: {
@@ -685,8 +698,8 @@ export default {
       currency: ['THB', 'USD', 'CNY', 'EUR'],
       docsItems: [],
       items: ['Suchanya Sripumkai (Ning)', 'FMC', 'end'],
-      itemsBuyer: ['Suchanya Sripumkai', 'Kritsadee'],
-      itemsSupplier: ['FMC', 'Scully', 'CIRCOR', 'Chemtec', 'Alptec', 'SSRST'],
+      itemsBuyer: [],
+      itemsSupplier: [],
       itemsPaymentTerm: ['ชำระภายใน 30 วัน', 'ชำระภายใน 90 วัน'],
       itemsDeliveryTerm: ['ส่งของภายใน 30 วัน', 'ส่งของภายใน 90 วัน'],
       itemsFreightForworder: ['DHL', 'Penanshin', 'FedEx', 'AIL'],
@@ -697,6 +710,7 @@ export default {
       menu: false,
     }
   },
+
   watch: {},
   methods: {
     addPR(index) {
@@ -716,8 +730,17 @@ export default {
       this.$refs.menu2.save(date)
     },
     //ShowFileForm
-    showFileModal(file) {
-      this.$refs.ShowFileForm.open(file)
+    showFileModal(link) {
+      //this.$refs.ShowFileForm.open(file)
+      try {
+        window.open(link, '_blank')
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
     },
     open(mode, data) {
       this.dialog = true
@@ -755,7 +778,7 @@ export default {
           })
         }
       }
-      this.docsItems.Buyer = this.docsItems.Buyer
+      this.form.Buyer = this.docsItems.Buyer
       this.form.Supplier = this.docsItems.Supplier
       this.form.Details = this.docsItems.Details
       this.form.PaymentTerm = this.docsItems.PaymentTerm
@@ -786,6 +809,7 @@ export default {
         Status: 'Incomplete',
         PoNo: '',
         PoFile: null,
+        itemPR: [],
         itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
         ProductValue: '',
         Currency: 'THB',
@@ -940,8 +964,8 @@ export default {
           itemPR[key].PRFileName = fileName
           fileManage.push({ name: 'PRFile', filename: fileName })
         }
-        this.form.itemPR[key].PRNo =this.form.itemPR[key].PRNo.trim()
-        this.form.itemPR[key].JobNo =this.form.itemPR[key].JobNo.trim()
+        this.form.itemPR[key].PRNo = this.form.itemPR[key].PRNo.trim()
+        this.form.itemPR[key].JobNo = this.form.itemPR[key].JobNo.trim()
         doc++
       }
       //Data
@@ -966,11 +990,43 @@ export default {
       formData.append('TaxInvoiceNo', this.form.TaxInvoiceNo.trim())
       formData.append('TaxValue', this.form.TaxValue.trim())
       formData.append('FreightInvoiceNo', this.form.FreightInvoiceNo.trim())
-      formData.append('FreightInvoiceValue', this.form.FreightInvoiceValue.trim())
+      formData.append(
+        'FreightInvoiceValue',
+        this.form.FreightInvoiceValue.trim()
+      )
 
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))
       this.$emit(this.mode, formData)
+    },
+    //UserForm
+    submitAddUsers() {
+      this.$emit('add', this.users)
+    },
+    async getSupplier() {
+      const items = await service.getSupplier()
+      var keys = []
+      for (var item in items) {
+        keys.push(items[item].name)
+      }
+       this.itemsSupplier = key
+    },
+    async submitAddSupplier(items) {
+      try {
+        const result = await service.addSupplier(items)
+        if (result.success) {
+          alert(result.message)
+          this.$refs.SupplierForm.close()
+          this.getSupplier()
+         
+        } else {
+          alert(result.message)
+          this.$refs.SupplierForm.close()
+        }
+      } catch (e) {
+        alert(e.message)
+        this.$refs.SupplierForm.close()
+      }
     },
   },
 }

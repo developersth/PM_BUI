@@ -7,8 +7,8 @@
     <v-btn icon @click.stop="toggleClipped()">
       <v-icon>mdi-application</v-icon>
     </v-btn>
-
-    <v-toolbar-title v-text="title" />
+    <img class="mr-4" :src="require('/logo.png')" height="50"/>
+  
     <v-spacer />
     <v-switch
       class="mt-5"
