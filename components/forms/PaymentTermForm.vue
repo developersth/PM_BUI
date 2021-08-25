@@ -7,21 +7,21 @@
   >
     <v-card>
       <v-card-title>
-        <span class="headline">ข้อมูล Supplier #{{mode}}</span>
+        <span class="headline">ข้อมูล Payment Term #{{mode}}</span>
       </v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
             <v-col cols="8">
-              <v-text-field :fucus="true"
-                v-model="supplier.name"
-                label="ชื่อ Supplier*"
+              <v-text-field 
+                v-model="form.name"
+                label="ชื่อ Payment Term*"
                 required
               />
             </v-col>
                      <v-col cols="4">
               <v-switch
-                v-model="supplier.status"
+                v-model="form.status"
                 :label="`สามารถใช้งานได้`"
               ></v-switch>
             </v-col>
@@ -45,7 +45,7 @@ export default {
     return {
       dialog: false,
       mode: '',
-      supplier: {
+      form: {
         name: '',
         status: true,
       },
@@ -56,7 +56,7 @@ export default {
       this.mode = mode
       this.dialog = true
       if (data) {
-        this.supplier = { ...data }
+        this.form = { ...data }
       }
     },
     close() {
@@ -65,13 +65,13 @@ export default {
     },
 
     clearData() {
-      this.supplier = {
+      this.form = {
         name: '',
         status: true,
       }
     },
     save() {
-       this.$emit(this.mode, this.supplier) //Send to  @add="submitAddSupplier"
+       this.$emit(this.mode, this.form) //Send to  @add="submitAddSupplier"
       //this.$store.commit('addSupplier', this.supplier)
     },
   },

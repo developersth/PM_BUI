@@ -56,7 +56,10 @@
         </v-btn>
       </template>
     </v-data-table>
-    <DocumentsForm ref="DocumentsForm" @add="submitAdd" @edit="submitEdit" />
+    <DocumentsForm ref="DocumentsForm" @add="submitAdd" @edit="submitEdit" @openSupplier="openSupplier" @openPaymentTerm="openPaymentTerm"/>
+   <SupplierForm ref="SupplierForm" @add="submitAddSupplier"  />
+  <PaymentTermForm ref="PaymentTermForm" @add="submitPaymentTerm" />
+   
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
       <v-btn color="blue" text @click="snackbar.show = false"> Close </v-btn>
@@ -108,10 +111,12 @@
 
 <script>
 import DocumentsForm from '~/components/forms/DocumentsForm'
+import SupplierForm from '~/components/forms/SupplierForm.vue'
+import PaymentTermForm from '~/components/forms/PaymentTermForm.vue'
 import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
-  components: { DocumentsForm },
+  components: { DocumentsForm,SupplierForm,PaymentTermForm },
   data() {
     return {
       selected: [],
@@ -192,7 +197,8 @@ export default {
     addItem() {
       this.$refs.DocumentsForm.open('add')
       this.getNameUsers()
-      this.$refs.DocumentsForm.getSupplier()
+      this.getSupplier()
+      this.getPaymentTerm()
     },
     async editItem(item) {
       try {
@@ -340,16 +346,28 @@ export default {
       else return 'indigo'
     },
       //Supplierform
-  async submitAddSupplier(items) {
+    openSupplier() {
+      this.$refs.SupplierForm.open('add')
+    },
+    async getSupplier() {
+      const items = await service.getSupplier()
+      var keys = []
+      for (var item in items) {
+        keys.push(items[item].name)
+      }
+      this.$refs.DocumentsForm.itemsSupplier = keys
+    },
+    async submitAddSupplier(items) {
       try {
-
         const result = await service.addSupplier(items)
-        if (result.success) {
+           if (result.success) {
           this.snackbar = {
             show: true,
             text: result.message,
             type: 'success',
           }
+         this.getSupplier()
+         this.$refs.SupplierForm.close()
         } else {
           this.snackbar = {
             show: true,
@@ -357,6 +375,7 @@ export default {
             type: 'warning',
           }
         }
+        this.fetchData()
       } catch (e) {
         this.snackbar = {
           show: true,
@@ -365,6 +384,45 @@ export default {
         }
       }
     },
+    //Payment Term
+    openPaymentTerm() {
+      this.$refs.PaymentTermForm.open('add')
+    },
+   async getPaymentTerm() {
+      const items = await service.getPaymentTerm()
+      var keys = []
+      for (var item in items) {
+        keys.push(items[item].name)
+      }
+      this.$refs.DocumentsForm.itemsPaymentTerm = keys
+    },
+    async submitPaymentTerm(items) {
+      try {
+        const result = await service.addPaymentTerm(items)
+           if (result.success) {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'success',
+          }
+         this.$refs.PaymentTermForm.close()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.message,
+            type: 'warning',
+          }
+        }
+        this.fetchData()
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    
   },
 }
 </script>

@@ -68,26 +68,33 @@ export default {
     },
     strategies: {
       local: {
+        token: {
+          property: 'token',
+          global: true,
+          // required: true,
+          // type: 'Bearer'
+        },
+        user: {
+          property: 'user',
+          // autoFetch: true
+        },
         endpoints: {
           login: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/sign_in',
+            url: process.env.BASE_URL || BASE_URL+'api/users/login',
             method: 'post',
-            propertyName: 'user.auth_jwt'
+            propertyName: 'user.token'
           },
-          logout: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/sign_out',
-            method: 'delete'
-          },
+          logout: { url: '/api/auth/logout', method: 'post' },
           user: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/me',
+            url: process.env.BASE_URL || BASE_URL+'api/users',
             method: 'get',
             propertyName: 'user'
           }
         },
         tokenName: 'auth-token'
       }
-    }
-  },
+      }
+    },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],

@@ -250,15 +250,6 @@
                                 label="ผู้ขอซื้อ"
                               ></v-autocomplete>
                             </v-col>
-                            <v-col cols="2" md="2" class="mt-4">
-                              <v-btn
-                                depressed
-                                color="primary"
-                                @click="$refs.UsersForm.open('add')"
-                              >
-                                <v-icon> mdi-plus</v-icon>
-                              </v-btn>
-                            </v-col>
                           </v-row>
                           <v-row>
                             <v-col class="d-flex" cols="10" md="10">
@@ -277,7 +268,7 @@
                               <v-btn
                                 depressed
                                 color="primary"
-                                @click="$refs.SupplierForm.open('add')"
+                                @click="openSupplier()"
                               >
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
@@ -310,7 +301,7 @@
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
-                              <v-btn depressed color="info">
+                              <v-btn depressed color="info" @click="openPaymentTerm()">
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
                             </v-col>
@@ -632,7 +623,7 @@
             Reset Form
           </v-btn>
         </v-card-actions>
-        <SupplierForm ref="SupplierForm" @add="submitAddSupplier" />
+
       </v-card>
     </v-dialog>
   </v-row>
@@ -640,11 +631,11 @@
 <script>
 import { v4 as uuidv4 } from 'uuid'
 import ShowFileForm from '~/components/forms/ShowFileForm.vue'
-import SupplierForm from '~/components/forms/SupplierForm.vue'
+
 import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
-  components: { ShowFileForm, SupplierForm },
+  components: { ShowFileForm },
   data() {
     return {
       form: {
@@ -700,7 +691,7 @@ export default {
       items: ['Suchanya Sripumkai (Ning)', 'FMC', 'end'],
       itemsBuyer: [],
       itemsSupplier: [],
-      itemsPaymentTerm: ['ชำระภายใน 30 วัน', 'ชำระภายใน 90 วัน'],
+      itemsPaymentTerm: [],
       itemsDeliveryTerm: ['ส่งของภายใน 30 วัน', 'ส่งของภายใน 90 วัน'],
       itemsFreightForworder: ['DHL', 'Penanshin', 'FedEx', 'AIL'],
       loading: false,
@@ -1003,31 +994,14 @@ export default {
     submitAddUsers() {
       this.$emit('add', this.users)
     },
-    async getSupplier() {
-      const items = await service.getSupplier()
-      var keys = []
-      for (var item in items) {
-        keys.push(items[item].name)
-      }
-       this.itemsSupplier = key
+    //suppplier
+    openSupplier(){ //สั่ง เปิด Modal  form addSupplier
+      this.$emit('openSupplier')
     },
-    async submitAddSupplier(items) {
-      try {
-        const result = await service.addSupplier(items)
-        if (result.success) {
-          alert(result.message)
-          this.$refs.SupplierForm.close()
-          this.getSupplier()
-         
-        } else {
-          alert(result.message)
-          this.$refs.SupplierForm.close()
-        }
-      } catch (e) {
-        alert(e.message)
-        this.$refs.SupplierForm.close()
-      }
-    },
+    //payment term
+    openPaymentTerm(){
+      this.$emit('openPaymentTerm')
+    }
   },
 }
 </script>

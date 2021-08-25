@@ -51,7 +51,16 @@ class apiService extends axios {
     return data;
   }
   async getSupplier() {
-    const { data } = await this.get('api/supplier', body)
+    const { data } = await this.get('api/supplier')
+    return data;
+  }
+  //Payment Term
+  async addPaymentTerm(body) {
+    const { data } = await this.create('api/paymentterm', body)
+    return data;
+  }
+  async getPaymentTerm() {
+    const { data } = await this.get('api/paymentterm')
     return data;
   }
 }

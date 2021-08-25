@@ -7,30 +7,37 @@
          <v-card-text>
             <v-container>
                <v-row>
-                  <v-col cols="6">
+                  <v-col cols="4">
                      <v-text-field
                         v-model="users.username"
                         label="ชื่อผู้ใช้งาน*"
                         required
                         />
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="4">
                      <v-text-field
                         v-model="users.name"
                         label="ชื่อ-สกุล*"
                         required
                         />
                   </v-col>
+                     <v-col cols="4">
+                     <v-text-field
+                        v-model="users.password"
+                        label="รหัสผ่าน*"
+                        required
+                        />
+                  </v-col>
                </v-row>
                <v-row>
-                  <v-col cols="6">
+                  <v-col cols="4">
                      <v-text-field
                         v-model="users.email"
                         label="อีเมล์*"
                         required
                         />
                   </v-col>
-                  <v-col cols="6">
+                  <v-col cols="4">
                      <v-text-field
                         v-model="users.mobile"
                         label="เบอร์โทร*"
@@ -38,6 +45,13 @@
                         required
                         />
                   </v-col>
+                      <v-col cols="4">
+                       <v-switch
+                v-model="users.status"
+                :label="`สามารถใช้งานได้`"
+              ></v-switch>
+                  </v-col>
+                  
                </v-row>
                <small>*indicates required field</small>
             </v-container>
@@ -77,7 +91,9 @@
            username: '',
            name: '',
            email: '',
-           mobile: ''
+           password:'',
+           mobile: '',
+           status:true,
          }
        }
      },
@@ -106,9 +122,12 @@
        clearData () {
          this.users = {
           username: '',
+           username: '',
            name: '',
            email: '',
-           mobile: ''
+           password:'',
+           mobile: '',
+           status:true,
          }
        },
        save () {
