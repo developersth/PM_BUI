@@ -6,8 +6,11 @@ export const state = () => ({
   clipped: true,
   miniVariant: true,
   supplier: [],
+  errors:null,
+  success:null,
+  userProfileInfo:null
 })
-
+export const getters={}
 export const mutations = {
   set_drawer(state, newVal) {
     state.drawer = newVal
@@ -18,14 +21,34 @@ export const mutations = {
   set_miniVariant(state, newVal) {
     state.miniVariant = newVal
   },
-  addSupplier(state, data) {
-    //state.supplier.push({...data})
-    state.SET_ADD_SUPPLIER(data)
+  hasError(state,payload){
+    state.errors=null
+    state.errors=payload
+  },
+  hasSuccess(state,message){
+    state.success=null
+    state.success=message
+  },
+   //Users
+  set_user_profile_data(state,payload){
+    state.userProfileInfo=null
+    state.userProfileInfo=payload
+  },
+  load_more_repos(state,payload){
+    state.userProfileInfo=null
+    state.userProfileInfo=payload
   }
 }
 export const actions = {
-  async SET_ADD_SUPPLIER(data){
-    const supplier = await service.addSupplier(data)
-    return supplier
+  async onLogin(context,userData){
+    try {
+      const response = await this.$auth.loginWith('local', {
+        data: userData,
+      })
+      console.log(response.data)
+      await context.commit('hasSuccess',response.data.message)
+    } catch (error) {
+      console.log(error)
+    }
   }
 }

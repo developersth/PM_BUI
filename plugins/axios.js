@@ -4,6 +4,7 @@ class HttpRequest {
     // this.axios = axios
     this.axiosInstance = axios.create({
       baseURL: URL,
+      headers: {'Authorization': process.env.Authorization},
       timeout: 120000
     });
 

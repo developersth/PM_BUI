@@ -1,5 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
-let BASE_URL ='http://ktd-dev.ddns.net:5000/'
+let BASE_URL = 'http://ktd-dev.ddns.net:5000/'
+let Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJpYXQiOjE2Mjk5NzU1MjJ9.d5iyYlbdQYgEOFZMe_Ax38gpQ9IM0VTAUwnDtM5AiHk'
 export default {
   build: {
     extend(config, ctx) {
@@ -11,7 +12,8 @@ export default {
   target: 'server',
   //serverMiddleware: ['~/server/index.js'],
   env: {
-    baseUrl: process.env.BASE_URL || BASE_URL
+    baseUrl: process.env.BASE_URL||BASE_URL,
+    Authorization: Authorization
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -46,11 +48,11 @@ export default {
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
     '@nuxtjs/date-fns',
-    
+
   ],
   googleFonts: {
     families: {
-      Prompt:[400,500,700],
+      Prompt: [400, 500, 700],
     }
   },
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -61,7 +63,11 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    baseURL:BASE_URL,
+    headers: { 'Authorization': Authorization },
+    timeout: 120000,
+  },
   auth: {
     redirect: {
       login: '/login'
@@ -70,16 +76,13 @@ export default {
       local: {
         endpoints: {
           login: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/sign_in',
+            url: 'api/users/login',
             method: 'post',
-            propertyName: 'user.auth_jwt'
+            propertyName: 'user.token'
           },
-          logout: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/sign_out',
-            method: 'delete'
-          },
+          logout: { url: '/api/users/logout', method: 'post' },
           user: {
-            url: 'https://sakko-demo-api.herokuapp.com/api/v1/user/me',
+            url: 'api/users',
             method: 'get',
             propertyName: 'user'
           }

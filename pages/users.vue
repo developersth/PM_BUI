@@ -74,7 +74,7 @@ import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
   components: { UsersForm },
-  middleware: 'auth',
+  //middleware: 'auth',
   data() {
     return {
       loading: false,

@@ -52,6 +52,10 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.type">
+      {{ snackbar.text }}
+      <v-btn color="blue" text @click="snackbar.show = false"> Close </v-btn>
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -60,22 +64,50 @@ export default {
   middleware: 'auth',
   data() {
     return {
-     login: {
+      login: {
         username: '',
-        password: ''
+        password: '',
       },
       error: null,
+      snackbar: {
+        show: false,
+        text: '',
+        type: '',
+      },
     }
   },
   methods: {
-async userLogin() {
+     userLogin() {
       try {
-        let response = await this.$auth.loginWith('local', { data: this.login })
-        console.log(response)
+  /*       const response = await this.$auth.loginWith('local', {
+          data: this.login,
+        }) */
+        this.$store.dispatch('onLogin',{
+          username:this.login.username,
+          password:this.login.password
+        })
+        if (this.$store.state.success) {
+          this.snackbar = {
+            show: true,
+            text: this.$store.state.success,
+            type: 'success',
+          }
+        } else {
+          this.snackbar = {
+            show: true,
+            text: this.$store.state.success,
+            type: 'warning',
+          }
+        }
       } catch (err) {
         console.log(err)
+        this.snackbar = {
+          show: true,
+          text: err.message,
+          type: 'warning',
+        }
       }
-    }
+    },
   },
 }
 </script>
