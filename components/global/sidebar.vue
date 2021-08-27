@@ -1,6 +1,12 @@
 <template lant="html">
-  <v-navigation-drawer v-model="drawer" :mini-variant=miniVariant   :clipped=clipped fixed app>
-    <v-list class="font-display">
+  <v-navigation-drawer
+    v-model="drawer"
+    :mini-variant="miniVariant"
+    :clipped="clipped"
+    fixed
+    app
+  >
+    <v-list class="font-display" v-if="isAuthenticated">
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
@@ -20,6 +26,7 @@
 </template>
 
 <script>
+//import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
@@ -27,33 +34,38 @@ export default {
         {
           icon: 'mdi-apps',
           title: 'Welcome',
-          to: '/'
+          to: '/',
         },
         {
           icon: 'mdi-chart-bubble',
           title: 'Inspire',
-          to: '/inspire'
+          to: '/inspire',
         },
         {
           icon: 'mdi-file-document',
           title: 'จัดการเอกสาร',
-          to: '/documents'
+          to: '/documents',
         },
         {
           icon: 'mdi-account',
           title: 'ผู้ใช้งาน',
-          to: '/users'
+          to: '/users',
         },
         {
           icon: 'mdi-pencil',
           title: 'crudaction',
-          to: '/crudaction'
-        }
+          to: '/crudaction',
+        },
       ],
-      title: 'SasTech International Purchasing'
+      title: 'SasTech International Purchasing',
     }
   },
   computed: {
+    isAuthenticated: {
+      get() {
+        return this.$store.getters.isAuthenticated
+      },
+    },
     drawer: {
       get() {
         return this.$store.state.drawer

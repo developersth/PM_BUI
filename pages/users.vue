@@ -72,9 +72,10 @@
 import UsersForm from '~/components/forms/UsersForm'
 import apiService from '~/plugins/service'
 const service = new apiService()
+import * as api from '~/utils/service'
 export default {
   components: { UsersForm },
-  //middleware: 'auth',
+  middleware: 'auth',
   data() {
     return {
       loading: false,
@@ -103,8 +104,8 @@ export default {
     async fetchData() {
       this.loading = true
       try {
-        await service.getAllUsers().then((response) => {
-          this.desserts = response
+        await api.getUserAll().then((response) => {
+          this.desserts = response.data
           this.loading = false
         })
       } catch (e) {
@@ -170,11 +171,11 @@ export default {
     async submitDelete() {
       this.confirm = false
       try {
-        const result = await service.deleteUsers(this.currentPK)
-        if (result) {
+        const result = await api.deleteUsers(this.currentPK)
+        if (result.data) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
         }

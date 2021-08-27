@@ -8,9 +8,16 @@ export const state = () => ({
   supplier: [],
   errors:null,
   success:null,
-  userProfileInfo:null
+  userProfileInfo:null,
+  user:{
+    loggedIn:false,
+  }
 })
-export const getters={}
+export const getters={
+  isAuthenticated(state) {
+    return state.auth.loggedIn
+  },
+}
 export const mutations = {
   set_drawer(state, newVal) {
     state.drawer = newVal
@@ -30,14 +37,10 @@ export const mutations = {
     state.success=message
   },
    //Users
-  set_user_profile_data(state,payload){
-    state.userProfileInfo=null
-    state.userProfileInfo=payload
+   set_log_in(state,newVal){
+    state.user.loggedIn=newVal
   },
-  load_more_repos(state,payload){
-    state.userProfileInfo=null
-    state.userProfileInfo=payload
-  }
+
 }
 export const actions = {
   async onLogin(context,userData){

@@ -7,15 +7,15 @@
     <v-btn icon @click.stop="toggleClipped()">
       <v-icon>mdi-application</v-icon>
     </v-btn>
-    <img class="mr-4" :src="require('/logo.png')" height="50"/>
-  
+    <img class="mr-4" :src="require('/logo.png')" height="50" />
+
     <v-spacer />
     <v-switch
       class="mt-5"
       v-model="swtheme"
       v-on:click="toggleDarkMode()"
       inset
-       prepend-icon="mdi-white-balance-sunny"
+      prepend-icon="mdi-white-balance-sunny"
       persistent-hint
     ></v-switch>
   </v-app-bar>
@@ -34,10 +34,10 @@ export default {
     if (theme) {
       if (theme == 'true') {
         this.$vuetify.theme.dark = true
-        this.swtheme=true
+        this.swtheme = true
       } else {
         this.$vuetify.theme.dark = false
-        this.swtheme=false
+        this.swtheme = false
       }
     }
   },

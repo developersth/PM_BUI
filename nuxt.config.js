@@ -1,6 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
-let BASE_URL = 'http://ktd-dev.ddns.net:5000/'
-let Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJpYXQiOjE2Mjk5NzU1MjJ9.d5iyYlbdQYgEOFZMe_Ax38gpQ9IM0VTAUwnDtM5AiHk'
+let BASE_URL = "http://ktd-dev.ddns.net:5000/"
+let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJpYXQiOjE2Mjk5NzU1MjJ9.d5iyYlbdQYgEOFZMe_Ax38gpQ9IM0VTAUwnDtM5AiHk"
 export default {
   build: {
     extend(config, ctx) {
@@ -59,36 +59,34 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth',
+    '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    baseURL:BASE_URL,
-    headers: { 'Authorization': Authorization },
-    timeout: 120000,
+    baseURL: BASE_URL,
   },
   auth: {
-    redirect: {
-      login: '/login'
-    },
-    strategies: {
-      local: {
-        endpoints: {
-          login: {
-            url: 'api/users/login',
-            method: 'post',
-            propertyName: 'user.token'
-          },
-          logout: { url: '/api/users/logout', method: 'post' },
-          user: {
-            url: 'api/users',
-            method: 'get',
-            propertyName: 'user'
-          }
+    strategies: {  // The strategies are ways that we want to implement our authentication with here we just use local strategy 
+      local: { // The name of our strategy
+        token: { // The token config
+          property: "user.token", // The token property name that API will provide us when we log in
+          global: true,   // This determines if the authentication token is automatically included in all custom axios requests.
+          required: true, // This option can be used to disable all token handling.
+          type: "Bearer",// Authorization header type to be used in axios requests.
+          name:"Authorization"
+          //  We don't use maxAge, because we provide expiry time for token from API
         },
-        tokenName: 'auth-token'
-      }
+        user: {
+          property: "user", // The user object that API will provide us when we log in
+          //autoFetch: true // if it was true will send a request to API to call the user endpoint 
+        },
+        endpoints: {
+          login: { url: "/api/users/login", method: "post",property: "user.token" }, // our endpoint for sending request to the API
+          logout: false, //  we don't have an endpoint for our logout in our API and we just remove the token from localstorage
+          user: { url: "/api/users/me", method: "get" } // our endpoint for getting data from the API
+        },
+      },
     }
   },
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify

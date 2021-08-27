@@ -72,7 +72,7 @@ export default {
           property: 'token',
           global: true,
           // required: true,
-          // type: 'Bearer'
+          type: 'Bearer'
         },
         user: {
           property: 'user',

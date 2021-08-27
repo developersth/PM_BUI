@@ -1,12 +1,11 @@
 import axios from 'axios'
 class HttpRequest {
-  constructor(URL=process.env.baseUrl) {
-    // this.axios = axios
+  constructor() {
+    //this.axios = axios
     this.axiosInstance = axios.create({
-      baseURL: URL,
-      headers: {'Authorization': process.env.Authorization},
+      baseURL:process.env.baseUrl,
       timeout: 120000
-    });
+    });  
 
     this.axiosInstance.interceptors.request.use(
       function(config) {
