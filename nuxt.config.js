@@ -1,5 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
-let BASE_URL = "http://ktd-dev.ddns.net:5000/"
+let BASE_URL = "http://ktd-dev.ddns.net:5000"
 let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJpYXQiOjE2Mjk5NzU1MjJ9.d5iyYlbdQYgEOFZMe_Ax38gpQ9IM0VTAUwnDtM5AiHk"
 export default {
   build: {
@@ -12,7 +12,7 @@ export default {
   target: 'server',
   //serverMiddleware: ['~/server/index.js'],
   env: {
-    baseUrl: process.env.BASE_URL||BASE_URL,
+    baseUrl: BASE_URL,
     Authorization: Authorization
   },
   // Global page headers: https://go.nuxtjs.dev/config-head

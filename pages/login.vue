@@ -83,24 +83,12 @@ export default {
         //const response = await service.userLogin(this.login)
         let response = await this.$auth.loginWith('local', { data: this.login })
         if (response.data.success) {
-/*           this.$store.commit('set_user_login', true)
-          //this.$store.commit('set_user_profile_data', response.user)
-           
-          localStorage.setItem('loggedIn', true)
-          localStorage.setItem('token', response.user.token)
-          localStorage.setItem('userId', response.user.id)
-          localStorage.setItem('username', response.user.username)
-          localStorage.setItem('name', response.user.name)
-          localStorage.setItem('email', response.user.email)
-          localStorage.setItem('mobile', response.user.mobile)
-          localStorage.setItem('userType', 'admin') */
           this.snackbar = {
             show: true,
             text: response.data.message,
             type: 'success',
           }
           this.$router.push('/')
-          this
         } else {
           this.snackbar = {
             show: true,

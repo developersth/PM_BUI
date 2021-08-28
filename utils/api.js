@@ -9,7 +9,7 @@ const getToken = function () {
 }
 export async function request(method, url, data, auth = false) {
     const headers = {}
-    console.log(getToken())
+    //console.log(getToken())
     if (auth)
         headers['Authorization'] = getToken()
     try {

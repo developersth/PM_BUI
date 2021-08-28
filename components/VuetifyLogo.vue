@@ -2,14 +2,14 @@
   <img
     class="VuetifyLogo"
     alt="Vuetify Logo"
-    src="/logo.png"
+    src="~/assets/workshop.jpg"
   >
 </template>
 
 <style>
 .VuetifyLogo {
-  height: 180px;
-  width: 180px;
+  height: 200px;
+  width: 900px;
   transform: rotateY(560deg);
   animation: turn 3.5s ease-out forwards 1s;
 }

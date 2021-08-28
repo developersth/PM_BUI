@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn depressed color="green" @click="addItem">
+      <v-btn depressed color="green" @click="addItem" :disabled="!isAdmin">
         เพิ่มข้อมูล <v-icon> mdi-plus</v-icon>
       </v-btn>
     </v-app-bar>
@@ -28,7 +28,15 @@
       loading-text="Loading... Please wait"
     >
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
+        <v-btn
+          class="mx-2"
+          fab
+          dark
+          small
+          color="teal"
+          @click="editItem(item)"
+          :disabled="!isAdmin"
+        >
           <v-icon dark> mdi-pencil </v-icon>
         </v-btn>
         <v-btn
@@ -38,6 +46,7 @@
           small
           color="red"
           @click="deleteItem(item)"
+          :disabled="!isAdmin"
         >
           <v-icon dark> mdi-delete </v-icon>
         </v-btn>
@@ -50,8 +59,10 @@
     </v-snackbar>
     <v-dialog v-model="confirm" max-width="350">
       <v-card>
-        <v-card-title class="headline"> ยืนยันการลบ? </v-card-title>
-
+        <v-toolbar dark color="red"> 
+            <v-toolbar-title class="headline">ยืนยันการลบ?</v-toolbar-title>
+        </v-toolbar>
+        <v-divider></v-divider>
         <v-card-text> เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้ </v-card-text>
 
         <v-card-actions>
@@ -70,8 +81,6 @@
 
 <script>
 import UsersForm from '~/components/forms/UsersForm'
-import apiService from '~/plugins/service'
-const service = new apiService()
 import * as api from '~/utils/service'
 export default {
   components: { UsersForm },
@@ -92,6 +101,7 @@ export default {
         { text: 'ชื่อผู้ใช้งาน', value: 'username' },
         { text: 'เบอร์โทร', value: 'mobile' },
         { text: 'อีเมล์', value: 'email' },
+        { text: 'สิทธิ์การใช้งานระบบ', value: 'role_name' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       desserts: [],
@@ -99,6 +109,14 @@ export default {
   },
   mounted() {
     this.fetchData()
+    this.getUserRoles()
+  },
+  computed: {
+    isAdmin: {
+      get() {
+        return this.$store.getters.isAdmin
+      },
+    },
   },
   methods: {
     async fetchData() {
@@ -117,8 +135,19 @@ export default {
         }
       }
     },
+    async getUserRoles() {
+      try {
+        const result = await api.getUserRoles()
+        if (result.data) {
+          this.$refs.UsersForm.itemsUserRoles = result.data
+        }
+      } catch (e) {
+        console.log(e.message)
+      }
+    },
     addItem() {
       this.$refs.UsersForm.open('add')
+      this.getUserRoles()
     },
     editItem(item) {
       this.currentPK = item.id
@@ -130,11 +159,11 @@ export default {
     },
     async submitAdd(data) {
       try {
-        const result = await service.addUsers(data)
-        if (result) {
+        const result = await api.addUsers(data)
+        if (result.data) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
           this.$refs.UsersForm.close()
@@ -150,11 +179,11 @@ export default {
     },
     async submitEdit(data) {
       try {
-        const result = await service.updateUsers(this.currentPK, data)
-        if (result) {
+        const result = await api.editUsers(this.currentPK, data)
+        if (result.data) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
           this.$refs.UsersForm.close()
