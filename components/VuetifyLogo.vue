@@ -2,7 +2,7 @@
   <img
     class="VuetifyLogo"
     alt="Vuetify Logo"
-    src="~/assets/workshop.jpg"
+    src="~/static/workshop.jpg"
   >
 </template>
 

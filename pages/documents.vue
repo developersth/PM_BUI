@@ -1,4 +1,4 @@
-<template>
+template>
   <v-card width="100vw">
     <v-app-bar dark color="pink">
       <v-toolbar-title>จัดการเอกสาร</v-toolbar-title>
@@ -113,6 +113,7 @@
 import DocumentsForm from '~/components/forms/DocumentsForm'
 import SupplierForm from '~/components/forms/SupplierForm.vue'
 import PaymentTermForm from '~/components/forms/PaymentTermForm.vue'
+import * as api from '~/utils/service'
 import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
@@ -350,10 +351,10 @@ export default {
       this.$refs.SupplierForm.open('add')
     },
     async getSupplier() {
-      const items = await service.getSupplier()
+      const items = await api.getSupplier()
       var keys = []
-      for (var item in items) {
-        keys.push(items[item].name)
+      for (var item in items.data) {
+        keys.push(items[items.data].name)
       }
       this.$refs.DocumentsForm.itemsSupplier = keys
     },

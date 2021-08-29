@@ -6,6 +6,7 @@
 export default {
 created(){
     this.$auth.logout()
+     //this.$router.push('/login')
 }
 }
 </script>

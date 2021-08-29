@@ -17,8 +17,26 @@ export function editUsers(id,data) {
     const url = `${HOST_SERVER}/api/users/${id}`
     return request('put', url, data, true)
 }
+//Document
+export function getPaymentTerms() {
+    const url = `${HOST_SERVER}/api/paymentterm`
+    return request('get', url, {}, true)
+  }
 //User Role
 export function getUserRoles() {
     const url = `${HOST_SERVER}/api/userroles`
+    return request('get', url, {}, true)
+}
+//Payments
+export function addPayments(data) {
+    const url = `${HOST_SERVER}/api/payments`
+    return request('post', url, data, true)
+}
+export function getSupplier() {
+    const url = `${HOST_SERVER}/api/supplier`
+    return request('get', url, {}, true)
+}
+export function getfreightforworder() {
+    const url = `${HOST_SERVER}/api/freightforworder`
     return request('get', url, {}, true)
 }

@@ -15,7 +15,7 @@
                         Sign in
                       </h1>
 
-                      <h4 class="text-center mt-4">ลงชื่อเข้าใช้งานระบบ</h4>
+                      <h4 class="text-center mt-4">sign in  your username and password</h4>
                       <v-text-field
                         v-model="login.username"
                         label="Username"
@@ -31,7 +31,7 @@
                         color="teal accent-3"
                       />
 
-                      <h3 class="text-center mt-4">Forgot your password ?</h3>
+                      <h3 class="text-center mt-4">forget password?</h3>
                     </v-card-text>
                     <div class="text-center mt-3">
                       <v-btn rounded color="teal accent-3" dark type="submit"
@@ -40,11 +40,46 @@
                     </div>
                   </v-form>
                 </v-col>
-                <v-col cols="12" md="4" class="teal accent-3">
-                  <v-card-text class="white--text mt-12">
-                    <h1>ยินดีต้อนรับ, ระบบจัดซื้อ!</h1>
-                    <h5 class="text-center">โปรดลงชื่อเข้าใช้งานระบบ</h5>
-                  </v-card-text>
+                <v-col cols="12" md="4" class="d-flex">
+                  <v-row>
+                    <v-card  class="mx-auto" max-width="374">
+                      <v-img
+                        height="250"
+                        src="./pexels-daria-shevtsova-1560932.jpg"
+                      ></v-img>
+
+                      <v-card-title>Purchasing System</v-card-title>
+
+                      <v-card-text>
+                        <v-row align="center" class="mx-0">
+                          <v-rating
+                            :value="4.5"
+                            color="amber"
+                            dense
+                            half-increments
+                            readonly
+                            size="14"
+                          ></v-rating>
+
+                          <div class="grey--text ms-4">4.5 (413)</div>
+                        </v-row>
+
+                        <div class="my-4 text-subtitle-1">
+                           Welcome
+                        </div>
+
+                        <div>
+                         Web app framework base on Nuxt Js ©2021
+                        </div>
+                      </v-card-text>
+
+                      <v-divider class="mx-4"></v-divider>
+
+                      <v-card-title>By G-Innovation Co., Ltd. </v-card-title>
+
+
+                    </v-card>
+                  </v-row>
                 </v-col>
               </v-row>
             </v-window-item>

@@ -7,19 +7,20 @@
   >
     <v-card>
       <v-card-title>
-        <span class="headline">ข้อมูล Supplier #{{mode}}</span>
+        <span class="headline">ข้อมูล Supplier #{{ mode }}</span>
       </v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
             <v-col cols="8">
-              <v-text-field :fucus="true"
+              <v-text-field
+                :fucus="true"
                 v-model="supplier.name"
                 label="ชื่อ Supplier*"
                 required
               />
             </v-col>
-                     <v-col cols="4">
+            <v-col cols="4">
               <v-switch
                 v-model="supplier.status"
                 :label="`สามารถใช้งานได้`"
@@ -71,7 +72,7 @@ export default {
       }
     },
     save() {
-       this.$emit(this.mode, this.supplier) //Send to  @add="submitAddSupplier"
+      this.$emit(this.mode, this.supplier) //Send to  @add="submitAddSupplier"
       //this.$store.commit('addSupplier', this.supplier)
     },
   },

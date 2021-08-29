@@ -5,8 +5,9 @@
     :clipped="clipped"
     fixed
     app
+    v-if="isAuthenticated"
   >
-    <v-list class="font-display" v-if="isAuthenticated">
+    <v-list class="font-display" >
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
@@ -32,19 +33,19 @@ export default {
     return {
       items: [
         {
-          icon: 'mdi-apps',
+          icon: 'mdi-home',
           title: 'Welcome',
           to: '/',
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
         },
         {
           icon: 'mdi-file-document',
           title: 'จัดการเอกสาร',
           to: '/documents',
+        },
+          {
+          icon: 'mdi-bank-outline',
+          title: 'Payment',
+          to: '/payment',
         },
         {
           icon: 'mdi-account',

@@ -7,7 +7,7 @@
     <v-btn icon @click.stop="toggleClipped()">
       <v-icon>mdi-application</v-icon>
     </v-btn>
-    <img class="mr-4" :src="require('/logo.png')" height="50" />
+    <img class="mr-4"   src="~/static/logo.png" height="50" />
 
     <v-spacer />
        <v-menu  open-on-hover offset-y transition="slide-x-transition" bottom right>

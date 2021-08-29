@@ -2,7 +2,7 @@ import apiService from '~/plugins/service'
 const service = new apiService()
 
 export const state = () => ({
-  drawer: false,
+  drawer: true,
   clipped: true,
   miniVariant: true,
   supplier: [],
@@ -30,7 +30,12 @@ export const getters = {
 
   },
   isName(state) {
+    try {
       return state.auth.user.name
+    } catch (error) {
+      return null
+    }
+
   },
 }
 export const mutations = {

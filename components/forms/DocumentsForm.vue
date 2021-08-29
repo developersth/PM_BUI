@@ -631,7 +631,6 @@
 <script>
 import { v4 as uuidv4 } from 'uuid'
 import ShowFileForm from '~/components/forms/ShowFileForm.vue'
-
 import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
@@ -701,7 +700,6 @@ export default {
       menu: false,
     }
   },
-
   watch: {},
   methods: {
     addPR(index) {
@@ -754,7 +752,6 @@ export default {
           this.docsItems.DocDate,
           'yyyy-MM-dd'
         )
-
       this.form.Status = this.docsItems.Status
       this.form.PoNo = this.docsItems.PoNo
       if (this.docsItems.itemPR) {
@@ -846,7 +843,6 @@ export default {
       let fileName = ''
       let fileManage = []
       let formData = new FormData()
-
       //File Management
       if (this.form.PoFile) {
         fileName =
@@ -985,7 +981,6 @@ export default {
         'FreightInvoiceValue',
         this.form.FreightInvoiceValue.trim()
       )
-
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))
       this.$emit(this.mode, formData)

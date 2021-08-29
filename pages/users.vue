@@ -84,7 +84,7 @@ import UsersForm from '~/components/forms/UsersForm'
 import * as api from '~/utils/service'
 export default {
   components: { UsersForm },
-  middleware: 'auth',
+  //middleware: 'auth',
   data() {
     return {
       loading: false,
@@ -160,7 +160,7 @@ export default {
     async submitAdd(data) {
       try {
         const result = await api.addUsers(data)
-        if (result.data) {
+        if (result.data.success) {
           this.snackbar = {
             show: true,
             text: result.data.message,
@@ -168,6 +168,12 @@ export default {
           }
           this.$refs.UsersForm.close()
           this.fetchData()
+        }else{
+            this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
         }
       } catch (e) {
         this.snackbar = {

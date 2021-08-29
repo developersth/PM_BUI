@@ -129,7 +129,6 @@ export default {
     clearData() {
       this.users = {
         username: '',
-        username: '',
         name: '',
         email: '',
         password: '',
