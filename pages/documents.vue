@@ -1,4 +1,4 @@
-template>
+<template>
   <v-card width="100vw">
     <v-app-bar dark color="pink">
       <v-toolbar-title>จัดการเอกสาร</v-toolbar-title>
@@ -354,7 +354,8 @@ export default {
       const items = await api.getSupplier()
       var keys = []
       for (var item in items.data) {
-        keys.push(items[items.data].name)
+        if(items.data[item].name)
+          keys.push(items.data[item].name)
       }
       this.$refs.DocumentsForm.itemsSupplier = keys
     },

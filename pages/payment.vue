@@ -5,7 +5,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn depressed color="green" @click="addItem" :disabled="!isAdmin">
+      <v-btn depressed color="green" @click="addItem">
         เพิ่มข้อมูล <v-icon> mdi-plus</v-icon>
       </v-btn>
     </v-app-bar>
@@ -27,16 +27,18 @@
       :loading="loading"
       loading-text="Loading... Please wait"
     >
+      <template v-slot:[`item.Status`]="{ item }">
+        <v-chip :color="getColor(item.Status)" dark>
+          {{ item.Status }}
+        </v-chip>
+      </template>
+      <template v-slot:[`item.PaymentDate`]="{ item }">
+        <span v-if="item.PaymentDate">{{
+          $dateFns.format(item.PaymentDate, 'dd/MM/yyyy')
+        }}</span>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn
-          class="mx-2"
-          fab
-          dark
-          small
-          color="teal"
-          @click="editItem(item)"
-          :disabled="!isAdmin"
-        >
+        <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
           <v-icon dark> mdi-pencil </v-icon>
         </v-btn>
         <v-btn
@@ -46,7 +48,6 @@
           small
           color="red"
           @click="deleteItem(item)"
-          :disabled="!isAdmin"
         >
           <v-icon dark> mdi-delete </v-icon>
         </v-btn>
@@ -102,11 +103,11 @@ export default {
       currentPK: null,
       confirm: false,
       headers: [
-        { text: 'ชื่อ-สกุล', value: 'name' },
-        { text: 'ชื่อผู้ใช้งาน', value: 'username' },
-        { text: 'เบอร์โทร', value: 'mobile' },
-        { text: 'อีเมล์', value: 'email' },
-        { text: 'สิทธิ์การใช้งานระบบ', value: 'role_name' },
+        { text: 'รหัส', value: 'id' },
+        { text: 'สถานะ', value: 'Status' },
+        { text: 'วันที่จ่าย', value: 'PaymentDate' },
+        { text: 'Po No.', value: 'PoNo' },
+        { text: 'เพื่อใช้', value: 'PurposeName' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       desserts: [],
@@ -127,7 +128,7 @@ export default {
     async fetchData() {
       this.loading = true
       try {
-        await api.getUserAll().then((response) => {
+        await api.getPaymentAll().then((response) => {
           this.desserts = response.data
           this.loading = false
         })
@@ -232,26 +233,40 @@ export default {
         }
       }
     },
+    getColor(status) {
+      if (status == 'Incomplete') return 'secondary'
+      else if (status == 'Completed') return 'green'
+      else return 'indigo'
+    },
     //PaymentForm
     paymentChange(name) {
+      console.log('name', name)
       if (name.toLowerCase() === 'supplier') this.getSupplier()
       else this.getFreigh()
     },
-    getSupplier() {
+    async getSupplier() {
       try {
         const result = await api.getSupplier()
         if (result.data) {
-          this.$refs.PaymentForm.itemsUserRoles = result.data
+          const data = []
+          result.data.forEach((element) => {
+            data.push(element.name)
+          })
+          this.$refs.PaymentForm.itemsPaymentTo = data
         }
       } catch (e) {
         console.log(e.message)
       }
     },
-    getFreigh() {
+    async getFreigh() {
       try {
         const result = await api.getFreigh()
         if (result.data) {
-          this.$refs.PaymentForm.itemsUserRoles = result.data
+          const data = []
+          result.data.forEach((element) => {
+            data.push(element.name)
+          })
+          this.$refs.PaymentForm.itemsPaymentTo = data
         }
       } catch (e) {
         console.log(e.message)

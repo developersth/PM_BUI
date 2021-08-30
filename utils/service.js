@@ -28,6 +28,10 @@ export function getUserRoles() {
     return request('get', url, {}, true)
 }
 //Payments
+export function getPaymentAll() {
+    const url = `${HOST_SERVER}/api/payments`
+    return request('get', url, {}, true)
+}
 export function addPayments(data) {
     const url = `${HOST_SERVER}/api/payments`
     return request('post', url, data, true)
@@ -36,7 +40,7 @@ export function getSupplier() {
     const url = `${HOST_SERVER}/api/supplier`
     return request('get', url, {}, true)
 }
-export function getfreightforworder() {
+export function getFreigh() {
     const url = `${HOST_SERVER}/api/freightforworder`
     return request('get', url, {}, true)
 }

@@ -74,7 +74,7 @@
               <v-col cols="10" md="6">
                 <v-select
                   v-model="form.PaymentTo"
-                  :items="itemsPayment"
+                  :items="itemsPaymentTo"
                   :label="`${form.PaymentName} name`"
                 />
               </v-col>
@@ -242,6 +242,7 @@ export default {
       },
       menuPaymentDate: false,
       itemsPayment: ['Supplier', 'Freigh'],
+      itemsPaymentTo: [],
       itemsPurpose: [
         {
           id: 1,
@@ -331,8 +332,10 @@ export default {
         this.form.itemPR.splice(index, 1)
       }
     },
-   async  save() {
-      const result =await this.itemsPurpose.find( ({ id }) => id === this.form.Purpose );
+    async save() {
+      const result = await this.itemsPurpose.find(
+        ({ id }) => id === this.form.Purpose
+      )
       const body = {
         PaymentDate: this.form.PaymentDate,
         Status: this.form.status,
@@ -352,8 +355,10 @@ export default {
       }
       this.$emit(this.mode, body)
     },
-    paymentChange(){
-    this.$emit('paymentChange')
+    paymentChange() {
+      this.itemsPaymentTo=[]
+      this.form.PaymentTo=''
+      this.$emit('paymentChange',this.form.PaymentName)
     },
     selectPurpose() {},
   },
