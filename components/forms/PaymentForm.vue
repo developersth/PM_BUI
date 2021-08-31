@@ -16,7 +16,7 @@
         </v-btn>
       </v-toolbar>
       <v-card-text>
-        <v-form>
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-container>
             <div class="text-h6 text-decoration-underline">
               Payment Requisition
@@ -74,8 +74,10 @@
               <v-col cols="10" md="6">
                 <v-select
                   v-model="form.PaymentTo"
+                  :rules="formValid.PaymentToRules"
                   :items="itemsPaymentTo"
                   :label="`${form.PaymentName} name`"
+                  @change="findPoNo"
                 />
               </v-col>
               <v-col cols="2" md="2">
@@ -85,6 +87,7 @@
               </v-col>
               <v-col cols="12" md="6">
                 <v-select
+                :rules="formValid.PurposeRules"
                   v-model="form.Purpose"
                   :items="itemsPurpose"
                   :label="`เพื่อใช้ / Purpose for`"
@@ -94,6 +97,7 @@
               </v-col>
               <v-col cols="12" md="6">
                 <v-text-field
+                  :rules="!form.Purpose === 5 || formValid.otherRules"
                   v-if="form.Purpose === 5"
                   v-model="form.PurposeOther"
                   label="ระบุ อื่นๆ*"
@@ -102,12 +106,14 @@
               <v-col cols="6">
                 <v-autocomplete
                   class="mt-6"
+                  :rules="formValid.PoNoRules"
                   v-model="form.PoNo"
                   :items="itemsPoNo"
                   dense
                   chips
                   small-chips
                   label="PO No."
+                  @change="findDataByPoNo"
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12" md="6">
@@ -141,15 +147,21 @@
                   <template v-slot:[`item.JobNo`]="{ item }">
                     <v-select
                       v-model="item.JobNo"
-                      :items="itemsPayment"
+                      :rules="formValid.itemJobNoRules"
+                      :items="itemsJobNo"
                       label="Job No."
+                      @change="selectPR(item)"
                     />
                   </template>
                   <template v-slot:[`item.PRNo`]="{ item }">
                     <v-text-field v-model="item.PRNo" />
                   </template>
                   <template v-slot:[`item.Price`]="{ item }">
-                    <v-text-field type="number" v-model="item.Price" />
+                    <v-text-field
+                      :rules="formValid.itemPriceRules"
+                      type="number"
+                      v-model="item.Price"
+                    />
                   </template>
                   <template v-slot:[`item.actions`]="{ item }">
                     <v-btn
@@ -171,18 +183,19 @@
                   </v-btn>
                 </v-card-actions>
               </v-col>
-              <v-col cols="8"> </v-col>
-              <v-col cols="12" md="4">
+              <v-col cols="9"> </v-col>
+              <v-col cols="12" md="3">
                 <v-text-field
                   type="number"
-                  v-model="form.PriceTotal"
+                  v-model="subTotal"
                   label="จำนวนเงินทั้งหมด."
+                  filled
                 />
               </v-col>
             </v-row>
 
             <small class="red--text">
-              Note!! 1 ใบเบิก สามารถทำได้ 1 Invoice,1 Invoce สามารถมีได้หลาน PO
+              Note!! 1 ใบเบิก สามารถทำได้ 1 Invoice,1 Invoce สามารถมีได้หลาย PO
               1 PO สามารถมีได้หลาย PR,JOB
             </small>
           </v-container>
@@ -220,6 +233,7 @@
   </v-dialog>
 </template>
 <script>
+import * as api from '~/utils/service'
 export default {
   data() {
     return {
@@ -237,7 +251,7 @@ export default {
         PRNo: '',
         InvoiceNo: '',
         AirWayBillNo: '',
-        itemPR: [{ PRDetail: '', JobNo: '', PRNo: '', Price: 0 }],
+        itemPR: [{ PRDetail: '', JobNo: '', PRNo: '', Price: '0' }],
         PriceTotal: 0,
       },
       menuPaymentDate: false,
@@ -246,26 +260,26 @@ export default {
       itemsPurpose: [
         {
           id: 1,
-          name: '1. ชำระสินค้า',
+          name: 'ชำระสินค้า',
         },
         {
           id: 2,
-          name: '2. ชำระค่าอากรนำเข้า',
+          name: 'ชำระค่าอากรนำเข้า',
         },
         {
           id: 3,
-          name: '3. ชำระค่า Freight',
+          name: 'ชำระค่า Freight',
         },
         {
           id: 4,
-          name: '4. ชำระค่า Clearance',
+          name: 'ชำระค่า Clearance',
         },
         {
           id: 5,
-          name: '5. อื่น ๆ',
+          name: 'อื่น ๆ',
         },
       ],
-      itemsPoNo: ['PO0001', 'PO0002'],
+      itemsPoNo: [],
       headers: [
         { text: 'ลำดับ', value: 'Number', width: '2%' },
         { text: 'รายละเอียด', value: 'PRDetail', width: '30%' },
@@ -275,26 +289,30 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       PurposeName: '',
-      itemsUserRoles: [],
-      users: {
-        username: '',
-        name: '',
-        email: '',
-        password: '',
-        mobile: '',
-        status: true,
-        role_id: null,
+      itemsJobNo: [],
+      itemPRlist: [],
+      //Vadit
+      valid: true,
+      formValid: {
+        PurposeRules: [(v) => !!v || 'กรุณาเลือก เพื่อใช้/Purpose for'],
+        PaymentToRules: [(v) => !!v || 'กรุณาระบุ ชื่อ Supplier/Freight'],
+        otherRules: [(v) => !!v || 'กรุณาระบุ อื่นๆ'],
+        PoNoRules: [(v) => !!v || 'กรุณาเลือก Po No.'],
+        itemJobNoRules: [(v) => !!v || 'กรุณาระบุ Job No.'],
+        itemPriceRules: [(v) => !!v || 'กรุณาระบุ ราคา.'],
       },
     }
   },
-  watch: {
-    loader() {
-      const l = this.loader
-      this[l] = !this[l]
-
-      setTimeout(() => (this[l] = false), 3000)
-
-      this.loader = null
+  computed: {
+    subTotal: function () {
+      let total = 0
+      for (const key in this.form.itemPR) {
+        if (this.form.itemPR[key].Price)
+          total += parseFloat(this.form.itemPR[key].Price)
+      }
+      //let parseMoney = total.toLocaleString('th', { maximumFractionDigits: 2 })
+      this.form.PriceTotal = total.toString()
+      return total
     },
   },
   methods: {
@@ -302,7 +320,8 @@ export default {
       this.dialog = true
       this.mode = mode
       if (data) {
-        this.users = { ...data }
+        console.log(data)
+        this.form = { ...data }
       }
     },
     close() {
@@ -325,7 +344,7 @@ export default {
       }
     },
     addItemPR(index) {
-      this.form.itemPR.push({ PRDetail: '', JobNo: '', PRNo: '', Price: 0 })
+      this.form.itemPR.push({ PRDetail: '', JobNo: '', PRNo: '', Price: '0' })
     },
     removeItemPR(index) {
       if (this.form.itemPR.length > 0) {
@@ -333,22 +352,27 @@ export default {
       }
     },
     async save() {
+      if (!this.$refs.form.validate()) return //chek validate
+      let name = ''
       const result = await this.itemsPurpose.find(
         ({ id }) => id === this.form.Purpose
       )
+      if (result) name = result.name
+      var itemsPR
+      if(this.form.itemPR) itemsPR = JSON.stringify(this.form.itemPR)
       const body = {
         PaymentDate: this.form.PaymentDate,
-        Status: this.form.status,
+        Status: this.form.Status,
         PaymentName: this.form.PaymentName,
         PaymentTo: this.form.PaymentTo,
         PurposeId: this.form.Purpose,
-        PurposeName: result.name,
+        PurposeName: name,
         PurposeOther: this.form.PurposeOther,
         PoNo: this.form.PoNo,
         PRNo: this.form.PRNo,
         InvoiceNo: this.form.InvoiceNo,
         AirWayBillNo: this.form.AirWayBillNo,
-        itemPR: JSON.stringify(this.form.itemPR),
+        itemPR: itemsPR,
         PriceTotal: this.form.PriceTotal,
         createBy: this.$store.getters.isName,
         updateBy: this.$store.getters.isName,
@@ -356,9 +380,65 @@ export default {
       this.$emit(this.mode, body)
     },
     paymentChange() {
-      this.itemsPaymentTo=[]
-      this.form.PaymentTo=''
-      this.$emit('paymentChange',this.form.PaymentName)
+      this.itemsPaymentTo = []
+      this.form.PaymentTo = ''
+      this.$emit('paymentChange', this.form.PaymentName)
+    },
+    async selectPR(item) {
+      try {
+        for (const key in this.form.itemPR) {
+          if (this.form.itemPR[key].JobNo === item.JobNo) {
+            for (const index in this.itemPRlist) {
+              if (
+                this.form.itemPR[key].JobNo === this.itemPRlist[index].JobNo
+              ) {
+                //console.log(this.itemPRlist[index].PRNo)
+                this.form.itemPR[key].PRNo = this.itemPRlist[index].PRNo
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async findPoNo() {
+      try {
+        const result = await api.getPoNo(this.form.PaymentTo)
+        const poList = []
+        for (const key in result.data) {
+          if (Object.hasOwnProperty.call(result.data, key)) {
+            const element = result.data[key].PoNo
+            poList.push(element)
+          }
+        }
+        this.itemsPoNo = poList
+      } catch (error) {
+        console.log('error', error)
+      }
+    },
+    async findDataByPoNo() {
+      try {
+        if (!this.form.PoNo) return
+        const result = await api.findDataByPoNo(this.form.PoNo)
+        if (result.data) {
+          const PRNo = []
+          const JobNo = []
+          this.itemPRlist = result.data.itemPR
+          if (result.data.itemPR) {
+            for (const item in result.data.itemPR) {
+              PRNo.push(result.data.itemPR[item].PRNo)
+              JobNo.push(result.data.itemPR[item].JobNo)
+            }
+            this.form.PRNo = PRNo.join()
+          }
+          this.form.InvoiceNo = result.data.InvoiceNo
+          this.form.AirWayBillNo = result.data.AirWayBillNo
+          this.itemsJobNo = JobNo
+        }
+      } catch (error) {
+        console.log('error', error)
+      }
     },
     selectPurpose() {},
   },

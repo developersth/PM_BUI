@@ -18,7 +18,7 @@
           <v-toolbar-items>
             <v-btn
               text
-              :disabled="dialogLoading"
+              :disabled="dialogLoading || mode === 'show'"
               :loading="dialogLoading"
               class="white--text"
               @click="save()"
@@ -73,12 +73,17 @@
                     v-model="form.DocDate"
                     label="วันที่เอกสาร"
                     prepend-icon="mdi-calendar"
+                    :disabled="true"
                     readonly
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" md="12">
                   <div class="text-h6 text-decoration-underline">Status</div>
-                  <v-radio-group v-model="form.Status" row>
+                  <v-radio-group
+                    v-model="form.Status"
+                    row
+                    :disabled="mode === 'show'"
+                  >
                     <v-radio
                       outlined
                       color="secondary"
@@ -125,6 +130,8 @@
                             :rules="PoNoRules"
                             prepend-icon="mdi-file-document"
                             label="เลขที่ใบสั่งซื้อ (PO)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="8" md="4">
@@ -134,6 +141,7 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PO)"
+                            :disabled="mode === 'show'"
                           ></v-file-input>
                         </v-col>
                         <v-col cols="4" md="4" v-if="docsItems.PoFile">
@@ -144,7 +152,7 @@
                             color="pink"
                             @click="showFileModal(docsItems.PoFile)"
                           >
-                            <v-icon> mdi-eye-settings-outline</v-icon>
+                            <v-icon> mdi-eye</v-icon>
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -161,6 +169,8 @@
                             prepend-icon="mdi-file-document"
                             :rules="PRNoRules"
                             :label="`เลขที่ใบสั่งขอซื้อ (PR) #${k + 1}`"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="12" md="2">
@@ -168,7 +178,8 @@
                             v-model="itemPR.JobNo"
                             prepend-icon="mdi-account-hard-hat"
                             :label="`เลขที่ Job #${k + 1}`"
-                            required
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="8" md="3">
@@ -179,6 +190,8 @@
                             chips
                             :label="`
                              (PR) #${k + 1}`"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="itemPR.PRUrl">
                             <v-btn
@@ -188,7 +201,7 @@
                               color="pink"
                               @click="showFileModal(itemPR.PRUrl)"
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -219,6 +232,8 @@
                             prepend-icon="mdi-cash-100"
                             label="มูลค่าสินค้า (ทั้งหมด)"
                             type="number"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="4" md="2">
@@ -229,6 +244,8 @@
                             label="สกุลเงิน"
                             dense
                             outlined
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-select>
                         </v-col>
                       </v-row>
@@ -248,6 +265,8 @@
                                 chips
                                 small-chips
                                 label="ผู้ขอซื้อ"
+                                :disabled="mode === 'show'"
+                                :readonly="mode === 'show'"
                               ></v-autocomplete>
                             </v-col>
                           </v-row>
@@ -262,6 +281,8 @@
                                 chips
                                 small-chips
                                 label="Supplier"
+                                :disabled="mode === 'show'"
+                                :readonly="mode === 'show'"
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
@@ -280,6 +301,8 @@
                             v-model="form.Details"
                             label="รายละเอียด"
                             prepend-icon="mdi-card-account-details"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           >
                           </v-textarea>
                         </v-col>
@@ -298,10 +321,16 @@
                                 chips
                                 small-chips
                                 label="Payment Term"
+                                :disabled="mode === 'show'"
+                                :readonly="mode === 'show'"
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
-                              <v-btn depressed color="info" @click="openPaymentTerm()">
+                              <v-btn
+                                depressed
+                                color="info"
+                                @click="openPaymentTerm()"
+                              >
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
                             </v-col>
@@ -317,6 +346,8 @@
                                 chips
                                 small-chips
                                 label="Delivery Term"
+                                :disabled="mode === 'show'"
+                                :readonly="mode === 'show'"
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
@@ -331,6 +362,8 @@
                             v-model="form.Remarks"
                             label="หมายเหตุ"
                             prepend-icon="mdi-card-account-details"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           >
                           </v-textarea>
                         </v-col>
@@ -351,6 +384,8 @@
                         prepend-icon="mdi-attachment"
                         truncate-length="30"
                         label="ไฟล์แนบ Order Acknowledgement"
+                        :disabled="mode === 'show'"
+                        :readonly="mode === 'show'"
                       ></v-file-input>
                       <div v-if="docsItems.OrderAckFile">
                         <v-btn
@@ -360,7 +395,7 @@
                           color="pink"
                           @click="showFileModal(docsItems.OrderAckFile)"
                         >
-                          <v-icon> mdi-eye-settings-outline</v-icon>
+                          <v-icon> mdi-eye</v-icon>
                         </v-btn>
                       </div>
                     </v-col>
@@ -381,6 +416,7 @@
                             v-bind="attrs"
                             v-on="on"
                             @click:clear="date = null"
+                            :disabled="mode === 'show'"
                           ></v-text-field>
                         </template>
                         <v-date-picker
@@ -396,6 +432,8 @@
                             v-model="form.InvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Invoice No."
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="12" md="3">
@@ -404,6 +442,8 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Inv)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.InvoiceFile">
                             <v-btn
@@ -413,7 +453,7 @@
                               color="pink"
                               @click="showFileModal(docsItems.InvoiceFile)"
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -422,6 +462,8 @@
                             v-model="form.PackingListNo"
                             prepend-icon="mdi-file-document"
                             label="Packing List No."
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="12" md="3">
@@ -430,6 +472,8 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PL)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.PackingListFile">
                             <v-btn
@@ -439,7 +483,7 @@
                               color="pink"
                               @click="showFileModal(docsItems.PackingListFile)"
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -448,7 +492,7 @@
                             From Freight forwarder
                           </div>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="4">
+                        <v-col class="d-flex mt-4" cols="6" md="3">
                           <v-select
                             v-model="form.FreightForworder"
                             :items="itemsFreightForworder"
@@ -456,26 +500,32 @@
                             dense
                             small-chips
                             outlined
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-select>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
+                        <v-col class="d-flex mt-4" cols="6" md="2">
                           <v-btn depressed color="primary">
                             <v-icon> mdi-plus</v-icon>
                           </v-btn>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="4">
+                        <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
                             v-model="form.BillOfLadingNo"
                             prepend-icon="mdi-file-document"
                             label="เลขที่ใบขน"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
+                        <v-col class="d-flex" cols="6" md="4">
                           <v-file-input
                             v-model="form.BillOfLadingFile"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (เลขที่ใบขน)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.BillOfLadingFile">
                             <v-btn
@@ -485,7 +535,7 @@
                               color="pink"
                               @click="showFileModal(docsItems.BillOfLadingFile)"
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -494,6 +544,8 @@
                             v-model="form.AirWayBillNo"
                             prepend-icon="mdi-file-document"
                             label="Air Waybill No."
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
@@ -502,6 +554,8 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Air Waybill No)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.AirWayBillFile">
                             <v-btn
@@ -511,7 +565,7 @@
                               color="pink"
                               @click="showFileModal(docsItems.AirWayBillFile)"
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -520,6 +574,8 @@
                             v-model="form.TaxInvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Tax Invoice No."
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
@@ -528,6 +584,8 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Tax Invoice)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.TaxInvoiceFile">
                             <v-btn
@@ -537,7 +595,7 @@
                               color="pink"
                               @click="showFileModal(docsItems.TaxInvoiceFile)"
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -547,13 +605,17 @@
                             prepend-icon="mdi-cash-100"
                             label="มูลค่าของ Tax Inv."
                             type="number"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
                             v-model="form.FreightInvoiceNo"
                             prepend-icon="mdi-file-document"
                             label="Freight Invoice No."
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
@@ -562,6 +624,8 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Freight Invoice)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.FreightInvoiceFile">
                             <v-btn
@@ -573,16 +637,18 @@
                                 showFileModal(docsItems.FreightInvoiceFile)
                               "
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
                             v-model="form.FreightInvoiceValue"
                             prepend-icon="mdi-cash-100"
                             label="มูลค่าของ Freight Inv."
                             type="number"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
@@ -591,6 +657,8 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (แจ้งรับสินค้า)"
+                            :disabled="mode === 'show'"
+                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.DeliveryNoticeFile">
                             <v-btn
@@ -602,7 +670,7 @@
                                 showFileModal(docsItems.DeliveryNoticeFile)
                               "
                             >
-                              <v-icon> mdi-eye-settings-outline</v-icon>
+                              <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
                         </v-col>
@@ -619,11 +687,7 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
-          <v-btn color="warning darken-1" @click="ResetForm">
-            Reset Form
-          </v-btn>
         </v-card-actions>
-
       </v-card>
     </v-dialog>
   </v-row>
@@ -990,13 +1054,14 @@ export default {
       this.$emit('add', this.users)
     },
     //suppplier
-    openSupplier(){ //สั่ง เปิด Modal  form addSupplier
+    openSupplier() {
+      //สั่ง เปิด Modal  form addSupplier
       this.$emit('openSupplier')
     },
     //payment term
-    openPaymentTerm(){
+    openPaymentTerm() {
       this.$emit('openPaymentTerm')
-    }
+    },
   },
 }
 </script>

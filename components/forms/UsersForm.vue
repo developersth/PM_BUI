@@ -58,14 +58,17 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">
+             <v-col cols="8">
+            </v-col>
+            <v-col cols="4">
               <v-switch
                 v-model="users.status"
                 :label="`สามารถใช้งานได้`"
               ></v-switch>
             </v-col>
           </v-row>
-          <small>*โปรดระบุข้อมูลตามที่กำหนด</small>
+          <v-spacer/>
+          <small class="red--text">*โปรดระบุข้อมูลตามที่กำหนด</small>
         </v-container>
       </v-card-text>
       <v-card-actions>

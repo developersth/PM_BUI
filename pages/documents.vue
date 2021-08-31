@@ -41,6 +41,16 @@
         }}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
+        <v-btn
+          class="mx-2"
+          fab
+          dark
+          small
+          color="green"
+          @click="showItem(item)"
+        >
+          <v-icon dark> mdi-eye</v-icon>
+        </v-btn>
         <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
           <v-icon dark> mdi-pencil </v-icon>
         </v-btn>
@@ -56,10 +66,16 @@
         </v-btn>
       </template>
     </v-data-table>
-    <DocumentsForm ref="DocumentsForm" @add="submitAdd" @edit="submitEdit" @openSupplier="openSupplier" @openPaymentTerm="openPaymentTerm"/>
-   <SupplierForm ref="SupplierForm" @add="submitAddSupplier"  />
-  <PaymentTermForm ref="PaymentTermForm" @add="submitPaymentTerm" />
-   
+    <DocumentsForm
+      ref="DocumentsForm"
+      @add="submitAdd"
+      @edit="submitEdit"
+      @openSupplier="openSupplier"
+      @openPaymentTerm="openPaymentTerm"
+    />
+    <SupplierForm ref="SupplierForm" @add="submitAddSupplier" />
+    <PaymentTermForm ref="PaymentTermForm" @add="submitPaymentTerm" />
+
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
       <v-btn color="blue" text @click="snackbar.show = false"> Close </v-btn>
@@ -117,7 +133,7 @@ import * as api from '~/utils/service'
 import apiService from '~/plugins/service'
 const service = new apiService()
 export default {
-  components: { DocumentsForm,SupplierForm,PaymentTermForm },
+  components: { DocumentsForm, SupplierForm, PaymentTermForm },
   data() {
     return {
       selected: [],
@@ -166,15 +182,15 @@ export default {
     async getNameUsers() {
       try {
         const items = await service.getNameUsers()
-        var keys = [];
+        var keys = []
         for (var item in items) {
-            keys.push(items[item].name)
+          keys.push(items[item].name)
         }
         this.$refs.DocumentsForm.itemsBuyer = keys
       } catch (e) {
         this.snackbar = {
           show: true,
-          text: 'getNameUsers '+e.message,
+          text: 'getNameUsers ' + e.message,
           type: 'error',
         }
       }
@@ -206,6 +222,22 @@ export default {
         this.currentPK = item.id
         await service.getDocumentsById(this.currentPK).then((response) => {
           this.$refs.DocumentsForm.open('edit', response)
+          this.loading = false
+        })
+      } catch (e) {
+        this.loading = false
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    async showItem(item) {
+      try {
+        this.currentPK = item.id
+        await service.getDocumentsById(this.currentPK).then((response) => {
+          this.$refs.DocumentsForm.open('show', response)
           this.loading = false
         })
       } catch (e) {
@@ -346,7 +378,7 @@ export default {
       else if (status == 'Completed') return 'green'
       else return 'indigo'
     },
-      //Supplierform
+    //Supplierform
     openSupplier() {
       this.$refs.SupplierForm.open('add')
     },
@@ -354,22 +386,21 @@ export default {
       const items = await api.getSupplier()
       var keys = []
       for (var item in items.data) {
-        if(items.data[item].name)
-          keys.push(items.data[item].name)
+        if (items.data[item].name) keys.push(items.data[item].name)
       }
       this.$refs.DocumentsForm.itemsSupplier = keys
     },
     async submitAddSupplier(items) {
       try {
         const result = await service.addSupplier(items)
-           if (result.success) {
+        if (result.success) {
           this.snackbar = {
             show: true,
             text: result.message,
             type: 'success',
           }
-         this.getSupplier()
-         this.$refs.SupplierForm.close()
+          this.getSupplier()
+          this.$refs.SupplierForm.close()
         } else {
           this.snackbar = {
             show: true,
@@ -390,7 +421,7 @@ export default {
     openPaymentTerm() {
       this.$refs.PaymentTermForm.open('add')
     },
-   async getPaymentTerm() {
+    async getPaymentTerm() {
       const items = await service.getPaymentTerm()
       var keys = []
       for (var item in items) {
@@ -401,13 +432,13 @@ export default {
     async submitPaymentTerm(items) {
       try {
         const result = await service.addPaymentTerm(items)
-           if (result.success) {
+        if (result.success) {
           this.snackbar = {
             show: true,
             text: result.message,
             type: 'success',
           }
-         this.$refs.PaymentTermForm.close()
+          this.$refs.PaymentTermForm.close()
         } else {
           this.snackbar = {
             show: true,
@@ -424,7 +455,6 @@ export default {
         }
       }
     },
-    
   },
 }
 </script>

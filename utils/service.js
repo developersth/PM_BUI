@@ -44,3 +44,15 @@ export function getFreigh() {
     const url = `${HOST_SERVER}/api/freightforworder`
     return request('get', url, {}, true)
 }
+export function getPoNo(payto) {
+    const url = `${HOST_SERVER}/api/documents/get/getpono?payname=${payto}`
+    return request('get', url, {}, true)
+}
+export function findDataByPoNo(pono) {
+    const url = `${HOST_SERVER}/api/documents/pono/${pono}`
+    return request('get', url, {}, true)
+}
+export function getPaymentById(id) {
+    const url = `${HOST_SERVER}/api/payments/${id}`
+    return request('get', url, {}, true)
+}

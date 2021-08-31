@@ -38,6 +38,9 @@
         }}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
+        <v-btn class="mx-2" fab dark small color="green">
+          <v-icon dark> mdi-eye</v-icon>
+        </v-btn>
         <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
           <v-icon dark> mdi-pencil </v-icon>
         </v-btn>
@@ -106,8 +109,10 @@ export default {
         { text: 'รหัส', value: 'id' },
         { text: 'สถานะ', value: 'Status' },
         { text: 'วันที่จ่าย', value: 'PaymentDate' },
+        { text: 'จ่ายให้', value: 'PaymentTo' },
         { text: 'Po No.', value: 'PoNo' },
         { text: 'เพื่อใช้', value: 'PurposeName' },
+        { text: 'จำนวนเงิน', value: 'PriceTotal' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       desserts: [],
@@ -154,10 +159,22 @@ export default {
     addItem() {
       this.$refs.PaymentForm.open('add')
       this.getUserRoles()
+      this.getSupplier()
     },
-    editItem(item) {
+   async editItem(item) {
       this.currentPK = item.id
-      this.$refs.PaymentForm.open('edit', item)
+      try {
+        this.currentPK = item.id
+        await api.getPaymentById(this.currentPK).then((response) => {
+          this.$refs.PaymentForm.open('edit', response.data)
+        })
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
     },
     deleteItem(item) {
       this.currentPK = item.id
@@ -234,7 +251,7 @@ export default {
       }
     },
     getColor(status) {
-      if (status == 'Incomplete') return 'secondary'
+      if (status == 'Incomplete') return 'red'
       else if (status == 'Completed') return 'green'
       else return 'indigo'
     },
