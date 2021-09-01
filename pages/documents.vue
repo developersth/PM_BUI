@@ -130,8 +130,6 @@ import DocumentsForm from '~/components/forms/DocumentsForm'
 import SupplierForm from '~/components/forms/SupplierForm.vue'
 import PaymentTermForm from '~/components/forms/PaymentTermForm.vue'
 import * as api from '~/utils/service'
-import apiService from '~/plugins/service'
-const service = new apiService()
 export default {
   components: { DocumentsForm, SupplierForm, PaymentTermForm },
   data() {
@@ -179,27 +177,12 @@ export default {
       }
     },
     //DocumentsForm
-    async getNameUsers() {
-      try {
-        const items = await service.getNameUsers()
-        var keys = []
-        for (var item in items) {
-          keys.push(items[item].name)
-        }
-        this.$refs.DocumentsForm.itemsBuyer = keys
-      } catch (e) {
-        this.snackbar = {
-          show: true,
-          text: 'getNameUsers ' + e.message,
-          type: 'error',
-        }
-      }
-    },
+
     async fetchData() {
       this.loading = true
       try {
-        await service.getAllDocuments().then((response) => {
-          this.desserts = response
+        await api.getAllDocuments().then((response) => {
+          this.desserts = response.data
           this.loading = false
         })
       } catch (e) {
@@ -213,15 +196,15 @@ export default {
     },
     addItem() {
       this.$refs.DocumentsForm.open('add')
-      this.getNameUsers()
-      this.getSupplier()
-      this.getPaymentTerm()
+      //this.getNameUsers()
+      //this.getSupplier()
+      //this.getPaymentTerm()
     },
     async editItem(item) {
       try {
         this.currentPK = item.id
-        await service.getDocumentsById(this.currentPK).then((response) => {
-          this.$refs.DocumentsForm.open('edit', response)
+        await api.getDocumentsById(this.currentPK).then((response) => {
+          this.$refs.DocumentsForm.open('edit', response.data)
           this.loading = false
         })
       } catch (e) {
@@ -236,8 +219,8 @@ export default {
     async showItem(item) {
       try {
         this.currentPK = item.id
-        await service.getDocumentsById(this.currentPK).then((response) => {
-          this.$refs.DocumentsForm.open('show', response)
+        await api.getDocumentsById(this.currentPK).then((response) => {
+          this.$refs.DocumentsForm.open('show', response.data)
           this.loading = false
         })
       } catch (e) {
@@ -259,11 +242,11 @@ export default {
     async submitAdd(data) {
       try {
         this.$refs.DocumentsForm.dialogLoading = true
-        const result = await service.addDocuments(data)
-        if (result.success) {
+        const result = await api.addDocuments(data)
+        if (result.data.success) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
           this.$refs.DocumentsForm.dialogLoading = false
@@ -272,7 +255,7 @@ export default {
         } else {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'warning',
           }
           this.$refs.DocumentsForm.dialogLoading = false
@@ -289,11 +272,11 @@ export default {
     async submitEdit(data) {
       try {
         this.$refs.DocumentsForm.dialogLoading = true
-        const result = await service.editDocuments(this.currentPK, data)
-        if (result.success) {
+        const result = await api.editDocuments(this.currentPK, data)
+        if (result.data.success) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
           this.$refs.DocumentsForm.dialogLoading = false
@@ -302,7 +285,7 @@ export default {
         } else {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'warning',
           }
           this.$refs.DocumentsForm.dialogLoading = false
@@ -319,17 +302,17 @@ export default {
     async submitDelete() {
       this.confirm = false
       try {
-        const result = await service.deleteDocuments(this.currentPK)
-        if (result.success) {
+        const result = await api.deleteDocuments(this.currentPK)
+        if (result.data.success) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
         } else {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'warning',
           }
         }
@@ -346,17 +329,17 @@ export default {
       console.log(items)
       this.confirm = false
       try {
-        const result = await service.deleteDocumentsItems(items)
-        if (result.success) {
+        const result = await api.deleteDocumentsItems(items)
+        if (result.data.success) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
         } else {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'warning',
           }
         }
@@ -382,21 +365,13 @@ export default {
     openSupplier() {
       this.$refs.SupplierForm.open('add')
     },
-    async getSupplier() {
-      const items = await api.getSupplier()
-      var keys = []
-      for (var item in items.data) {
-        if (items.data[item].name) keys.push(items.data[item].name)
-      }
-      this.$refs.DocumentsForm.itemsSupplier = keys
-    },
     async submitAddSupplier(items) {
       try {
-        const result = await service.addSupplier(items)
-        if (result.success) {
+        const result = await api.addSupplier(items)
+        if (result.data.success) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
           this.getSupplier()
@@ -404,7 +379,7 @@ export default {
         } else {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'warning',
           }
         }
@@ -421,28 +396,20 @@ export default {
     openPaymentTerm() {
       this.$refs.PaymentTermForm.open('add')
     },
-    async getPaymentTerm() {
-      const items = await service.getPaymentTerm()
-      var keys = []
-      for (var item in items) {
-        keys.push(items[item].name)
-      }
-      this.$refs.DocumentsForm.itemsPaymentTerm = keys
-    },
     async submitPaymentTerm(items) {
       try {
-        const result = await service.addPaymentTerm(items)
+        const result = await api.addPaymentTerm(items)
         if (result.success) {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'success',
           }
           this.$refs.PaymentTermForm.close()
         } else {
           this.snackbar = {
             show: true,
-            text: result.message,
+            text: result.data.message,
             type: 'warning',
           }
         }

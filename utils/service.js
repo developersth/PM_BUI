@@ -56,3 +56,52 @@ export function getPaymentById(id) {
     const url = `${HOST_SERVER}/api/payments/${id}`
     return request('get', url, {}, true)
 }
+export function editPayment(id,data) {
+    const url = `${HOST_SERVER}/api/payments/${id}`
+    return request('put', url, data, true)
+}
+export function deletePayment(id) {
+    const url = `${HOST_SERVER}/api/payments/${id}`
+    return request('delete', url, {}, true)
+}
+//Documents
+export function getAllDocuments() {
+    const url = `${HOST_SERVER}/api/documents`
+    return request('get', url, {}, true)
+}
+export function getNameUsers() {
+    const url = `${HOST_SERVER}/api/users/getNameUsers`
+    return request('get', url, {}, true)
+}
+export function addSupplier(data) {
+    const url = `${HOST_SERVER}/api/supplier`
+    return request('post', url, data, true)
+}
+export function getPaymentTerm() {
+    const url = `${HOST_SERVER}/api/paymentterm`
+    return request('get', url, {}, true)
+}
+export function addPaymentTerm(data) {
+    const url = `${HOST_SERVER}/api/paymentterm`
+    return request('post', url, data, true)
+}
+export function getDocumentsById(id) {
+    const url = `${HOST_SERVER}/api/documents/${id}`
+    return request('get', url, {}, true)
+}
+export function addDocuments(data) {
+    const url = `${HOST_SERVER}/api/documents`
+    return request('post', url, data, true)
+}
+export function editDocuments(id,data) {
+    const url = `${HOST_SERVER}/api/documents/${id}`
+    return request('put', url, data, true)
+}
+export function deleteDocuments(id) {
+    const url = `${HOST_SERVER}/api/documents/${id}`
+    return request('delete', url, {}, true)
+}
+export function deleteDocumentsItems(id,data) {
+    const url = `${HOST_SERVER}/api/documents/${id}`
+    return request('delete', url, data, true)
+}

@@ -87,7 +87,7 @@
               </v-col>
               <v-col cols="12" md="6">
                 <v-select
-                :rules="formValid.PurposeRules"
+                  :rules="formValid.PurposeRules"
                   v-model="form.Purpose"
                   :items="itemsPurpose"
                   :label="`เพื่อใช้ / Purpose for`"
@@ -319,10 +319,29 @@ export default {
     open(mode, data) {
       this.dialog = true
       this.mode = mode
+      this.clearData()
       if (data) {
-        console.log(data)
-        this.form = { ...data }
+         this.assignValue(data)
+        //this.form = { ...data }
       }
+    },
+    assignValue(data){
+      if (data.PaymentDate)
+         this.form.PaymentDate = this.$dateFns.format(data.PaymentDate,'yyyy-MM-dd')
+      this.form.Status = data.Status
+      this.form.PaymentName = data.PaymentName
+      this.paymentChange()
+      this.form.PaymentTo = data.PaymentTo
+      this.form.Purpose= data.PurposeId
+      this.form.PurposeOther=data.PurposeOther
+      this.form.PoNo = data.PoNo
+      this.form.PRNo=data.PRNo
+      this.form.InvoiceNo = data.InvoiceNo
+      this.form.AirWayBillNo = data.AirWayBillNo
+      if(data.itemPR){
+        this.form.itemPR =data.itemPR
+      }
+      this.form.PriceTotal=data.PriceTotal
     },
     close() {
       this.dialog = false
@@ -331,6 +350,7 @@ export default {
     clearData() {
       this.form = {
         PaymentDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
+        Status: 'Completed',
         PaymentName: 'Supplier',
         PaymentTo: '',
         Purpose: null,
@@ -339,7 +359,7 @@ export default {
         PRNo: '',
         InvoiceNo: '',
         AirWayBillNo: '',
-        itemPR: [],
+        itemPR: [{ PRDetail: '', JobNo: '', PRNo: '', Price: '0' }],
         PriceTotal: 0,
       }
     },
@@ -352,6 +372,7 @@ export default {
       }
     },
     async save() {
+      console.log('mode',this.mode)
       if (!this.$refs.form.validate()) return //chek validate
       let name = ''
       const result = await this.itemsPurpose.find(
@@ -359,7 +380,7 @@ export default {
       )
       if (result) name = result.name
       var itemsPR
-      if(this.form.itemPR) itemsPR = JSON.stringify(this.form.itemPR)
+      if (this.form.itemPR) itemsPR = JSON.stringify(this.form.itemPR)
       const body = {
         PaymentDate: this.form.PaymentDate,
         Status: this.form.Status,

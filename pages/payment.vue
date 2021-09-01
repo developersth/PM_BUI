@@ -212,7 +212,7 @@ export default {
     },
     async submitEdit(data) {
       try {
-        const result = await api.editUsers(this.currentPK, data)
+        const result = await api.editPayment(this.currentPK, data)
         if (result.data) {
           this.snackbar = {
             show: true,
@@ -233,7 +233,7 @@ export default {
     async submitDelete() {
       this.confirm = false
       try {
-        const result = await api.deleteUsers(this.currentPK)
+        const result = await api.deletePayment(this.currentPK)
         if (result.data) {
           this.snackbar = {
             show: true,

@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
-let BASE_URL = "https://sastech001.th1.proen.cloud/"
-let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbl9kZXYiLCJwYXNzd29yZCI6ImFkbWluX2RldiIsImlhdCI6MTYzMDUwMTUwNX0.ly-u3KQBdiWz6RDQYHMaHCsL3pVWdL60hrAG6xj5120"
+let BASE_URL = (process.env.NODE_ENV === 'production')? "https://sastech001.th1.proen.cloud":"http://ktd-dev.ddns.net:5000"
+
+//let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbl9kZXYiLCJwYXNzd29yZCI6ImFkbWluX2RldiIsImlhdCI6MTYzMDUwMTUwNX0.ly-u3KQBdiWz6RDQYHMaHCsL3pVWdL60hrAG6xj5120"
 export default {
   build: {
     extend(config, ctx) {
@@ -12,8 +13,7 @@ export default {
   target: 'server',
   //serverMiddleware: ['~/server/index.js'],
   env: {
-    baseUrl: BASE_URL,
-    Authorization: Authorization
+    baseUrl: BASE_URL
   },
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -73,7 +73,7 @@ export default {
           global: true,   // This determines if the authentication token is automatically included in all custom axios requests.
           required: true, // This option can be used to disable all token handling.
           type: "Bearer",// Authorization header type to be used in axios requests.
-          name:"Authorization"
+          name: "Authorization"
           //  We don't use maxAge, because we provide expiry time for token from API
         },
         user: {
@@ -81,7 +81,7 @@ export default {
           //autoFetch: true // if it was true will send a request to API to call the user endpoint 
         },
         endpoints: {
-          login: { url: "/api/users/login", method: "post",property: "user.token" }, // our endpoint for sending request to the API
+          login: { url: "/api/users/login", method: "post", property: "user.token" }, // our endpoint for sending request to the API
           logout: false, //  we don't have an endpoint for our logout in our API and we just remove the token from localstorage
           user: { url: "/api/users/me", method: "get" } // our endpoint for getting data from the API
         },

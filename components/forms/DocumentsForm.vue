@@ -141,7 +141,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PO)"
-                            :disabled="mode === 'show'"
                           ></v-file-input>
                         </v-col>
                         <v-col cols="4" md="4" v-if="docsItems.PoFile">
@@ -190,8 +189,6 @@
                             chips
                             :label="`
                              (PR) #${k + 1}`"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="itemPR.PRUrl">
                             <v-btn
@@ -384,8 +381,6 @@
                         prepend-icon="mdi-attachment"
                         truncate-length="30"
                         label="ไฟล์แนบ Order Acknowledgement"
-                        :disabled="mode === 'show'"
-                        :readonly="mode === 'show'"
                       ></v-file-input>
                       <div v-if="docsItems.OrderAckFile">
                         <v-btn
@@ -442,8 +437,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Inv)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.InvoiceFile">
                             <v-btn
@@ -472,8 +465,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PL)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.PackingListFile">
                             <v-btn
@@ -524,8 +515,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (เลขที่ใบขน)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.BillOfLadingFile">
                             <v-btn
@@ -554,8 +543,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Air Waybill No)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.AirWayBillFile">
                             <v-btn
@@ -584,8 +571,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Tax Invoice)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.TaxInvoiceFile">
                             <v-btn
@@ -624,8 +609,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Freight Invoice)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.FreightInvoiceFile">
                             <v-btn
@@ -657,8 +640,6 @@
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (แจ้งรับสินค้า)"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
                           ></v-file-input>
                           <div v-if="docsItems.DeliveryNoticeFile">
                             <v-btn
@@ -695,8 +676,7 @@
 <script>
 import { v4 as uuidv4 } from 'uuid'
 import ShowFileForm from '~/components/forms/ShowFileForm.vue'
-import apiService from '~/plugins/service'
-const service = new apiService()
+import * as api from '~/utils/service'
 export default {
   components: { ShowFileForm },
   data() {
@@ -798,6 +778,9 @@ export default {
     open(mode, data) {
       this.dialog = true
       this.mode = mode
+      this.getNameUsers()
+      this.getSupplier()
+      this.getPaymentTerm()
       if (data) {
         this.assignValue(data)
       } else {
@@ -901,6 +884,37 @@ export default {
             this.form.OrderAckFile.name.split('.').length - 1
           ]
       }
+    },
+    async getNameUsers() {
+      try {
+        const result = await api.getNameUsers()
+        //console.log(result.data)
+        const keys = []
+        for (const key in result.data) {
+          if(result.data[key].name)
+            keys.push(result.data[key].name)
+        }
+        this.itemsBuyer=keys
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    async getSupplier() {
+      const items = await api.getSupplier()
+      var keys = []
+      for (var item in items.data) {
+        if (items.data[item].name) keys.push(items.data[item].name)
+      }
+      this.itemsSupplier = keys
+    },
+    async getPaymentTerm() {
+      const items = await api.getPaymentTerm()
+      var keys = []
+      for (var item in items.data) {
+        if(items.data[item].name)
+          keys.push(items.data[item].name)
+      }
+      this.itemsPaymentTerm = keys
     },
     save() {
       if (!this.$refs.form.validate()) return //chek validate
@@ -1047,6 +1061,7 @@ export default {
       )
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))
+      formData.append('updateBy', this.$store.getters.isName)
       this.$emit(this.mode, formData)
     },
     //UserForm
