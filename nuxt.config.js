@@ -1,6 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
-let BASE_URL = "http://ktd-dev.ddns.net:5000"
-let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJpYXQiOjE2Mjk5NzU1MjJ9.d5iyYlbdQYgEOFZMe_Ax38gpQ9IM0VTAUwnDtM5AiHk"
+let BASE_URL = "https://sastech001.th1.proen.cloud/"
+let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbl9kZXYiLCJwYXNzd29yZCI6ImFkbWluX2RldiIsImlhdCI6MTYzMDUwMTUwNX0.ly-u3KQBdiWz6RDQYHMaHCsL3pVWdL60hrAG6xj5120"
 export default {
   build: {
     extend(config, ctx) {
