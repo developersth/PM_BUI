@@ -20,11 +20,13 @@
       />
     </v-card-title>
     <v-data-table
+       v-model="selected"
       :headers="headers"
       :items="desserts"
       :search="search"
       class="elevation-1"
       :loading="loading"
+      show-select
       loading-text="Loading... Please wait"
     >
       <template v-slot:[`item.Status`]="{ item }">
@@ -38,7 +40,14 @@
         }}</span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
-        <v-btn class="mx-2" fab dark small color="green">
+        <v-btn
+          class="mx-2"
+          fab
+          dark
+          small
+          color="green"
+          @click="showItem(item)"
+        >
           <v-icon dark> mdi-eye</v-icon>
         </v-btn>
         <v-btn class="mx-2" fab dark small color="teal" @click="editItem(item)">
@@ -62,6 +71,7 @@
       @edit="submitEdit"
       @paymentChange="paymentChange"
     />
+
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
       <v-btn color="blue" text @click="snackbar.show = false"> Close </v-btn>
@@ -85,6 +95,32 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="confirmAction" max-width="350">
+      <v-card>
+        <v-toolbar dark color="red">
+          <v-toolbar-title class="headline">ยืนยันการลบ?</v-toolbar-title>
+        </v-toolbar>
+
+        <v-card-text> เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้ </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+
+          <v-btn text @click="confirmAction = false"> Cancel </v-btn>
+
+          <v-btn color="green darken-1" text @click="validateAction()">
+            Confirm
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+        <v-card-actions>
+      <v-col class="d-flex" cols="12" sm="2">
+        <v-select v-model="action" :items="itemsAction"></v-select>
+        <v-btn class="mt-4" color="info" @click="deleteItemAction()">
+          ทำกับที่เลือก
+        </v-btn>
+      </v-col>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -96,6 +132,7 @@ export default {
   middleware: 'auth',
   data() {
     return {
+      selected: [],
       loading: false,
       search: '',
       snackbar: {
@@ -105,6 +142,7 @@ export default {
       },
       currentPK: null,
       confirm: false,
+      confirmAction: false,
       headers: [
         { text: 'รหัส', value: 'id' },
         { text: 'สถานะ', value: 'Status' },
@@ -116,6 +154,8 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       desserts: [],
+      action: 'ลบ',
+      itemsAction: ['ลบ'],
     }
   },
   mounted() {
@@ -156,13 +196,17 @@ export default {
         console.log(e.message)
       }
     },
+    validateAction() {
+      if (this.action === 'ลบ') {
+        this.submitDeleteItems(this.selected)
+      }
+    },
     addItem() {
       this.$refs.PaymentForm.open('add')
       this.getUserRoles()
       this.getSupplier()
     },
-   async editItem(item) {
-      this.currentPK = item.id
+    async editItem(item) {
       try {
         this.currentPK = item.id
         await api.getPaymentById(this.currentPK).then((response) => {
@@ -176,9 +220,26 @@ export default {
         }
       }
     },
+    async showItem(item) {
+      try {
+        this.currentPK = item.id
+        await api.getPaymentById(this.currentPK).then((response) => {
+          this.$refs.PaymentForm.open('show', response.data)
+        })
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
     deleteItem(item) {
       this.currentPK = item.id
       this.confirm = true
+    },
+    deleteItemAction(item) {
+      this.confirmAction = true
     },
     async submitAdd(data) {
       try {
@@ -246,6 +307,32 @@ export default {
         this.snackbar = {
           show: true,
           text: 'Fail',
+          type: 'error',
+        }
+      }
+    },
+    async submitDeleteItems(items) {
+      this.confirmAction = false
+      try {
+        const result = await api.deletePaymentItems(items)
+        if (result.data.success) {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'success',
+          }
+          this.fetchData()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
+        }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
           type: 'error',
         }
       }

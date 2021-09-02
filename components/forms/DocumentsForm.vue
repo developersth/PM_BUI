@@ -128,7 +128,7 @@
                           <v-text-field
                             v-model="form.PoNo"
                             :rules="PoNoRules"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="เลขที่ใบสั่งซื้อ (PO)"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -137,6 +137,7 @@
                         <v-col cols="8" md="4">
                           <v-file-input
                             v-model="form.PoFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             small-chips
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -165,7 +166,7 @@
                         <v-col cols="12" md="3">
                           <v-text-field
                             v-model="itemPR.PRNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             :rules="PRNoRules"
                             :label="`เลขที่ใบสั่งขอซื้อ (PR) #${k + 1}`"
                             :disabled="mode === 'show'"
@@ -175,7 +176,7 @@
                         <v-col class="d-flex" cols="12" md="2">
                           <v-text-field
                             v-model="itemPR.JobNo"
-                            prepend-icon="mdi-account-hard-hat"
+                            prepend-icon="mdi-file-word"
                             :label="`เลขที่ Job #${k + 1}`"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -184,6 +185,7 @@
                         <v-col class="d-flex" cols="8" md="3">
                           <v-file-input
                             v-model="itemPR.PRFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             small-chips
                             prepend-icon="mdi-attachment"
                             chips
@@ -249,7 +251,7 @@
                     </v-col>
                     <v-col>
                       <v-row>
-                        <v-col cols="6" md="6">
+                        <v-col cols="12" md="6">
                           <v-row>
                             <v-col cols="10" md="10">
                               <v-autocomplete
@@ -264,7 +266,18 @@
                                 label="ผู้ขอซื้อ"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
+                                @change="getBuyers()"
                               ></v-autocomplete>
+                            </v-col>
+                            <v-col cols="2" md="2">
+                              <v-btn
+                                class="mt-4"
+                                depressed
+                                color="primary"
+                                @click="openBuyer()"
+                              >
+                                <v-icon> mdi-plus</v-icon>
+                              </v-btn>
                             </v-col>
                           </v-row>
                           <v-row>
@@ -278,6 +291,7 @@
                                 chips
                                 small-chips
                                 label="Supplier"
+                                @change="getSupplier"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
                               ></v-autocomplete>
@@ -306,7 +320,7 @@
                       </v-row>
 
                       <v-row>
-                        <v-col cols="6" md="6">
+                        <v-col cols="12" md="6">
                           <v-row>
                             <v-col class="d-flex" cols="10" md="10">
                               <v-autocomplete
@@ -318,6 +332,7 @@
                                 chips
                                 small-chips
                                 label="Payment Term"
+                                @change="getPaymentTerm"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
                               ></v-autocomplete>
@@ -343,12 +358,17 @@
                                 chips
                                 small-chips
                                 label="Delivery Term"
+                                @change="getDeliveryTerm"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
-                              <v-btn depressed color="info">
+                              <v-btn
+                                depressed
+                                color="info"
+                                @click="openDeliveryTerm()"
+                              >
                                 <v-icon> mdi-plus</v-icon>
                               </v-btn>
                             </v-col>
@@ -378,6 +398,7 @@
                     <v-col class="d-flex" cols="8" md="6">
                       <v-file-input
                         v-model="form.OrderAckFile"
+                        accept=".jpg,.jpeg,.png,.pdf"
                         prepend-icon="mdi-attachment"
                         truncate-length="30"
                         label="ไฟล์แนบ Order Acknowledgement"
@@ -425,7 +446,7 @@
                         <v-col class="d-flex" cols="12" md="3">
                           <v-text-field
                             v-model="form.InvoiceNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="Invoice No."
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -434,6 +455,7 @@
                         <v-col class="d-flex" cols="12" md="3">
                           <v-file-input
                             v-model="form.InvoiceFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Inv)"
@@ -453,7 +475,7 @@
                         <v-col cols="12" md="3">
                           <v-text-field
                             v-model="form.PackingListNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="Packing List No."
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -462,6 +484,7 @@
                         <v-col class="d-flex" cols="12" md="3">
                           <v-file-input
                             v-model="form.PackingListFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (PL)"
@@ -483,35 +506,42 @@
                             From Freight forwarder
                           </div>
                         </v-col>
-                        <v-col class="d-flex mt-4" cols="6" md="3">
+                        <v-col class="d-flex mt-4" cols="10" md="4">
                           <v-select
+                            prepend-icon="mdi-airplane-takeoff"
                             v-model="form.FreightForworder"
                             :items="itemsFreightForworder"
                             label="Freight Forwarder"
                             dense
                             small-chips
                             outlined
+                            @change="getFreightForwarder"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
                           ></v-select>
                         </v-col>
-                        <v-col class="d-flex mt-4" cols="6" md="2">
-                          <v-btn depressed color="primary">
+                        <v-col class="d-flex mt-4" cols="2" md="2">
+                          <v-btn
+                            depressed
+                            color="primary"
+                            @click="openFreightForwarder()"
+                          >
                             <v-icon> mdi-plus</v-icon>
                           </v-btn>
                         </v-col>
                         <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
                             v-model="form.BillOfLadingNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="เลขที่ใบขน"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="4">
+                        <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.BillOfLadingFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (เลขที่ใบขน)"
@@ -531,7 +561,7 @@
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
                             v-model="form.AirWayBillNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="Air Waybill No."
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -540,6 +570,7 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.AirWayBillFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Air Waybill No)"
@@ -559,7 +590,7 @@
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
                             v-model="form.TaxInvoiceNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="Tax Invoice No."
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -568,6 +599,7 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.TaxInvoiceFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Tax Invoice)"
@@ -597,7 +629,7 @@
                         <v-col class="d-flex" cols="6" md="2">
                           <v-text-field
                             v-model="form.FreightInvoiceNo"
-                            prepend-icon="mdi-file-document"
+                            prepend-icon="mdi-receipt"
                             label="Freight Invoice No."
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
@@ -606,6 +638,7 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.FreightInvoiceFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (Freight Invoice)"
@@ -637,6 +670,7 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.DeliveryNoticeFile"
+                            accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
                             label="ไฟล์แนบ (แจ้งรับสินค้า)"
@@ -735,7 +769,7 @@ export default {
       itemsBuyer: [],
       itemsSupplier: [],
       itemsPaymentTerm: [],
-      itemsDeliveryTerm: ['ส่งของภายใน 30 วัน', 'ส่งของภายใน 90 วัน'],
+      itemsDeliveryTerm: [],
       itemsFreightForworder: ['DHL', 'Penanshin', 'FedEx', 'AIL'],
       loading: false,
       mode: '',
@@ -778,9 +812,11 @@ export default {
     open(mode, data) {
       this.dialog = true
       this.mode = mode
-      this.getNameUsers()
+      this.getBuyers()
       this.getSupplier()
       this.getPaymentTerm()
+      this.getDeliveryTerm()
+      this.getFreightForwarder()
       if (data) {
         this.assignValue(data)
       } else {
@@ -817,6 +853,7 @@ export default {
       this.form.Supplier = this.docsItems.Supplier
       this.form.Details = this.docsItems.Details
       this.form.PaymentTerm = this.docsItems.PaymentTerm
+      this.form.DeliveryTerm = this.docsItems.DeliveryTerm
       this.form.Remarks = this.docsItems.Remarks
       this.form.DeliveryDate = this.docsItems.DeliveryDate
       if (this.docsItems.DeliveryDate)
@@ -885,16 +922,15 @@ export default {
           ]
       }
     },
-    async getNameUsers() {
+    async getBuyers() {
       try {
-        const result = await api.getNameUsers()
+        const result = await api.getBuyers()
         //console.log(result.data)
         const keys = []
         for (const key in result.data) {
-          if(result.data[key].name)
-            keys.push(result.data[key].name)
+          if (result.data[key].name) keys.push(result.data[key].name)
         }
-        this.itemsBuyer=keys
+        this.itemsBuyer = keys
       } catch (e) {
         console.log(e)
       }
@@ -911,11 +947,27 @@ export default {
       const items = await api.getPaymentTerm()
       var keys = []
       for (var item in items.data) {
-        if(items.data[item].name)
-          keys.push(items.data[item].name)
+        if (items.data[item].name) keys.push(items.data[item].name)
       }
       this.itemsPaymentTerm = keys
     },
+    async getDeliveryTerm() {
+      const items = await api.getDeliveryTermAll()
+      var keys = []
+      for (var item in items.data) {
+        if (items.data[item].name) keys.push(items.data[item].name)
+      }
+      this.itemsDeliveryTerm = keys
+    },
+    async getFreightForwarder() {
+      const items = await api.getFreightForwordersAll()
+      var keys = []
+      for (var item in items.data) {
+        if (items.data[item].name) keys.push(items.data[item].name)
+      }
+      this.itemsFreightForworder = keys
+    },
+
     save() {
       if (!this.$refs.form.validate()) return //chek validate
       let fileName = ''
@@ -1012,6 +1064,17 @@ export default {
         formData.append('files', this.form.DeliveryNoticeFile, fileName)
         fileManage.push({ name: 'DeliveryNoticeFile', filename: fileName })
       }
+      if (this.form.TaxInvoiceFile) {
+        fileName =
+          'DeliveryNoticeFile-' +
+          uuidv4() +
+          '.' +
+          this.form.TaxInvoiceFile.name.split('.')[
+            this.form.TaxInvoiceFile.name.split('.').length - 1
+          ]
+        formData.append('files', this.form.TaxInvoiceFile, fileName)
+        fileManage.push({ name: 'TaxInvoiceFile', filename: fileName })
+      }
       let itemPR = this.form.itemPR
       let doc = 1
       for (const key in itemPR) {
@@ -1076,6 +1139,15 @@ export default {
     //payment term
     openPaymentTerm() {
       this.$emit('openPaymentTerm')
+    },
+    openBuyer() {
+      this.$emit('openBuyer')
+    },
+    openDeliveryTerm() {
+      this.$emit('openDeliveryTerm')
+    },
+    openFreightForwarder() {
+      this.$emit('openFreightForwarder')
     },
   },
 }

@@ -206,7 +206,7 @@
         <v-btn color="red" @click="dialog = false"> CLOSE </v-btn>
         <v-btn
           class="ma-2"
-          :disabled="loading"
+          :disabled="loading || mode === 'show'"
           :loading="loading"
           color="primary"
           @click="save()"
@@ -321,27 +321,32 @@ export default {
       this.mode = mode
       this.clearData()
       if (data) {
-         this.assignValue(data)
+        this.assignValue(data)
         //this.form = { ...data }
       }
     },
-    assignValue(data){
+    assignValue(data) {
       if (data.PaymentDate)
-         this.form.PaymentDate = this.$dateFns.format(data.PaymentDate,'yyyy-MM-dd')
+        this.form.PaymentDate = this.$dateFns.format(
+          data.PaymentDate,
+          'yyyy-MM-dd'
+        )
       this.form.Status = data.Status
       this.form.PaymentName = data.PaymentName
       this.paymentChange()
       this.form.PaymentTo = data.PaymentTo
-      this.form.Purpose= data.PurposeId
-      this.form.PurposeOther=data.PurposeOther
+      this.form.Purpose = data.PurposeId
+      this.form.PurposeOther = data.PurposeOther
+      this.findPoNo()
       this.form.PoNo = data.PoNo
-      this.form.PRNo=data.PRNo
+      this.form.PRNo = data.PRNo
       this.form.InvoiceNo = data.InvoiceNo
       this.form.AirWayBillNo = data.AirWayBillNo
-      if(data.itemPR){
-        this.form.itemPR =data.itemPR
+      if (data.itemPR) {
+        this.form.itemPR = data.itemPR
       }
-      this.form.PriceTotal=data.PriceTotal
+      this.findDataByPoNo()
+      this.form.PriceTotal = data.PriceTotal
     },
     close() {
       this.dialog = false
@@ -372,7 +377,6 @@ export default {
       }
     },
     async save() {
-      console.log('mode',this.mode)
       if (!this.$refs.form.validate()) return //chek validate
       let name = ''
       const result = await this.itemsPurpose.find(
@@ -380,7 +384,14 @@ export default {
       )
       if (result) name = result.name
       var itemsPR
-      if (this.form.itemPR) itemsPR = JSON.stringify(this.form.itemPR)
+      if (this.form.itemPR) {
+        const obj = this.form.itemPR
+        for (const key in obj) {
+          obj[key].PRDetail = obj[key].PRDetail.trim()
+          obj[key].JobNo = obj[key].JobNo.trim()
+        }
+        itemsPR = JSON.stringify(obj)
+      }
       const body = {
         PaymentDate: this.form.PaymentDate,
         Status: this.form.Status,

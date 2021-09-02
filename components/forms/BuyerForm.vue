@@ -10,7 +10,7 @@
         <v-btn icon dark @click="dialog = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>ข้อมูล Supplier #{{ mode }}</v-toolbar-title>
+        <v-toolbar-title>ข้อมูล ผู้ขอซื้อ #{{ mode }}</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-card-text>
@@ -25,15 +25,15 @@
             <v-row>
               <v-col cols="8">
                 <v-text-field
+                  v-model="form.name"
                   :rules="nameRules"
-                  v-model="supplier.name"
-                  label="ชื่อ Supplier"
+                  label="ชื่อผู้ขอซื้อ"
                   required
                 />
               </v-col>
               <v-col cols="4">
                 <v-switch
-                  v-model="supplier.status"
+                  v-model="form.status"
                   :label="`สามารถใช้งานได้`"
                 ></v-switch>
               </v-col>
@@ -57,21 +57,22 @@ export default {
   data() {
     return {
       dialog: false,
-      valid:true,
+      valid: true,
       mode: '',
-      supplier: {
+      form: {
         name: '',
         status: true,
       },
-       nameRules: [(v) => !!v || 'กรุณากรอก ชื่อ Supplier'],
+      nameRules: [(v) => !!v || 'กรุณากรอก ชื่อผู้ขอซื้อ'],
     }
   },
   methods: {
     open(mode, data) {
       this.mode = mode
       this.dialog = true
+      this.clearData()
       if (data) {
-        this.supplier = { ...data }
+        this.form = { ...data }
       }
     },
     close() {
@@ -80,14 +81,14 @@ export default {
     },
 
     clearData() {
-      this.supplier = {
+      this.form = {
         name: '',
         status: true,
       }
     },
     save() {
-      if (!this.$refs.form.validate()) return //chek validate
-      this.$emit(this.mode, this.supplier) //Send to  @add="submitAddSupplier"
+       if (!this.$refs.form.validate()) return //chek validate
+      this.$emit(this.mode, this.form) //Send to  @add="submitAddSupplier"
       //this.$store.commit('addSupplier', this.supplier)
     },
   },

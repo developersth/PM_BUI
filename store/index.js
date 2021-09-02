@@ -1,5 +1,3 @@
-import apiService from '~/plugins/service'
-const service = new apiService()
 
 export const state = () => ({
   drawer: true,

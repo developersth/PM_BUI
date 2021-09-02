@@ -13,7 +13,7 @@
     <v-card-text class="text--primary">
       <div>สวัสดี คุณ {{ $store.getters.isName }}</div>
 
-      <div>Whitsunday Island, Whitsunday Islands</div>
+      <div>LEADERSHIP TURNKEY EPC CONTRACTOR IN OIL & GAS AND ENERGY INDUSTRY.</div>
     </v-card-text>
     <v-card-actions>
       <v-btn color="primary" nuxt to="/documents"> Continue </v-btn>

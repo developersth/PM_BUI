@@ -6,27 +6,40 @@
     max-width="600px"
   >
     <v-card>
-      <v-card-title>
-        <span class="headline">ข้อมูล Payment Term #{{mode}}</span>
-      </v-card-title>
+      <v-toolbar dark color="primary">
+        <v-btn icon dark @click="dialog = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-toolbar-title>ข้อมูล Payment Term #{{ mode }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-toolbar>
       <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col cols="8">
-              <v-text-field 
-                v-model="form.name"
-                label="ชื่อ Payment Term*"
-                required
-              />
-            </v-col>
-                     <v-col cols="4">
-              <v-switch
-                v-model="form.status"
-                :label="`สามารถใช้งานได้`"
-              ></v-switch>
-            </v-col>
-          </v-row>
-        </v-container>
+        <v-form
+          class="mt-4"
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          enctype="multipart/form-data"
+        >
+          <v-container>
+            <v-row>
+              <v-col cols="8">
+                <v-text-field
+                  v-model="form.name"
+                  :rules="nameRules"
+                  label="ชื่อ Payment Term"
+                  required
+                />
+              </v-col>
+              <v-col cols="4">
+                <v-switch
+                  v-model="form.status"
+                  :label="`สามารถใช้งานได้`"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
@@ -45,10 +58,12 @@ export default {
     return {
       dialog: false,
       mode: '',
+      valid:true,
       form: {
         name: '',
         status: true,
       },
+      nameRules: [(v) => !!v || 'กรุณากรอก ชื่อ Payment Term'],
     }
   },
   methods: {
@@ -71,7 +86,8 @@ export default {
       }
     },
     save() {
-       this.$emit(this.mode, this.form) //Send to  @add="submitAddSupplier"
+      if (!this.$refs.form.validate()) return //chek validate
+      this.$emit(this.mode, this.form) //Send to  @add="submitAddSupplier"
       //this.$store.commit('addSupplier', this.supplier)
     },
   },

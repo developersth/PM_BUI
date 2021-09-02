@@ -95,8 +95,6 @@
 </template>
 
 <script>
-import apiService from '~/plugins/service'
-const service = new apiService()
 export default {
   data() {
     return {

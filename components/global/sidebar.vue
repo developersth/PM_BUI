@@ -48,7 +48,7 @@ export default {
           to: '/payment',
         },
         {
-          icon: 'mdi-account',
+          icon: 'mdi-account-box',
           title: 'ผู้ใช้งาน',
           to: '/users',
         },

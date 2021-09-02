@@ -72,10 +72,18 @@
       @edit="submitEdit"
       @openSupplier="openSupplier"
       @openPaymentTerm="openPaymentTerm"
+      @openBuyer="openBuyer"
+      @openDeliveryTerm="openDeliveryTerm"
+      @openFreightForwarder="openFreightForwarder"
     />
     <SupplierForm ref="SupplierForm" @add="submitAddSupplier" />
     <PaymentTermForm ref="PaymentTermForm" @add="submitPaymentTerm" />
-
+    <BuyerForm ref="BuyerForm" @add="submitBuyer" />
+    <DeliveryTermForm ref="DeliveryTermForm" @add="submitDeliveryTerm" />
+    <FreightForwarderForm
+      ref="FreightForwarderForm"
+      @add="submitFreightForwarder"
+    />
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
       <v-btn color="blue" text @click="snackbar.show = false"> Close </v-btn>
@@ -99,10 +107,11 @@
     </v-dialog>
     <v-dialog v-model="confirmAction" max-width="350">
       <v-card>
-        <v-card-title class="headline"> ยืนยันการลบ? </v-card-title>
+        <v-toolbar dark color="red">
+          <v-toolbar-title class="headline">ยืนยันการลบ?</v-toolbar-title>
+        </v-toolbar>
 
         <v-card-text> เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้ </v-card-text>
-
         <v-card-actions>
           <v-spacer />
 
@@ -129,9 +138,20 @@
 import DocumentsForm from '~/components/forms/DocumentsForm'
 import SupplierForm from '~/components/forms/SupplierForm.vue'
 import PaymentTermForm from '~/components/forms/PaymentTermForm.vue'
+import BuyerForm from '~/components/forms/BuyerForm.vue'
+import DeliveryTermForm from '~/components/forms/DeliveryTermForm.vue'
+import FreightForwarderForm from '~/components/forms/FreightForwarderForm.vue'
+
 import * as api from '~/utils/service'
 export default {
-  components: { DocumentsForm, SupplierForm, PaymentTermForm },
+  components: {
+    DocumentsForm,
+    SupplierForm,
+    PaymentTermForm,
+    BuyerForm,
+    DeliveryTermForm,
+    FreightForwarderForm,
+  },
   data() {
     return {
       selected: [],
@@ -165,19 +185,11 @@ export default {
   },
   methods: {
     vadidateAction() {
-      let formData = new FormData()
       if (this.action === 'ลบ') {
-        const data = []
-        for (var key in this.selected) {
-          data.push({ id: this.selected[key].id })
-        }
-        console.log(data)
-        formData.append('data', data)
-        this.submitDeleteItems(formData)
+        this.submitDeleteItems(this.selected)
       }
     },
     //DocumentsForm
-
     async fetchData() {
       this.loading = true
       try {
@@ -326,8 +338,7 @@ export default {
       }
     },
     async submitDeleteItems(items) {
-      console.log(items)
-      this.confirm = false
+      this.confirmAction = false
       try {
         const result = await api.deleteDocumentsItems(items)
         if (result.data.success) {
@@ -336,6 +347,7 @@ export default {
             text: result.data.message,
             type: 'success',
           }
+          this.fetchData()
         } else {
           this.snackbar = {
             show: true,
@@ -343,7 +355,6 @@ export default {
             type: 'warning',
           }
         }
-        this.fetchData()
       } catch (e) {
         this.snackbar = {
           show: true,
@@ -374,8 +385,36 @@ export default {
             text: result.data.message,
             type: 'success',
           }
-          this.getSupplier()
           this.$refs.SupplierForm.close()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
+        }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    //Payment Term
+    openPaymentTerm() {
+      this.$refs.PaymentTermForm.open('add')
+    },
+    async submitPaymentTerm(items) {
+      try {
+        const result = await api.addPaymentTerm(items)
+        if (result.data.success) {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'success',
+          }
+          this.$refs.PaymentTermForm.close()
         } else {
           this.snackbar = {
             show: true,
@@ -392,20 +431,20 @@ export default {
         }
       }
     },
-    //Payment Term
-    openPaymentTerm() {
-      this.$refs.PaymentTermForm.open('add')
+    //Buyer
+    openBuyer() {
+      this.$refs.BuyerForm.open('add')
     },
-    async submitPaymentTerm(items) {
+    async submitBuyer(items) {
       try {
-        const result = await api.addPaymentTerm(items)
-        if (result.success) {
+        const result = await api.addBuyer(items)
+        if (result.data.success) {
           this.snackbar = {
             show: true,
             text: result.data.message,
             type: 'success',
           }
-          this.$refs.PaymentTermForm.close()
+          this.$refs.BuyerForm.close()
         } else {
           this.snackbar = {
             show: true,
@@ -413,7 +452,62 @@ export default {
             type: 'warning',
           }
         }
-        this.fetchData()
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    openDeliveryTerm() {
+      this.$refs.DeliveryTermForm.open('add')
+    },
+    async submitDeliveryTerm(items) {
+      try {
+        const result = await api.addDeliveryTerm(items)
+        if (result.data.success) {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'success',
+          }
+          this.$refs.DeliveryTermForm.close()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
+        }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    openFreightForwarder() {
+      this.$refs.FreightForwarderForm.open('add')
+    },
+    async submitFreightForwarder(items) {
+      try {
+        const result = await api.addFreightForwarders(items)
+        if (result.data.success) {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'success',
+          }
+          this.$refs.FreightForwarderForm.close()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
+        }
       } catch (e) {
         this.snackbar = {
           show: true,
