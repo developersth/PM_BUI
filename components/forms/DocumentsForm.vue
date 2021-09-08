@@ -9,33 +9,33 @@
       transition="dialog-bottom-transition"
     >
       <v-card>
-        <v-form
-          class="mt-4"
-          ref="form"
-          v-model="valid"
-          lazy-validation
-          enctype="multipart/form-data"
-          @submit.prevent="save()"
-        >
-          <v-toolbar dark color="pink">
-            <v-btn icon dark @click="dialog = false">
-              <v-icon>mdi-close</v-icon>
+        <v-toolbar dark color="pink">
+          <v-btn icon dark @click="dialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>จัดการเอกสาร #{{ mode }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn
+              text
+              :disabled="dialogLoading || mode === 'show'"
+              :loading="dialogLoading"
+              class="white--text"
+              @click="save()"
+              >Save <v-icon> mdi-content-save</v-icon>
             </v-btn>
-            <v-toolbar-title>จัดการเอกสาร #{{ mode }}</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn
-                text
-                :disabled="dialogLoading || mode === 'show'"
-                :loading="dialogLoading"
-                class="white--text"
-                type="submit"
-                >Save <v-icon> mdi-content-save</v-icon>
-              </v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-          <v-divider></v-divider>
-          <v-card-text>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-divider></v-divider>
+        <v-card-text>
+          <v-form
+            class="mt-4"
+            ref="form"
+            v-model="valid"
+            lazy-validation
+            enctype="multipart/form-data"
+            @submit.prevent="save()"
+          >
             <div class="text-center">
               <v-dialog
                 v-model="dialogLoading"
@@ -691,14 +691,14 @@
                 </v-col>
               </v-row>
             </v-container>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-btn color="blue darken-1" text @click="dialog = false">
-              Close
-            </v-btn>
-          </v-card-actions>
-        </v-form>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn color="blue darken-1" text @click="dialog = false">
+            Close
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
   </v-row>

@@ -183,3 +183,8 @@ export function editFreightForworders(id,data) {
     const url = `${HOST_SERVER}/api/freightforworders/${id}`
     return request('put', url, data, true)
 }
+//Report
+export function getDocumentExport(item) {
+    const url = `${HOST_SERVER}/api/documents/report/exportexcel`
+    return request('post', url, item, true)
+}

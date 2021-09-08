@@ -8,20 +8,20 @@
     transition="dialog-bottom-transition"
   >
     <v-card>
-      <v-form
-        ref="form"
-        v-model="valid"
-        lazy-validation
-        @submit.prevent="save()"
-      >
-        <v-toolbar dark color="primary">
-          <v-toolbar-title>ข้อมูล Payment #{{ mode }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon dark @click="dialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-card-text>
+      <v-toolbar dark color="primary">
+        <v-toolbar-title>ข้อมูล Payment #{{ mode }}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon dark @click="dialog = false">
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+      </v-toolbar>
+      <v-card-text>
+        <v-form
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          @submit.prevent="save()"
+        >
           <v-container>
             <div class="text-h6 text-decoration-underline">
               Payment Requisition
@@ -204,36 +204,36 @@
               1 PO สามารถมีได้หลาย PR,JOB
             </small>
           </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="red" @click="dialog = false"> CLOSE </v-btn>
-          <v-btn
-            class="ma-2"
-            :disabled="loading || mode === 'show'"
-            :loading="loading"
-            color="primary"
-            @click="save()"
-          >
-            SAVE
-            <v-icon right dark> mdi-content-save</v-icon>
-          </v-btn>
-        </v-card-actions>
-        <div class="text-center">
-          <v-dialog v-model="loading" hide-overlay persistent width="300">
-            <v-card color="primary" dark>
-              <v-card-text>
-                Please Wait
-                <v-progress-linear
-                  indeterminate
-                  color="white"
-                  class="mb-0"
-                ></v-progress-linear>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
-        </div>
-      </v-form>
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
+        <v-btn color="red" @click="dialog = false"> CLOSE </v-btn>
+        <v-btn
+          class="ma-2"
+          :disabled="loading || mode === 'show'"
+          :loading="loading"
+          color="primary"
+          @click="save()"
+        >
+          SAVE
+          <v-icon right dark> mdi-content-save</v-icon>
+        </v-btn>
+      </v-card-actions>
+      <div class="text-center">
+        <v-dialog v-model="loading" hide-overlay persistent width="300">
+          <v-card color="primary" dark>
+            <v-card-text>
+              Please Wait
+              <v-progress-linear
+                indeterminate
+                color="white"
+                class="mb-0"
+              ></v-progress-linear>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+      </div>
     </v-card>
   </v-dialog>
 </template>

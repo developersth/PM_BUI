@@ -108,10 +108,14 @@
     <v-dialog v-model="confirmAction" max-width="350">
       <v-card>
         <v-toolbar dark color="red">
-          <v-toolbar-title class="headline">ยืนยันการลบ?</v-toolbar-title>
+          <v-toolbar-title class="headline"
+            >ยืนยันการ {{ action }}?</v-toolbar-title
+          >
         </v-toolbar>
 
-        <v-card-text> เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้ </v-card-text>
+        <v-card-text v-if="action === 'ลบ'">
+          เมื่อยืนยันคุณจะไม่สามารถกู้คืนข้อมูลนี้ได้
+        </v-card-text>
         <v-card-actions>
           <v-spacer />
 
@@ -124,7 +128,7 @@
       </v-card>
     </v-dialog>
     <v-card-actions>
-      <v-col class="d-flex" cols="12" sm="2">
+      <v-col class="d-flex" cols="12" sm="3">
         <v-select v-model="action" :items="itemsAction"></v-select>
         <v-btn class="mt-4" color="info" @click="deleteItemAction()">
           ทำกับที่เลือก
@@ -135,6 +139,7 @@
 </template>
 
 <script>
+import XLSX from 'xlsx' // import xlsx
 import DocumentsForm from '~/components/forms/DocumentsForm'
 import SupplierForm from '~/components/forms/SupplierForm.vue'
 import PaymentTermForm from '~/components/forms/PaymentTermForm.vue'
@@ -162,7 +167,7 @@ export default {
         type: '',
       },
       action: 'ลบ',
-      itemsAction: ['ลบ'],
+      itemsAction: ['ลบ', 'export'],
       currentPK: null,
       confirm: false,
       confirmAction: false,
@@ -187,6 +192,8 @@ export default {
     vadidateAction() {
       if (this.action === 'ลบ') {
         this.submitDeleteItems(this.selected)
+      } else if (this.action === 'export') {
+        this.onExport(this.selected)
       }
     },
     //DocumentsForm
@@ -249,6 +256,7 @@ export default {
       this.confirm = true
     },
     deleteItemAction(item) {
+      if (this.selected.length === 0) return
       this.confirmAction = true
     },
     async submitAdd(data) {
@@ -513,6 +521,24 @@ export default {
             type: 'warning',
           }
         }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    //Report
+    async onExport(item) {
+      try {
+        this.confirmAction = false
+        const result = await api.getDocumentExport(item)
+        this.data = result.data
+        const dataWS = XLSX.utils.json_to_sheet(this.data)
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, dataWS)
+        XLSX.writeFile(wb, `${Date.now()}_work status.xlsx`)
       } catch (e) {
         this.snackbar = {
           show: true,
