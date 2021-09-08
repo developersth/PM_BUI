@@ -9,6 +9,10 @@ export function addUsers(data) {
     const url = `${HOST_SERVER}/api/users`
     return request('post', url, data, true)
 }
+export function findUserById(id) {
+    const url = `${HOST_SERVER}/api/users/${id}`
+    return request('get', url, {}, true)
+}
 export function deleteUsers(id) {
     const url = `${HOST_SERVER}/api/users/${id}`
     return request('delete', url, {}, true)
@@ -39,6 +43,18 @@ export function addPayments(data) {
 export function getSupplier() {
     const url = `${HOST_SERVER}/api/supplier`
     return request('get', url, {}, true)
+}
+export function addSupplier(data) {
+    const url = `${HOST_SERVER}/api/supplier`
+    return request('post', url, data, true)
+}
+export function editSupplier(id,data) {
+    const url = `${HOST_SERVER}/api/supplier/${id}`
+    return request('put', url, data, true)
+}
+export function deleteSupplier(id) {
+    const url = `${HOST_SERVER}/api/supplier/${id}`
+    return request('delete', url, {}, true)
 }
 export function getFreigh() {
     const url = `${HOST_SERVER}/api/freightforworder`
@@ -78,10 +94,7 @@ export function getBuyers() {
     const url = `${HOST_SERVER}/api/buyers`
     return request('get', url, {}, true)
 }
-export function addSupplier(data) {
-    const url = `${HOST_SERVER}/api/supplier`
-    return request('post', url, data, true)
-}
+//PaymentTerm
 export function getPaymentTerm() {
     const url = `${HOST_SERVER}/api/paymentterm`
     return request('get', url, {}, true)
@@ -90,6 +103,15 @@ export function addPaymentTerm(data) {
     const url = `${HOST_SERVER}/api/paymentterm`
     return request('post', url, data, true)
 }
+export function editPaymentTerm(id,data) {
+    const url = `${HOST_SERVER}/api/paymentterm/${id}`
+    return request('put', url, data, true)
+}
+export function deletePaymentTerm(id) {
+    const url = `${HOST_SERVER}/api/paymentterm/${id}`
+    return request('delete', url, {}, true)
+}
+
 export function getDocumentsById(id) {
     const url = `${HOST_SERVER}/api/documents/${id}`
     return request('get', url, {}, true)
@@ -136,7 +158,7 @@ export function addDeliveryTerm(data) {
     const url = `${HOST_SERVER}/api/deliveryterms`
     return request('post', url, data, true)
 }
-export function deleteDeliveryTerm() {
+export function deleteDeliveryTerm(id) {
     const url = `${HOST_SERVER}/api/deliveryterms/${id}`
     return request('delete', url, {}, true)
 }
@@ -153,7 +175,7 @@ export function addFreightForwarders(data) {
     const url = `${HOST_SERVER}/api/freightforworders`
     return request('post', url, data, true)
 }
-export function deleteFreightForworders() {
+export function deleteFreightForworders(id) {
     const url = `${HOST_SERVER}/api/freightforworders/${id}`
     return request('delete', url, {}, true)
 }

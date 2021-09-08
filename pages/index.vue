@@ -3,7 +3,7 @@
     <v-img
       class="white--text align-end"
       height="500px"
-      src="./pexels-philipp-birmes-830891.jpg"
+      src="./pexels-fauxels-3183153.jpg"
     >
       <v-card-title class="primary"
         >ยินดีต้อนรับเข้าสู่ระบบจัดซื้อ</v-card-title

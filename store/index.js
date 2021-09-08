@@ -2,7 +2,7 @@
 export const state = () => ({
   drawer: true,
   clipped: true,
-  miniVariant: true,
+  miniVariant: false,
   supplier: [],
   errors: null,
   success: null,
@@ -33,8 +33,14 @@ export const getters = {
     } catch (error) {
       return null
     }
-
   },
+  isUserId(state) {
+    try {
+      return state.auth.user.id
+    } catch (error) {
+      return null
+    }
+  }
 }
 export const mutations = {
   set_drawer(state, newVal) {

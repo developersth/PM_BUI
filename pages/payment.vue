@@ -20,7 +20,7 @@
       />
     </v-card-title>
     <v-data-table
-       v-model="selected"
+      v-model="selected"
       :headers="headers"
       :items="desserts"
       :search="search"
@@ -70,8 +70,14 @@
       @add="submitAdd"
       @edit="submitEdit"
       @paymentChange="paymentChange"
+      @openSupplier="openSupplier"
+      @openFreightForwarder="openFreightForwarder"
     />
-
+    <SupplierForm ref="SupplierForm" @add="submitAddSupplier" />
+    <FreightForwarderForm
+      ref="FreightForwarderForm"
+      @add="submitFreightForwarder"
+    />
     <v-snackbar v-model="snackbar.show" :color="snackbar.type">
       {{ snackbar.text }}
       <v-btn color="blue" text @click="snackbar.show = false"> Close </v-btn>
@@ -113,7 +119,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-        <v-card-actions>
+
+    <v-card-actions>
       <v-col class="d-flex" cols="12" sm="2">
         <v-select v-model="action" :items="itemsAction"></v-select>
         <v-btn class="mt-4" color="info" @click="deleteItemAction()">
@@ -126,9 +133,11 @@
 
 <script>
 import PaymentForm from '~/components/forms/PaymentForm.vue'
+import SupplierForm from '~/components/forms/SupplierForm.vue'
+import FreightForwarderForm from '~/components/forms/FreightForwarderForm.vue'
 import * as api from '~/utils/service'
 export default {
-  components: { PaymentForm },
+  components: { PaymentForm, SupplierForm, FreightForwarderForm },
   middleware: 'auth',
   data() {
     return {
@@ -343,6 +352,64 @@ export default {
       else return 'indigo'
     },
     //PaymentForm
+    openFreightForwarder() {
+      this.$refs.FreightForwarderForm.open('add')
+    },
+    openSupplier() {
+      this.$refs.SupplierForm.open('add')
+    },
+    async submitAddSupplier(items) {
+      try {
+        const result = await api.addSupplier(items)
+        if (result.data.success) {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'success',
+          }
+          this.$refs.SupplierForm.close()
+          this.getSupplier()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
+        }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
+    async submitFreightForwarder(items) {
+      try {
+        const result = await api.addFreightForwarders(items)
+        if (result.data.success) {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'success',
+          }
+          this.$refs.FreightForwarderForm.close()
+          this.getFreigh()
+        } else {
+          this.snackbar = {
+            show: true,
+            text: result.data.message,
+            type: 'warning',
+          }
+        }
+      } catch (e) {
+        this.snackbar = {
+          show: true,
+          text: e.message,
+          type: 'error',
+        }
+      }
+    },
     paymentChange(name) {
       console.log('name', name)
       if (name.toLowerCase() === 'supplier') this.getSupplier()
@@ -354,7 +421,9 @@ export default {
         if (result.data) {
           const data = []
           result.data.forEach((element) => {
-            data.push(element.name)
+            if (element.status)
+              //status true
+              data.push(element.name)
           })
           this.$refs.PaymentForm.itemsPaymentTo = data
         }
@@ -364,11 +433,13 @@ export default {
     },
     async getFreigh() {
       try {
-        const result = await api.getFreigh()
+        const result = await api.getFreightForwordersAll()
         if (result.data) {
           const data = []
           result.data.forEach((element) => {
-            data.push(element.name)
+            if (element.status)
+              //status true
+              data.push(element.name)
           })
           this.$refs.PaymentForm.itemsPaymentTo = data
         }

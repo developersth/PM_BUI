@@ -1,5 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
-let BASE_URL = (process.env.NODE_ENV === 'production')? "https://sastech001.th1.proen.cloud":"http://ktd-dev.ddns.net:5000"
+let BASE_URL = (process.env.NODE_ENV === 'production')? "https://sastech001.th1.proen.cloud":"http://localhost:5000"
 
 //let Authorization = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwic3ViIjoiYWRtaW5fZGV2IiwidXNlcm5hbWUiOiJhZG1pbl9kZXYiLCJwYXNzd29yZCI6ImFkbWluX2RldiIsImlhdCI6MTYzMDUwMTUwNX0.ly-u3KQBdiWz6RDQYHMaHCsL3pVWdL60hrAG6xj5120"
 export default {

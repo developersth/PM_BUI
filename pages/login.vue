@@ -7,7 +7,12 @@
             <v-window-item>
               <v-row>
                 <v-col cols="12" md="8">
-                  <v-form @submit.prevent="userLogin">
+                  <v-form
+                    @submit.prevent="userLogin"
+                    ref="form"
+                    v-model="valid"
+                    lazy-validation
+                  >
                     <v-card-text class="mt-12">
                       <h1
                         class="text-center display-2 teal--text text--accent-3"
@@ -15,9 +20,12 @@
                         Sign in
                       </h1>
 
-                      <h4 class="text-center mt-4">sign in  your username and password</h4>
+                      <h4 class="text-center mt-4">
+                        sign in your username and password
+                      </h4>
                       <v-text-field
                         v-model="login.username"
+                        :rules="usernameRules"
                         label="Username"
                         type="text"
                         color="teal accent-3"
@@ -25,6 +33,7 @@
 
                       <v-text-field
                         v-model="login.password"
+                        :rules="passwordRules"
                         label="Password"
                         name="password"
                         type="password"
@@ -42,7 +51,7 @@
                 </v-col>
                 <v-col cols="12" md="4" class="d-flex">
                   <v-row>
-                    <v-card  class="mx-auto" max-width="374">
+                    <v-card class="mx-auto" max-width="374">
                       <v-img
                         height="250"
                         src="./pexels-daria-shevtsova-1560932.jpg"
@@ -64,20 +73,14 @@
                           <div class="grey--text ms-4">4.5 (413)</div>
                         </v-row>
 
-                        <div class="my-4 text-subtitle-1">
-                           Welcome
-                        </div>
+                        <div class="my-4 text-subtitle-1">Welcome</div>
 
-                        <div>
-                         Web app framework base on Nuxt Js ©2021
-                        </div>
+                        <div>Web app framework base on Nuxt Js ©2021</div>
                       </v-card-text>
 
                       <v-divider class="mx-4"></v-divider>
 
                       <v-card-title>By G-Innovation Co., Ltd. </v-card-title>
-
-
                     </v-card>
                   </v-row>
                 </v-col>
@@ -98,11 +101,14 @@
 export default {
   data() {
     return {
+      valid:true,
       login: {
         username: '',
         password: '',
       },
       error: null,
+      usernameRules: [(v) => !!v || 'Please enter your Username.'],
+      passwordRules: [(v) => !!v || 'Please enter your Password'],
       snackbar: {
         show: false,
         text: '',
@@ -114,6 +120,8 @@ export default {
     async userLogin() {
       try {
         //const response = await service.userLogin(this.login)
+        if (!this.$refs.form.validate()) return //chek validate
+        
         let response = await this.$auth.loginWith('local', { data: this.login })
         if (response.data.success) {
           this.snackbar = {

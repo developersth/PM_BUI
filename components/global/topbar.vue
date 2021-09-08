@@ -7,23 +7,29 @@
     <v-btn icon @click.stop="toggleClipped()">
       <v-icon>mdi-application</v-icon>
     </v-btn>
-    <img class="mr-4"   src="~/static/logo.png" height="50" />
-
+    <nuxt-link to="/">
+      <img class="mr-4" src="~/static/logo.png" height="50" />
+    </nuxt-link>
     <v-spacer />
-       <v-menu  open-on-hover offset-y transition="slide-x-transition" bottom right>
-                <template v-slot:activator="{ on, attrs }">
-                    <v-btn x-large icon v-bind="attrs" v-on="on">
-                         <v-icon>mdi-account-circle</v-icon>
-                    </v-btn>
-                </template>
-                <v-list dense>
-                    <v-list-item v-for="(item, index) in account" :key="index" router :to="item.link">
-                       <v-list-item-action>
-                            <v-list-item-title>{{ item.title }}</v-list-item-title>
-                        </v-list-item-action>
-                    </v-list-item>
-                </v-list>
-            </v-menu>
+    <v-menu v-if="isAuthenticated" open-on-hover offset-y transition="slide-x-transition" bottom right >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn x-large icon v-bind="attrs" v-on="on">
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
+      </template>
+      <v-list dense>
+        <v-list-item   
+          v-for="(item, index) in account"
+          :key="index"
+          router
+          :to="item.link"
+        >
+          <v-list-item-action>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <v-switch
       class="mt-5"
       v-model="swtheme"
@@ -41,17 +47,18 @@ export default {
     return {
       title: 'Inter Purchasing',
       swtheme: false,
-         account: [{
-                icon: "mdi-domain",
-                title: "Profile",
-                link: "/mmrservices"
-            },
-            {
-                icon: "mdi-message-text",
-                title: "Logout",
-                link: "/logout"
-            }
-        ]
+      account: [
+        {
+          icon: 'mdi-domain',
+          title: 'Profile',
+          link: '/profile',
+        },
+        {
+          icon: 'mdi-message-text',
+          title: 'Logout',
+          link: '/logout',
+        },
+      ],
     }
   },
   mounted() {
@@ -81,6 +88,11 @@ export default {
       },
       set(newVal) {
         this.$store.commit('set_miniVariant', newVal)
+      },
+    },
+    isAuthenticated: {
+      get() {
+        return this.$store.getters.isAuthenticated
       },
     },
   },

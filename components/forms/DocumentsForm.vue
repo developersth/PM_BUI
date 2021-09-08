@@ -9,52 +9,53 @@
       transition="dialog-bottom-transition"
     >
       <v-card>
-        <v-toolbar dark color="pink">
-          <v-btn icon dark @click="dialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>จัดการเอกสาร #{{ mode }}</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn
-              text
-              :disabled="dialogLoading || mode === 'show'"
-              :loading="dialogLoading"
-              class="white--text"
-              @click="save()"
-              >Save <v-icon> mdi-content-save</v-icon>
+        <v-form
+          class="mt-4"
+          ref="form"
+          v-model="valid"
+          lazy-validation
+          enctype="multipart/form-data"
+          @submit.prevent="save()"
+        >
+          <v-toolbar dark color="pink">
+            <v-btn icon dark @click="dialog = false">
+              <v-icon>mdi-close</v-icon>
             </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-divider></v-divider>
-        <v-card-text>
-          <div class="text-center">
-            <v-dialog
-              v-model="dialogLoading"
-              hide-overlay
-              persistent
-              width="300"
-            >
-              <v-card color="primary" dark>
-                <v-card-text>
-                  Please Wait
-                  <v-progress-linear
-                    indeterminate
-                    color="white"
-                    class="mb-0"
-                  ></v-progress-linear>
-                </v-card-text>
-              </v-card>
-            </v-dialog>
-          </div>
-          <ShowFileForm ref="ShowFileForm" />
-          <v-form
-            class="mt-4"
-            ref="form"
-            v-model="valid"
-            lazy-validation
-            enctype="multipart/form-data"
-          >
+            <v-toolbar-title>จัดการเอกสาร #{{ mode }}</v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-toolbar-items>
+              <v-btn
+                text
+                :disabled="dialogLoading || mode === 'show'"
+                :loading="dialogLoading"
+                class="white--text"
+                type="submit"
+                >Save <v-icon> mdi-content-save</v-icon>
+              </v-btn>
+            </v-toolbar-items>
+          </v-toolbar>
+          <v-divider></v-divider>
+          <v-card-text>
+            <div class="text-center">
+              <v-dialog
+                v-model="dialogLoading"
+                hide-overlay
+                persistent
+                width="300"
+              >
+                <v-card color="primary" dark>
+                  <v-card-text>
+                    Please Wait
+                    <v-progress-linear
+                      indeterminate
+                      color="white"
+                      class="mb-0"
+                    ></v-progress-linear>
+                  </v-card-text>
+                </v-card>
+              </v-dialog>
+            </div>
+            <ShowFileForm ref="ShowFileForm" />
             <v-container fluid>
               <v-row>
                 <v-col cols="12" md="4">
@@ -210,7 +211,7 @@
                             class="mt-4"
                             v-if="k > 0"
                             depressed
-                            color="red"
+                            color="warning"
                             @click="removePR(k)"
                           >
                             <v-icon> mdi-delete</v-icon>ลบ PR #{{ k + 1 }}
@@ -219,7 +220,7 @@
                       </v-row>
                     </v-col>
                     <v-col cols="12" md="12">
-                      <v-btn depressed color="green" @click="addPR()">
+                      <v-btn depressed color="primary" @click="addPR()">
                         <v-icon> mdi-plus</v-icon>เพิ่ม PR
                       </v-btn>
                     </v-col>
@@ -266,7 +267,6 @@
                                 label="ผู้ขอซื้อ"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
-                                @change="getBuyers()"
                               ></v-autocomplete>
                             </v-col>
                             <v-col cols="2" md="2">
@@ -291,7 +291,6 @@
                                 chips
                                 small-chips
                                 label="Supplier"
-                                @change="getSupplier"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
                               ></v-autocomplete>
@@ -332,7 +331,6 @@
                                 chips
                                 small-chips
                                 label="Payment Term"
-                                @change="getPaymentTerm"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
                               ></v-autocomplete>
@@ -358,7 +356,6 @@
                                 chips
                                 small-chips
                                 label="Delivery Term"
-                                @change="getDeliveryTerm"
                                 :disabled="mode === 'show'"
                                 :readonly="mode === 'show'"
                               ></v-autocomplete>
@@ -515,7 +512,6 @@
                             dense
                             small-chips
                             outlined
-                            @change="getFreightForwarder"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
                           ></v-select>
@@ -695,14 +691,14 @@
                 </v-col>
               </v-row>
             </v-container>
-          </v-form>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-btn color="blue darken-1" text @click="dialog = false">
-            Close
-          </v-btn>
-        </v-card-actions>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn color="blue darken-1" text @click="dialog = false">
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-form>
       </v-card>
     </v-dialog>
   </v-row>
@@ -770,7 +766,7 @@ export default {
       itemsSupplier: [],
       itemsPaymentTerm: [],
       itemsDeliveryTerm: [],
-      itemsFreightForworder: ['DHL', 'Penanshin', 'FedEx', 'AIL'],
+      itemsFreightForworder: [],
       loading: false,
       mode: '',
       activePicker: null,
@@ -861,6 +857,7 @@ export default {
           this.docsItems.DeliveryDate,
           'yyyy-MM-dd'
         )
+      this.form.FreightForworder = this.docsItems.FreightForworder
       this.form.InvoiceNo = this.docsItems.InvoiceNo
       this.form.PackingListNo = this.docsItems.PackingListNo
       this.form.BillOfLadingNo = this.docsItems.BillOfLadingNo
@@ -928,7 +925,8 @@ export default {
         //console.log(result.data)
         const keys = []
         for (const key in result.data) {
-          if (result.data[key].name) keys.push(result.data[key].name)
+          if (result.data[key].name && result.data[key].status)
+            keys.push(result.data[key].name)
         }
         this.itemsBuyer = keys
       } catch (e) {
@@ -939,7 +937,8 @@ export default {
       const items = await api.getSupplier()
       var keys = []
       for (var item in items.data) {
-        if (items.data[item].name) keys.push(items.data[item].name)
+        if (items.data[item].name && items.data[item].status)
+          keys.push(items.data[item].name)
       }
       this.itemsSupplier = keys
     },
@@ -947,7 +946,8 @@ export default {
       const items = await api.getPaymentTerm()
       var keys = []
       for (var item in items.data) {
-        if (items.data[item].name) keys.push(items.data[item].name)
+        if (items.data[item].name && items.data[item].status)
+          keys.push(items.data[item].name)
       }
       this.itemsPaymentTerm = keys
     },
@@ -955,7 +955,8 @@ export default {
       const items = await api.getDeliveryTermAll()
       var keys = []
       for (var item in items.data) {
-        if (items.data[item].name) keys.push(items.data[item].name)
+        if (items.data[item].name && items.data[item].status)
+          keys.push(items.data[item].name)
       }
       this.itemsDeliveryTerm = keys
     },
@@ -963,7 +964,8 @@ export default {
       const items = await api.getFreightForwordersAll()
       var keys = []
       for (var item in items.data) {
-        if (items.data[item].name) keys.push(items.data[item].name)
+        if (items.data[item].name && items.data[item].status)
+          keys.push(items.data[item].name)
       }
       this.itemsFreightForworder = keys
     },

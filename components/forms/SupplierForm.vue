@@ -6,6 +6,12 @@
     max-width="600px"
   >
     <v-card>
+          <v-form
+        ref="form"
+        v-model="valid"
+        lazy-validation
+        @submit.prevent="save()"
+      >
       <v-toolbar dark color="primary">
         <v-btn icon dark @click="dialog = false">
           <v-icon>mdi-close</v-icon>
@@ -14,13 +20,6 @@
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-card-text>
-        <v-form
-          class="mt-4"
-          ref="form"
-          v-model="valid"
-          lazy-validation
-          enctype="multipart/form-data"
-        >
           <v-container>
             <v-row>
               <v-col cols="8">
@@ -39,16 +38,16 @@
               </v-col>
             </v-row>
           </v-container>
-        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
         <v-btn text @click="dialog = false"> CLOSE </v-btn>
-        <v-btn class="ma-2" color="primary" @click="save()">
+        <v-btn class="ma-2" color="primary" type="submit">
           SAVE
           <v-icon right dark> mdi-cloud-upload </v-icon>
         </v-btn>
       </v-card-actions>
+              </v-form>
     </v-card>
   </v-dialog>
 </template>
@@ -68,6 +67,7 @@ export default {
   },
   methods: {
     open(mode, data) {
+      this.clearData()
       this.mode = mode
       this.dialog = true
       if (data) {

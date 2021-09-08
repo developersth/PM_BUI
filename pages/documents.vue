@@ -386,6 +386,7 @@ export default {
             type: 'success',
           }
           this.$refs.SupplierForm.close()
+          this.$refs.DocumentsForm.getSupplier()
         } else {
           this.snackbar = {
             show: true,
@@ -415,6 +416,7 @@ export default {
             type: 'success',
           }
           this.$refs.PaymentTermForm.close()
+          this.$refs.DocumentsForm.getPaymentTerm()
         } else {
           this.snackbar = {
             show: true,
@@ -445,6 +447,7 @@ export default {
             type: 'success',
           }
           this.$refs.BuyerForm.close()
+          this.$refs.DocumentsForm.getBuyers()
         } else {
           this.snackbar = {
             show: true,
@@ -473,6 +476,7 @@ export default {
             type: 'success',
           }
           this.$refs.DeliveryTermForm.close()
+          this.$refs.DocumentsForm.getDeliveryTerm
         } else {
           this.snackbar = {
             show: true,
@@ -501,6 +505,7 @@ export default {
             type: 'success',
           }
           this.$refs.FreightForwarderForm.close()
+          this.$refs.DocumentsForm.getFreightForwarder()
         } else {
           this.snackbar = {
             show: true,

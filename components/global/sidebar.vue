@@ -7,7 +7,7 @@
     app
     v-if="isAuthenticated"
   >
-    <v-list class="font-display" >
+    <v-list class="font-display">
       <v-list-item
         v-for="(item, i) in items"
         :key="i"
@@ -42,20 +42,40 @@ export default {
           title: 'จัดการเอกสาร',
           to: '/documents',
         },
-          {
+        {
           icon: 'mdi-bank-outline',
           title: 'Payment',
           to: '/payment',
         },
         {
-          icon: 'mdi-account-box',
-          title: 'ผู้ใช้งาน',
-          to: '/users',
+          icon: 'mdi-account-tie',
+          title: 'ผู้ขอซื้อ',
+          to: '/buyer',
         },
         {
-          icon: 'mdi-pencil',
-          title: 'crudaction',
-          to: '/crudaction',
+          icon: 'mdi-car',
+          title: 'Supplier',
+          to: '/supplier',
+        },
+        {
+          icon: 'mdi-credit-card-outline',
+          title: 'Payment Term',
+          to: '/paymentterm',
+        },
+        {
+          icon: 'mdi-truck-delivery',
+          title: 'Delivery Term',
+          to: '/deliveryterm',
+        },
+           {
+          icon: 'mdi-truck-delivery-outline',
+          title: 'Fight Forwarder',
+          to: '/feight',
+        },
+        {
+          icon: 'mdi-account-supervisor',
+          title: 'ผู้ใช้งาน',
+          to: '/users',
         },
       ],
       title: 'SasTech International Purchasing',
