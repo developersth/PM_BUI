@@ -1,7 +1,7 @@
 <template>
   <v-card width="100vw">
     <v-app-bar dark color="pink">
-      <v-toolbar-title>จัดการเอกสาร</v-toolbar-title>
+      <v-toolbar-title>PO Management</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -66,8 +66,8 @@
         </v-btn>
       </template>
     </v-data-table>
-    <DocumentsForm
-      ref="DocumentsForm"
+    <PoManagementForm
+      ref="PoManagementForm"
       @add="submitAdd"
       @edit="submitEdit"
       @openSupplier="openSupplier"
@@ -128,10 +128,16 @@
       </v-card>
     </v-dialog>
     <v-card-actions>
-      <v-col class="d-flex" cols="12" sm="3">
+      <v-col class="d-flex" cols="6" md="3">
         <v-select v-model="action" :items="itemsAction"></v-select>
-        <v-btn class="mt-4" color="info" @click="deleteItemAction()">
+        <v-btn color="info" class="mt-4" @click="deleteItemAction()">
           ทำกับที่เลือก
+        </v-btn>
+      </v-col>
+      <v-col class="d-flex" cols="4" md="2">
+        <v-btn depressed color="green" @click="onExport()">
+          <v-icon dark> mdi-file-excel </v-icon>
+          Export
         </v-btn>
       </v-col>
     </v-card-actions>
@@ -140,7 +146,7 @@
 
 <script>
 import XLSX from 'xlsx' // import xlsx
-import DocumentsForm from '~/components/forms/DocumentsForm'
+import PoManagementForm from '~/components/forms/PoManagementForm.vue'
 import SupplierForm from '~/components/forms/SupplierForm.vue'
 import PaymentTermForm from '~/components/forms/PaymentTermForm.vue'
 import BuyerForm from '~/components/forms/BuyerForm.vue'
@@ -150,7 +156,7 @@ import FreightForwarderForm from '~/components/forms/FreightForwarderForm.vue'
 import * as api from '~/utils/service'
 export default {
   components: {
-    DocumentsForm,
+    PoManagementForm,
     SupplierForm,
     PaymentTermForm,
     BuyerForm,
@@ -167,7 +173,7 @@ export default {
         type: '',
       },
       action: 'ลบ',
-      itemsAction: ['ลบ', 'export'],
+      itemsAction: ['ลบ'],
       currentPK: null,
       confirm: false,
       confirmAction: false,
@@ -192,11 +198,9 @@ export default {
     vadidateAction() {
       if (this.action === 'ลบ') {
         this.submitDeleteItems(this.selected)
-      } else if (this.action === 'export') {
-        this.onExport(this.selected)
       }
     },
-    //DocumentsForm
+    //PoManagementForm
     async fetchData() {
       this.loading = true
       try {
@@ -214,7 +218,7 @@ export default {
       }
     },
     addItem() {
-      this.$refs.DocumentsForm.open('add')
+      this.$refs.PoManagementForm.open('add')
       //this.getNameUsers()
       //this.getSupplier()
       //this.getPaymentTerm()
@@ -223,7 +227,7 @@ export default {
       try {
         this.currentPK = item.id
         await api.getDocumentsById(this.currentPK).then((response) => {
-          this.$refs.DocumentsForm.open('edit', response.data)
+          this.$refs.PoManagementForm.open('edit', response.data)
           this.loading = false
         })
       } catch (e) {
@@ -239,7 +243,7 @@ export default {
       try {
         this.currentPK = item.id
         await api.getDocumentsById(this.currentPK).then((response) => {
-          this.$refs.DocumentsForm.open('show', response.data)
+          this.$refs.PoManagementForm.open('show', response.data)
           this.loading = false
         })
       } catch (e) {
@@ -261,7 +265,7 @@ export default {
     },
     async submitAdd(data) {
       try {
-        this.$refs.DocumentsForm.dialogLoading = true
+        this.$refs.PoManagementForm.dialogLoading = true
         const result = await api.addDocuments(data)
         if (result.data.success) {
           this.snackbar = {
@@ -269,8 +273,8 @@ export default {
             text: result.data.message,
             type: 'success',
           }
-          this.$refs.DocumentsForm.dialogLoading = false
-          this.$refs.DocumentsForm.close()
+          this.$refs.PoManagementForm.dialogLoading = false
+          this.$refs.PoManagementForm.close()
           this.fetchData()
         } else {
           this.snackbar = {
@@ -278,7 +282,7 @@ export default {
             text: result.data.message,
             type: 'warning',
           }
-          this.$refs.DocumentsForm.dialogLoading = false
+          this.$refs.PoManagementForm.dialogLoading = false
         }
       } catch (e) {
         this.snackbar = {
@@ -286,12 +290,12 @@ export default {
           text: e.message,
           type: 'error',
         }
-        this.$refs.DocumentsForm.dialogLoading = false
+        this.$refs.PoManagementForm.dialogLoading = false
       }
     },
     async submitEdit(data) {
       try {
-        this.$refs.DocumentsForm.dialogLoading = true
+        this.$refs.PoManagementForm.dialogLoading = true
         const result = await api.editDocuments(this.currentPK, data)
         if (result.data.success) {
           this.snackbar = {
@@ -299,8 +303,8 @@ export default {
             text: result.data.message,
             type: 'success',
           }
-          this.$refs.DocumentsForm.dialogLoading = false
-          this.$refs.DocumentsForm.close()
+          this.$refs.PoManagementForm.dialogLoading = false
+          this.$refs.PoManagementForm.close()
           this.fetchData()
         } else {
           this.snackbar = {
@@ -308,7 +312,7 @@ export default {
             text: result.data.message,
             type: 'warning',
           }
-          this.$refs.DocumentsForm.dialogLoading = false
+          this.$refs.PoManagementForm.dialogLoading = false
         }
       } catch (e) {
         this.snackbar = {
@@ -316,7 +320,7 @@ export default {
           text: e.message,
           type: 'error',
         }
-        this.$refs.DocumentsForm.dialogLoading = false
+        this.$refs.PoManagementForm.dialogLoading = false
       }
     },
     async submitDelete() {
@@ -394,7 +398,7 @@ export default {
             type: 'success',
           }
           this.$refs.SupplierForm.close()
-          this.$refs.DocumentsForm.getSupplier()
+          this.$refs.PoManagementForm.getSupplier()
         } else {
           this.snackbar = {
             show: true,
@@ -424,7 +428,7 @@ export default {
             type: 'success',
           }
           this.$refs.PaymentTermForm.close()
-          this.$refs.DocumentsForm.getPaymentTerm()
+          this.$refs.PoManagementForm.getPaymentTerm()
         } else {
           this.snackbar = {
             show: true,
@@ -455,7 +459,7 @@ export default {
             type: 'success',
           }
           this.$refs.BuyerForm.close()
-          this.$refs.DocumentsForm.getBuyers()
+          this.$refs.PoManagementForm.getBuyers()
         } else {
           this.snackbar = {
             show: true,
@@ -484,7 +488,7 @@ export default {
             type: 'success',
           }
           this.$refs.DeliveryTermForm.close()
-          this.$refs.DocumentsForm.getDeliveryTerm
+          this.$refs.PoManagementForm.getDeliveryTerm
         } else {
           this.snackbar = {
             show: true,
@@ -513,7 +517,7 @@ export default {
             type: 'success',
           }
           this.$refs.FreightForwarderForm.close()
-          this.$refs.DocumentsForm.getFreightForwarder()
+          this.$refs.PoManagementForm.getFreightForwarder()
         } else {
           this.snackbar = {
             show: true,
@@ -530,10 +534,17 @@ export default {
       }
     },
     //Report
-    async onExport(item) {
+    async onExport() {
       try {
-        this.confirmAction = false
-        const result = await api.getDocumentExport(item)
+        if (this.selected.length === 0) {
+          this.snackbar = {
+            show: true,
+            text: 'กรุณาเลือก เอกสารที่ต้องการ Export',
+            type: 'error',
+          }
+          return
+        }
+        const result = await api.getDocumentExport(this.selected)
         this.data = result.data
         const dataWS = XLSX.utils.json_to_sheet(this.data)
         const wb = XLSX.utils.book_new()

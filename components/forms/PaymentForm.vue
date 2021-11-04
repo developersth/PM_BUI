@@ -376,7 +376,10 @@ export default {
     addItemPR(index) {
       this.form.itemPR.push({ PRDetail: '', JobNo: '', PRNo: '', Price: '0' })
     },
-    removeItemPR(index) {
+    removeItemPR(items) {
+      const index = this.form.itemPR.findIndex((item) => {
+        return item === items
+      })
       if (this.form.itemPR.length > 0) {
         this.form.itemPR.splice(index, 1)
       }

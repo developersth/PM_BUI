@@ -39,8 +39,8 @@ export default {
         },
         {
           icon: 'mdi-file-document',
-          title: 'จัดการเอกสาร',
-          to: '/documents',
+          title: 'PO Management',
+          to: '/PoManagement',
         },
         {
           icon: 'mdi-bank-outline',

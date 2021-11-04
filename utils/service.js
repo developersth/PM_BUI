@@ -23,12 +23,12 @@ export function editUsers(id,data) {
 }
 //Document
 export function getPaymentTerms() {
-    const url = `${HOST_SERVER}/api/paymentterm`
+    const url = `${HOST_SERVER}/api/payment_term`
     return request('get', url, {}, true)
   }
 //User Role
 export function getUserRoles() {
-    const url = `${HOST_SERVER}/api/userroles`
+    const url = `${HOST_SERVER}/api/user_roles`
     return request('get', url, {}, true)
 }
 //Payments
@@ -61,11 +61,11 @@ export function getFreigh() {
     return request('get', url, {}, true)
 }
 export function getPoNo(payto) {
-    const url = `${HOST_SERVER}/api/documents/get/getpono?payname=${payto}`
+    const url = `${HOST_SERVER}/api/po_management/get/getpono?payname=${payto}`
     return request('get', url, {}, true)
 }
 export function findDataByPoNo(pono) {
-    const url = `${HOST_SERVER}/api/documents/pono/${pono}`
+    const url = `${HOST_SERVER}/api/po_management/pono/${pono}`
     return request('get', url, {}, true)
 }
 export function getPaymentById(id) {
@@ -85,9 +85,9 @@ export function deletePaymentItems(data) {
     return request('delete', url, data, true)
 }
 
-//Documents
+//po_management
 export function getAllDocuments() {
-    const url = `${HOST_SERVER}/api/documents`
+    const url = `${HOST_SERVER}/api/po_management`
     return request('get', url, {}, true)
 }
 export function getBuyers() {
@@ -96,40 +96,40 @@ export function getBuyers() {
 }
 //PaymentTerm
 export function getPaymentTerm() {
-    const url = `${HOST_SERVER}/api/paymentterm`
+    const url = `${HOST_SERVER}/api/payment_term`
     return request('get', url, {}, true)
 }
 export function addPaymentTerm(data) {
-    const url = `${HOST_SERVER}/api/paymentterm`
+    const url = `${HOST_SERVER}/api/payment_term`
     return request('post', url, data, true)
 }
 export function editPaymentTerm(id,data) {
-    const url = `${HOST_SERVER}/api/paymentterm/${id}`
+    const url = `${HOST_SERVER}/api/payment_term/${id}`
     return request('put', url, data, true)
 }
 export function deletePaymentTerm(id) {
-    const url = `${HOST_SERVER}/api/paymentterm/${id}`
+    const url = `${HOST_SERVER}/api/payment_term/${id}`
     return request('delete', url, {}, true)
 }
 
 export function getDocumentsById(id) {
-    const url = `${HOST_SERVER}/api/documents/${id}`
+    const url = `${HOST_SERVER}/api/po_management/${id}`
     return request('get', url, {}, true)
 }
 export function addDocuments(data) {
-    const url = `${HOST_SERVER}/api/documents`
+    const url = `${HOST_SERVER}/api/po_management`
     return request('post', url, data, true)
 }
 export function editDocuments(id,data) {
-    const url = `${HOST_SERVER}/api/documents/${id}`
+    const url = `${HOST_SERVER}/api/po_management/${id}`
     return request('put', url, data, true)
 }
 export function deleteDocuments(id) {
-    const url = `${HOST_SERVER}/api/documents/${id}`
+    const url = `${HOST_SERVER}/api/po_management/${id}`
     return request('delete', url, {}, true)
 }
 export function deleteDocumentsItems(data) {
-    const url = `${HOST_SERVER}/api/documents/delete/item`
+    const url = `${HOST_SERVER}/api/po_management/delete/item`
     return request('delete', url, data, true)
 }
 //Buyer
@@ -151,40 +151,40 @@ export function editBuyer(id,data) {
 }
 //Delivery Term
 export function getDeliveryTermAll() {
-    const url = `${HOST_SERVER}/api/deliveryterms`
+    const url = `${HOST_SERVER}/api/delivery_terms`
     return request('get', url, {}, true)
 }
 export function addDeliveryTerm(data) {
-    const url = `${HOST_SERVER}/api/deliveryterms`
+    const url = `${HOST_SERVER}/api/delivery_terms`
     return request('post', url, data, true)
 }
 export function deleteDeliveryTerm(id) {
-    const url = `${HOST_SERVER}/api/deliveryterms/${id}`
+    const url = `${HOST_SERVER}/api/delivery_terms/${id}`
     return request('delete', url, {}, true)
 }
 export function editDeliveryTerm(id,data) {
-    const url = `${HOST_SERVER}/api/deliveryterms/${id}`
+    const url = `${HOST_SERVER}/api/delivery_terms/${id}`
     return request('put', url, data, true)
 }
 //freightforworders	
 export function getFreightForwordersAll() {
-    const url = `${HOST_SERVER}/api/freightforworders`
+    const url = `${HOST_SERVER}/api/freight_forworders`
     return request('get', url, {}, true)
 }
 export function addFreightForwarders(data) {
-    const url = `${HOST_SERVER}/api/freightforworders`
+    const url = `${HOST_SERVER}/api/freight_forworders`
     return request('post', url, data, true)
 }
 export function deleteFreightForworders(id) {
-    const url = `${HOST_SERVER}/api/freightforworders/${id}`
+    const url = `${HOST_SERVER}/api/freight_forworders/${id}`
     return request('delete', url, {}, true)
 }
 export function editFreightForworders(id,data) {
-    const url = `${HOST_SERVER}/api/freightforworders/${id}`
+    const url = `${HOST_SERVER}/api/freight_forworders/${id}`
     return request('put', url, data, true)
 }
 //Report
 export function getDocumentExport(item) {
-    const url = `${HOST_SERVER}/api/documents/report/exportexcel`
+    const url = `${HOST_SERVER}/api/po_management/report/exportexcel`
     return request('post', url, item, true)
 }

@@ -13,7 +13,7 @@
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>จัดการเอกสาร #{{ mode }}</v-toolbar-title>
+          <v-toolbar-title>จัดการ PO #{{ mode }}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
@@ -88,8 +88,8 @@
                     <v-radio
                       outlined
                       color="secondary"
-                      label="Incomplete"
-                      value="Incomplete"
+                      label="Active"
+                      value="S10"
                     ></v-radio>
                     <v-radio
                       color="primary"
@@ -138,6 +138,7 @@
                         <v-col cols="8" md="4">
                           <v-file-input
                             v-model="form.PoFile"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             small-chips
                             prepend-icon="mdi-attachment"
