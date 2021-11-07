@@ -29,9 +29,9 @@
       loading-text="Loading... Please wait"
       show-select
     >
-      <template v-slot:[`item.Status`]="{ item }">
-        <v-chip :color="getColor(item.Status)" dark>
-          {{ item.Status }}
+      <template v-slot:[`item.StatusName`]="{ item }">
+        <v-chip :color="item.Color" dark>
+          {{ item.StatusName }}
         </v-chip>
       </template>
 
@@ -179,7 +179,7 @@ export default {
       confirmAction: false,
       headers: [
         { text: 'เลขที่เอกสาร', value: 'DocNo' },
-        { text: 'สถานะ', value: 'Status' },
+        { text: 'สถานะ', value: 'StatusName' },
         { text: 'วันที่เอกสาร', value: 'DocDate' },
         { text: 'เลขใบสั่งซื้อ', value: 'PoNo' },
         { text: 'ผู้สั่งซื้อ', value: 'Buyer' },
@@ -374,15 +374,6 @@ export default {
           type: 'error',
         }
       }
-    },
-    getColor(status) {
-      if (status == 'Incomplete') return 'secondary'
-      else if (status == 'Acknowledged') return 'primary'
-      else if (status == 'In Progress') return 'orange'
-      else if (status == 'Shipped') return 'pink'
-      else if (status == 'Received') return 'red'
-      else if (status == 'Completed') return 'green'
-      else return 'indigo'
     },
     //Supplierform
     openSupplier() {

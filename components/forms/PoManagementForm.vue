@@ -91,30 +91,28 @@
                       label="Active"
                       value="S10"
                     ></v-radio>
-                    <v-radio
-                      color="primary"
-                      label="Acknowledged"
-                      value="Acknowledged"
-                    ></v-radio>
-                    <v-radio
-                      color="orange"
-                      label="In Progress"
-                      value="In Progress"
-                    ></v-radio>
+                    <v-radio color="primary" label="Ack" value="S20"></v-radio>
+                    <v-radio color="orange" label="Delay" value="S30"></v-radio>
                     <v-radio
                       color="pink"
-                      label="Shipped"
-                      value="Shipped"
+                      label="For Ship"
+                      value="S31"
+                    ></v-radio>
+                    <v-radio color="red" label="Ship" value="S40"></v-radio>
+                    <v-radio
+                      color="secondary"
+                      label="Onboard"
+                      value="S50"
                     ></v-radio>
                     <v-radio
-                      color="red"
-                      label="Received"
-                      value="Received"
+                      color="info"
+                      label="received"
+                      value="S60"
                     ></v-radio>
                     <v-radio
                       color="green"
                       label="Completed"
-                      value="Completed"
+                      value="S99"
                     ></v-radio>
                   </v-radio-group>
                 </v-col>
@@ -138,6 +136,7 @@
                         <v-col cols="8" md="4">
                           <v-file-input
                             v-model="form.PoFile"
+                            :rules="FileRules"
                             show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             small-chips
@@ -187,6 +186,8 @@
                         <v-col class="d-flex" cols="8" md="3">
                           <v-file-input
                             v-model="itemPR.PRFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             small-chips
                             prepend-icon="mdi-attachment"
@@ -396,6 +397,8 @@
                     <v-col class="d-flex" cols="8" md="6">
                       <v-file-input
                         v-model="form.OrderAckFile"
+                        :rules="FileRules"
+                        show-size
                         accept=".jpg,.jpeg,.png,.pdf"
                         prepend-icon="mdi-attachment"
                         truncate-length="30"
@@ -453,6 +456,8 @@
                         <v-col class="d-flex" cols="12" md="3">
                           <v-file-input
                             v-model="form.InvoiceFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -482,6 +487,8 @@
                         <v-col class="d-flex" cols="12" md="3">
                           <v-file-input
                             v-model="form.PackingListFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -499,63 +506,90 @@
                             </v-btn>
                           </div>
                         </v-col>
-                        <v-col cols="12" md="12">
-                          <div class="text-h6 text-decoration-underline">
-                            From Freight forwarder
-                          </div>
+                      </v-row>
+                    </v-col>
+                    <v-col cols="12" md="12">
+                      <div class="text-h6 text-decoration-underline">
+                        From Import/Export
+                      </div>
+                      <v-btn depressed color="info" @click="addPR()">
+                        <v-icon> mdi-plus</v-icon>เพิ่ม
+                      </v-btn>
+                    </v-col>
+                    <v-col cols="12" lg="12">
+                      <v-row>
+                        <v-col cols="6" md="3">
+                          <v-row>
+                            <v-col class="mt-4" cols="10" md="10">
+                              <v-select
+                                prepend-icon="mdi-airplane-takeoff"
+                                v-model="form.FreightForworder"
+                                :items="itemsFreightForworder"
+                                label="Freight Forwarder"
+                                dense
+                                small-chips
+                                outlined
+                                :disabled="mode === 'show'"
+                                :readonly="mode === 'show'"
+                              ></v-select>
+                            </v-col>
+                            <v-col class="mt-4" cols="2" md="2">
+                              <v-btn
+                                depressed
+                                color="primary"
+                                @click="openFreightForwarder()"
+                              >
+                                <v-icon> mdi-plus</v-icon>
+                              </v-btn>
+                            </v-col>
+                          </v-row>
                         </v-col>
-                        <v-col class="d-flex mt-4" cols="10" md="4">
-                          <v-select
-                            prepend-icon="mdi-airplane-takeoff"
-                            v-model="form.FreightForworder"
-                            :items="itemsFreightForworder"
-                            label="Freight Forwarder"
-                            dense
-                            small-chips
-                            outlined
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
-                          ></v-select>
-                        </v-col>
-                        <v-col class="d-flex mt-4" cols="2" md="2">
-                          <v-btn
-                            depressed
-                            color="primary"
-                            @click="openFreightForwarder()"
-                          >
-                            <v-icon> mdi-plus</v-icon>
-                          </v-btn>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        <v-col cols="6" md="3">
                           <v-text-field
-                            v-model="form.BillOfLadingNo"
+                            v-model="form.ImportDutyValue"
                             prepend-icon="mdi-receipt"
-                            label="เลขที่ใบขน"
+                            label="ค่าภาษีนำเข้า/THB"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
                           ></v-text-field>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
-                          <v-file-input
-                            v-model="form.BillOfLadingFile"
-                            accept=".jpg,.jpeg,.png,.pdf"
-                            prepend-icon="mdi-attachment"
-                            truncate-length="30"
-                            label="ไฟล์แนบ (เลขที่ใบขน)"
-                          ></v-file-input>
-                          <div v-if="docsItems.BillOfLadingFile">
-                            <v-btn
-                              class="mt-6"
-                              depressed
-                              small
-                              color="pink"
-                              @click="showFileModal(docsItems.BillOfLadingFile)"
-                            >
-                              <v-icon> mdi-eye</v-icon>
-                            </v-btn>
-                          </div>
+                        <v-col cols="12" md="6">
+                          <v-row>
+                            <v-col cols="6" md="6">
+                              <v-text-field
+                                v-model="form.BillOfLadingNo"
+                                prepend-icon="mdi-receipt"
+                                label="เลขที่ใบขน"
+                                :disabled="mode === 'show'"
+                                :readonly="mode === 'show'"
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="6" md="6">
+                              <v-file-input
+                                v-model="form.BillOfLadingFile"
+                                :rules="FileRules"
+                                show-size
+                                accept=".jpg,.jpeg,.png,.pdf"
+                                prepend-icon="mdi-attachment"
+                                truncate-length="30"
+                                label="ไฟล์แนบ (เลขที่ใบขน)"
+                              ></v-file-input>
+                              <div v-if="docsItems.BillOfLadingFile">
+                                <v-btn
+                                  depressed
+                                  small
+                                  color="pink"
+                                  @click="
+                                    showFileModal(docsItems.BillOfLadingFile)
+                                  "
+                                >
+                                  <v-icon> mdi-eye</v-icon>
+                                </v-btn>
+                              </div>
+                            </v-col>
+                          </v-row>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
+                        <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
                             v-model="form.AirWayBillNo"
                             prepend-icon="mdi-receipt"
@@ -567,6 +601,8 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.AirWayBillFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -574,7 +610,6 @@
                           ></v-file-input>
                           <div v-if="docsItems.AirWayBillFile">
                             <v-btn
-                              class="mt-6"
                               depressed
                               small
                               color="pink"
@@ -584,7 +619,7 @@
                             </v-btn>
                           </div>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
+                        <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
                             v-model="form.TaxInvoiceNo"
                             prepend-icon="mdi-receipt"
@@ -596,6 +631,8 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.TaxInvoiceFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -603,7 +640,6 @@
                           ></v-file-input>
                           <div v-if="docsItems.TaxInvoiceFile">
                             <v-btn
-                              class="mt-6"
                               depressed
                               small
                               color="pink"
@@ -613,17 +649,7 @@
                             </v-btn>
                           </div>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
-                          <v-text-field
-                            v-model="form.TaxValue"
-                            prepend-icon="mdi-cash-100"
-                            label="มูลค่าของ Tax Inv."
-                            type="number"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
+                        <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
                             v-model="form.FreightInvoiceNo"
                             prepend-icon="mdi-receipt"
@@ -635,6 +661,8 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.FreightInvoiceFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -642,7 +670,6 @@
                           ></v-file-input>
                           <div v-if="docsItems.FreightInvoiceFile">
                             <v-btn
-                              class="mt-6"
                               depressed
                               small
                               color="pink"
@@ -654,7 +681,7 @@
                             </v-btn>
                           </div>
                         </v-col>
-                        <v-col class="d-flex" cols="6" md="2">
+                        <v-col class="d-flex" cols="6" md="3">
                           <v-text-field
                             v-model="form.FreightInvoiceValue"
                             prepend-icon="mdi-cash-100"
@@ -667,6 +694,8 @@
                         <v-col class="d-flex" cols="6" md="3">
                           <v-file-input
                             v-model="form.DeliveryNoticeFile"
+                            :rules="FileRules"
+                            show-size
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -674,7 +703,6 @@
                           ></v-file-input>
                           <div v-if="docsItems.DeliveryNoticeFile">
                             <v-btn
-                              class="mt-6"
                               depressed
                               small
                               color="pink"
@@ -699,6 +727,11 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Close
           </v-btn>
+          <v-spacer />
+          <v-btn class="ma-2" color="yellow">
+             <v-icon right dark> mdi-eye </v-icon>
+            Even Log
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -715,7 +748,7 @@ export default {
       form: {
         DocNo: '',
         DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
-        Status: 'Incomplete',
+        Status: 'S10',
         PoNo: '',
         itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
         ProductValue: '',
@@ -740,6 +773,7 @@ export default {
         TaxInvoiceNo: '',
         TaxInvoiceFile: null,
         TaxValue: '',
+        ImportDutyValue: '',
         FreightInvoiceNo: '',
         FreightInvoiceFile: null,
         FreightInvoiceValue: '',
@@ -754,6 +788,9 @@ export default {
       PRNoRules: [
         (v) => !!v || 'กรุณากรอก เลขที่ใบขอซื้อ',
         (v) => (v && v.length <= 20) || 'เลขที่ใบขอซื้อใส่ได้เกิน 20 ตัวอักษร',
+      ],
+      FileRules: [
+        (v) => !v || v.size / 1024 / 1024 < 4 || 'ขนาดไฟล์ไม่เกิน 4 MB ',
       ],
       dialog: false,
       dialogLoading: false,
@@ -777,6 +814,23 @@ export default {
   },
   watch: {},
   methods: {
+    checkFileSize(e) {
+      const file = this.$refs.file.files[0]
+
+      if (!file) {
+        e.preventDefault()
+        alert('No file chosen')
+        return
+      }
+
+      if (file.size > 1024 * 1024) {
+        e.preventDefault()
+        alert('File too big (> 1MB)')
+        return
+      }
+
+      alert('File OK')
+    },
     addPR(index) {
       this.form.itemPR.push({
         PRNo: '',
@@ -864,7 +918,6 @@ export default {
       this.form.BillOfLadingNo = this.docsItems.BillOfLadingNo
       this.form.AirWayBillNo = this.docsItems.AirWayBillNo
       this.form.TaxInvoiceNo = this.docsItems.TaxInvoiceNo
-      this.form.TaxValue = this.docsItems.TaxValue
       this.form.FreightInvoiceNo = this.docsItems.FreightInvoiceNo
       this.form.FreightInvoiceValue = this.docsItems.FreightInvoiceValue
       this.form.DocNo = this.docsItems.DocNo
@@ -876,7 +929,7 @@ export default {
       this.form = {
         DocNo: '',
         DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
-        Status: 'Incomplete',
+        Status: 'S10',
         PoNo: '',
         PoFile: null,
         itemPR: [],
@@ -903,6 +956,7 @@ export default {
         TaxInvoiceNo: '',
         TaxInvoiceFile: null,
         TaxValue: '',
+        ImportDutyValue: '',
         FreightInvoiceNo: '',
         FreightInvoiceFile: null,
         FreightInvoiceValue: '',
@@ -1119,7 +1173,6 @@ export default {
       formData.append('BillOfLadingNo', this.form.BillOfLadingNo.trim())
       formData.append('AirWayBillNo', this.form.AirWayBillNo.trim())
       formData.append('TaxInvoiceNo', this.form.TaxInvoiceNo.trim())
-      formData.append('TaxValue', this.form.TaxValue.trim())
       formData.append('FreightInvoiceNo', this.form.FreightInvoiceNo.trim())
       formData.append(
         'FreightInvoiceValue',
