@@ -458,6 +458,7 @@
                             v-model="form.InvoiceFile"
                             :rules="FileRules"
                             show-size
+                            small-chips
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -489,6 +490,7 @@
                             v-model="form.PackingListFile"
                             :rules="FileRules"
                             show-size
+                            small-chips
                             accept=".jpg,.jpeg,.png,.pdf"
                             prepend-icon="mdi-attachment"
                             truncate-length="30"
@@ -508,32 +510,35 @@
                         </v-col>
                       </v-row>
                     </v-col>
+
                     <v-col cols="12" md="12">
                       <div class="text-h6 text-decoration-underline">
-                        From Import/Export
+                        From Import
                       </div>
-                      <v-btn depressed color="info" @click="addPR()">
-                        <v-icon> mdi-plus</v-icon>เพิ่ม
-                      </v-btn>
                     </v-col>
-                    <v-col cols="12" lg="12">
-                      <v-row>
-                        <v-col cols="6" md="3">
+                    <v-col cols="12">
+                      <v-data-table
+                        :headers="headers"
+                        :items="itemsImport"
+                        :hide-default-footer="true"
+                        class="elevation-1"
+                      >
+                        <template v-slot:[`item.Number`]="{ item }">
+                          {{ itemsImport.indexOf(item) + 1 }}
+                        </template>
+                        <template v-slot:[`item.FreightForworder`]="{ item }">
                           <v-row>
-                            <v-col class="mt-4" cols="10" md="10">
+                            <v-col class="mt-4" cols="8" md="8">
                               <v-select
-                                prepend-icon="mdi-airplane-takeoff"
-                                v-model="form.FreightForworder"
+                                v-model="item.FreightForworder"
                                 :items="itemsFreightForworder"
                                 label="Freight Forwarder"
                                 dense
                                 small-chips
                                 outlined
-                                :disabled="mode === 'show'"
-                                :readonly="mode === 'show'"
                               ></v-select>
                             </v-col>
-                            <v-col class="mt-4" cols="2" md="2">
+                            <v-col class="mt-4" cols="4" md="4">
                               <v-btn
                                 depressed
                                 color="primary"
@@ -543,70 +548,54 @@
                               </v-btn>
                             </v-col>
                           </v-row>
-                        </v-col>
-                        <v-col cols="6" md="3">
+                        </template>
+                        <template v-slot:[`item.ImportDutyValue`]="{ item }">
                           <v-text-field
-                            v-model="form.ImportDutyValue"
-                            prepend-icon="mdi-receipt"
-                            label="ค่าภาษีนำเข้า/THB"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" md="6">
-                          <v-row>
-                            <v-col cols="6" md="6">
-                              <v-text-field
-                                v-model="form.BillOfLadingNo"
-                                prepend-icon="mdi-receipt"
-                                label="เลขที่ใบขน"
-                                :disabled="mode === 'show'"
-                                :readonly="mode === 'show'"
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="6" md="6">
-                              <v-file-input
-                                v-model="form.BillOfLadingFile"
-                                :rules="FileRules"
-                                show-size
-                                accept=".jpg,.jpeg,.png,.pdf"
-                                prepend-icon="mdi-attachment"
-                                truncate-length="30"
-                                label="ไฟล์แนบ (เลขที่ใบขน)"
-                              ></v-file-input>
-                              <div v-if="docsItems.BillOfLadingFile">
-                                <v-btn
-                                  depressed
-                                  small
-                                  color="pink"
-                                  @click="
-                                    showFileModal(docsItems.BillOfLadingFile)
-                                  "
-                                >
-                                  <v-icon> mdi-eye</v-icon>
-                                </v-btn>
-                              </div>
-                            </v-col>
-                          </v-row>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                            class="mt-4"
+                            type="number"
+                            v-model="item.ImportDutyValue"
+                            outlined
+                            dense
+                          />
+                        </template>
+                        <template v-slot:[`item.BillOfLadingNo`]="{ item }">
                           <v-text-field
-                            v-model="form.AirWayBillNo"
-                            prepend-icon="mdi-receipt"
-                            label="Air Waybill No."
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
+                            v-model="item.BillOfLadingNo"
                           ></v-text-field>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        </template>
+                        <template v-slot:[`item.BillOfLadingFile`]="{ item }">
                           <v-file-input
-                            v-model="form.AirWayBillFile"
+                            v-model="item.BillOfLadingFile"
                             :rules="FileRules"
                             show-size
+                            small-chips
                             accept=".jpg,.jpeg,.png,.pdf"
-                            prepend-icon="mdi-attachment"
-                            truncate-length="30"
-                            label="ไฟล์แนบ (Air Waybill No)"
+                            truncate-length="15"
+                          ></v-file-input>
+                          <div v-if="docsItems.BillOfLadingFile">
+                            <v-btn
+                              depressed
+                              small
+                              color="pink"
+                              @click="showFileModal(docsItems.BillOfLadingFile)"
+                            >
+                              <v-icon> mdi-eye</v-icon>
+                            </v-btn>
+                          </div>
+                        </template>
+                        <template v-slot:[`item.AirWayBillNo`]="{ item }">
+                          <v-text-field
+                            v-model="item.AirWayBillNo"
+                          ></v-text-field>
+                        </template>
+                        <template v-slot:[`item.AirWayBillFile`]="{ item }">
+                          <v-file-input
+                            v-model="item.AirWayBillFile"
+                            :rules="FileRules"
+                            show-size
+                            small-chips
+                            accept=".jpg,.jpeg,.png,.pdf"
+                            truncate-length="15"
                           ></v-file-input>
                           <div v-if="docsItems.AirWayBillFile">
                             <v-btn
@@ -618,25 +607,20 @@
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        </template>
+                        <template v-slot:[`item.TaxInvoiceNo`]="{ item }">
                           <v-text-field
-                            v-model="form.TaxInvoiceNo"
-                            prepend-icon="mdi-receipt"
-                            label="Tax Invoice No."
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
+                            v-model="item.TaxInvoiceNo"
                           ></v-text-field>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        </template>
+                        <template v-slot:[`item.TaxInvoiceFile`]="{ item }">
                           <v-file-input
-                            v-model="form.TaxInvoiceFile"
+                            v-model="item.TaxInvoiceFile"
                             :rules="FileRules"
                             show-size
+                            small-chips
                             accept=".jpg,.jpeg,.png,.pdf"
-                            prepend-icon="mdi-attachment"
-                            truncate-length="30"
-                            label="ไฟล์แนบ (Tax Invoice)"
+                            truncate-length="15"
                           ></v-file-input>
                           <div v-if="docsItems.TaxInvoiceFile">
                             <v-btn
@@ -648,25 +632,31 @@
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        </template>
+                        <template v-slot:[`item.FreightInvoiceNo`]="{ item }">
                           <v-text-field
-                            v-model="form.FreightInvoiceNo"
-                            prepend-icon="mdi-receipt"
-                            label="Freight Invoice No."
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
+                            v-model="item.FreightInvoiceNo"
                           ></v-text-field>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        </template>
+                        <template
+                          v-slot:[`item.FreightInvoiceValue`]="{ item }"
+                        >
+                          <v-text-field
+                            class="mt-4"
+                            type="number"
+                            outlined
+                            dense
+                            v-model="item.FreightInvoiceValue"
+                          ></v-text-field>
+                        </template>
+                        <template v-slot:[`item.FreightInvoiceFile`]="{ item }">
                           <v-file-input
-                            v-model="form.FreightInvoiceFile"
+                            v-model="item.FreightInvoiceFile"
                             :rules="FileRules"
                             show-size
+                            small-chips
                             accept=".jpg,.jpeg,.png,.pdf"
-                            prepend-icon="mdi-attachment"
-                            truncate-length="30"
-                            label="ไฟล์แนบ (Freight Invoice)"
+                            truncate-length="15"
                           ></v-file-input>
                           <div v-if="docsItems.FreightInvoiceFile">
                             <v-btn
@@ -680,26 +670,15 @@
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
-                          <v-text-field
-                            v-model="form.FreightInvoiceValue"
-                            prepend-icon="mdi-cash-100"
-                            label="มูลค่าของ Freight Inv."
-                            type="number"
-                            :disabled="mode === 'show'"
-                            :readonly="mode === 'show'"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col class="d-flex" cols="6" md="3">
+                        </template>
+                        <template v-slot:[`item.DeliveryNoticeFile`]="{ item }">
                           <v-file-input
-                            v-model="form.DeliveryNoticeFile"
+                            v-model="item.DeliveryNoticeFile"
                             :rules="FileRules"
                             show-size
+                            small-chips
                             accept=".jpg,.jpeg,.png,.pdf"
-                            prepend-icon="mdi-attachment"
-                            truncate-length="30"
-                            label="ไฟล์แนบ (แจ้งรับสินค้า)"
+                            truncate-length="15"
                           ></v-file-input>
                           <div v-if="docsItems.DeliveryNoticeFile">
                             <v-btn
@@ -713,8 +692,95 @@
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
-                        </v-col>
-                      </v-row>
+                        </template>
+                        <template v-slot:[`item.actions`]="{ item }">
+                          <v-btn
+                            class="mx-2"
+                            fab
+                            dark
+                            small
+                            color="red"
+                            @click="removeItemImp(item)"
+                          >
+                            <v-icon dark> mdi-delete </v-icon>
+                          </v-btn>
+                        </template>
+                      </v-data-table>
+                      <v-card-actions>
+                        <v-spacer />
+                        <v-btn depressed color="green" @click="addItemImport()">
+                          <v-icon> mdi-plus</v-icon>เพิ่ม Import
+                        </v-btn>
+                      </v-card-actions>
+                    </v-col>
+                    <v-col cols="12" md="8">
+                      <template>
+                        <v-card>
+                          <v-toolbar color="indigo" dark>
+                            <v-toolbar-title>Event Log</v-toolbar-title>
+
+                            <v-spacer></v-spacer>
+                          </v-toolbar>
+                          <v-card-text>
+                            <v-data-table
+                              :headers="HeaderEventlog"
+                              :items="itemEventLog"
+                              :hide-default-footer="true"
+                              class="elevation-1"
+                            >
+                              <template v-slot:[`item.Number`]="{ item }">
+                                {{ itemEventLog.indexOf(item) + 1 }}
+                              </template>
+                              <template v-slot:[`item.event_date`]="{ item }">
+                                <v-menu
+                                  v-model="menuEventDate"
+                                  :close-on-content-click="false"
+                                  max-width="290"
+                                >
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                      v-model="item.event_date"
+                                      clearable
+                                      readonly
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      @click:clear="date = null"
+                                    ></v-text-field>
+                                  </template>
+                                  <v-date-picker
+                                    v-model="item.event_date"
+                                    @change="menuEventDate = false"
+                                  ></v-date-picker>
+                                </v-menu>
+                              </template>
+                              <template v-slot:[`item.detail`]="{ item }">
+                                  <v-text-field v-model="item.detail" />
+                                </template>
+                                                <template v-slot:[`item.remarks`]="{ item }">
+                                  <v-text-field v-model="item.remarks" />
+                                </template>
+                              <template v-slot:[`item.actions`]="{ item }">
+                                <v-btn
+                                  class="mx-2"
+                                  fab
+                                  dark
+                                  small
+                                  color="red"
+                                  @click="removeEvent(item)"
+                                >
+                                  <v-icon dark> mdi-delete </v-icon>
+                                </v-btn>
+                              </template>
+                            </v-data-table>
+                            <v-card-actions>
+                              <v-spacer />
+                              <v-btn depressed color="info" @click="addEvent()">
+                                <v-icon> mdi-plus</v-icon>เพิ่ม Event
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card-text>
+                        </v-card>
+                      </template>
                     </v-col>
                   </v-row>
                 </v-col>
@@ -728,10 +794,6 @@
             Close
           </v-btn>
           <v-spacer />
-          <v-btn class="ma-2" color="yellow">
-             <v-icon right dark> mdi-eye </v-icon>
-            Even Log
-          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -745,6 +807,96 @@ export default {
   components: { ShowFileForm },
   data() {
     return {
+      headers: [
+        { text: 'No.', value: 'Number', class: 'primary--text', width: '70px' },
+        {
+          text: 'Freight',
+          value: 'FreightForworder',
+          class: 'primary--text',
+          width: '350px',
+        },
+        {
+          text: 'ค่าภาษีนำเข้า/THB.',
+          value: 'ImportDutyValue',
+          class: 'primary--text',
+          width: '150px',
+        },
+        {
+          text: 'เลขที่ใบขน.',
+          value: 'BillOfLadingNo',
+          class: 'primary--text',
+          width: '150px',
+        },
+        {
+          text: 'ไฟล์แนบ(เลขใบขน)',
+          value: 'BillOfLadingFile',
+          class: 'primary--text',
+          width: '200px',
+        },
+        {
+          text: 'AirWayBillNo.',
+          value: 'AirWayBillNo',
+          class: 'primary--text',
+          width: '150px',
+        },
+        {
+          text: 'ไฟล์แนบ(AriwayBill).',
+          value: 'AirWayBillFile',
+          class: 'primary--text',
+          width: '200px',
+        },
+        {
+          text: 'TaxInvoiceNo.',
+          value: 'TaxInvoiceNo',
+          class: 'primary--text',
+          width: '150px',
+        },
+        {
+          text: 'ไฟล์แนบ(TaxInvoice).',
+          value: 'TaxInvoiceFile',
+          class: 'primary--text',
+          width: '200px',
+        },
+        {
+          text: 'FreightInvNo.',
+          value: 'FreightInvoiceNo',
+          class: 'primary--text',
+          width: '150px',
+        },
+        {
+          text: 'ค่า Freight/THB.',
+          value: 'FreightInvoiceValue',
+          class: 'primary--text',
+          width: '150px',
+        },
+        {
+          text: 'ไฟล์แนบ(FreightInvoice).',
+          value: 'FreightInvoiceFile',
+          class: 'primary--text',
+          width: '200px',
+        },
+        {
+          text: 'ไฟล์แนบ(ใบแจ้งรับสินค้า).',
+          value: 'DeliveryNoticeFile',
+          class: 'primary--text',
+          width: '200px',
+        },
+        {
+          text: 'Actions',
+          value: 'actions',
+          sortable: false,
+          class: 'primary--text',
+        },
+      ],
+      HeaderEventlog: [
+        { text: 'No.', value: 'Number', width: '7%' },
+        { text: 'Event Date', value: 'event_date', width: '15%' },
+        { text: 'status', value: 'status', width: '10%' },
+        { text: 'รายละเอียด.', value: 'detail', width: '25%' },
+        { text: 'วันที่บันทึก', value: 'record_date', width: '15%' },
+        { text: 'หมายเหตุ', value: 'remarks', width: '15%' },
+        { text: 'Actions', value: 'actions', sortable: false },
+      ],
       form: {
         DocNo: '',
         DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
@@ -765,19 +917,6 @@ export default {
         InvoiceFile: null,
         PackingListNo: '',
         PackingListFile: null,
-        FreightForworder: '',
-        BillOfLadingNo: '',
-        BillOfLadingFile: null,
-        AirWayBillNo: '',
-        AirWayBillFile: null,
-        TaxInvoiceNo: '',
-        TaxInvoiceFile: null,
-        TaxValue: '',
-        ImportDutyValue: '',
-        FreightInvoiceNo: '',
-        FreightInvoiceFile: null,
-        FreightInvoiceValue: '',
-        DeliveryNoticeFile: null,
       },
       valid: true,
       PoNoRules: [
@@ -796,6 +935,7 @@ export default {
       dialogLoading: false,
       menu2: false,
       menuDeliveryDate: false,
+      menuEventDate: true,
       alignments: ['start', 'center', 'end'],
       currency: ['THB', 'USD', 'CNY', 'EUR'],
       docsItems: [],
@@ -805,6 +945,23 @@ export default {
       itemsPaymentTerm: [],
       itemsDeliveryTerm: [],
       itemsFreightForworder: [],
+      itemsImport: [
+        {
+          FreightForworder: '',
+          ImportDutyValue: 0,
+          BillOfLadingNo: '',
+          BillOfLadingFile: null,
+          AirWayBillNo: '',
+          AirWayBillFile: null,
+          TaxInvoiceNo: '',
+          TaxInvoiceFile: null,
+          FreightInvoiceNo: '',
+          FreightInvoiceFile: null,
+          FreightInvoiceValue: 0,
+          DeliveryNoticeFile: null,
+        },
+      ],
+      itemEventLog: [],
       loading: false,
       mode: '',
       activePicker: null,
@@ -814,23 +971,6 @@ export default {
   },
   watch: {},
   methods: {
-    checkFileSize(e) {
-      const file = this.$refs.file.files[0]
-
-      if (!file) {
-        e.preventDefault()
-        alert('No file chosen')
-        return
-      }
-
-      if (file.size > 1024 * 1024) {
-        e.preventDefault()
-        alert('File too big (> 1MB)')
-        return
-      }
-
-      alert('File OK')
-    },
     addPR(index) {
       this.form.itemPR.push({
         PRNo: '',
@@ -844,6 +984,49 @@ export default {
         this.form.itemPR.splice(index, 1)
       }
     },
+    addItemImport() {
+      this.itemsImport.push({
+        FreightForworder: '',
+        ImportDutyValue: 0,
+        BillOfLadingNo: '',
+        BillOfLadingFile: null,
+        AirWayBillNo: '',
+        AirWayBillFile: null,
+        TaxInvoiceNo: '',
+        TaxInvoiceFile: null,
+        FreightInvoiceNo: '',
+        FreightInvoiceFile: null,
+        FreightInvoiceValue: 0,
+        DeliveryNoticeFile: null,
+      })
+    },
+    removeItemImp(item) {
+      const index = this.itemsImport.findIndex((v) => {
+        return v === item
+      })
+      if (this.itemsImport.length > 0) {
+        this.itemsImport.splice(index, 1)
+      }
+    },
+    addEvent(index) {
+      this.itemEventLog.push({
+        pm_id: '',
+        event_date: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
+        status: this.form.Status,
+        detail: '',
+        record_date: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
+        remarks: '',
+      })
+    },
+    removeEvent(item) {
+      const index = this.itemEventLog.findIndex((v) => {
+        return v === item
+      })
+      if (this.itemEventLog.length > 0) {
+        this.itemEventLog.splice(index, 1)
+      }
+    },
+
     save(date) {
       this.$refs.menu2.save(date)
     },
@@ -863,6 +1046,7 @@ export default {
     open(mode, data) {
       this.dialog = true
       this.mode = mode
+      this.clearData()
       this.getBuyers()
       this.getSupplier()
       this.getPaymentTerm()
@@ -870,16 +1054,12 @@ export default {
       this.getFreightForwarder()
       if (data) {
         this.assignValue(data)
-      } else {
-        //mode add
-        this.clearData()
       }
     },
     close() {
       this.dialog = false
     },
     assignValue(data) {
-      this.clearData()
       this.docsItems = data
       if (this.docsItems.DocDate)
         this.form.DocDate = this.$dateFns.format(
@@ -912,15 +1092,27 @@ export default {
           this.docsItems.DeliveryDate,
           'yyyy-MM-dd'
         )
-      this.form.FreightForworder = this.docsItems.FreightForworder
-      this.form.InvoiceNo = this.docsItems.InvoiceNo
-      this.form.PackingListNo = this.docsItems.PackingListNo
-      this.form.BillOfLadingNo = this.docsItems.BillOfLadingNo
-      this.form.AirWayBillNo = this.docsItems.AirWayBillNo
-      this.form.TaxInvoiceNo = this.docsItems.TaxInvoiceNo
-      this.form.FreightInvoiceNo = this.docsItems.FreightInvoiceNo
-      this.form.FreightInvoiceValue = this.docsItems.FreightInvoiceValue
       this.form.DocNo = this.docsItems.DocNo
+      console.log(this.docsItems)
+      if (this.docsItems.itemImport) {
+        this.itemsImport = []
+        for (var key in this.docsItems.itemPR) {
+          this.itemsImport.push({
+            FreightForworder: this.docsItems.itemImport[key].FreightForworder,
+            ImportDutyValue: this.docsItems.itemImport[key].ImportDutyValue,
+            BillOfLadingNo: this.docsItems.itemImport[key].BillOfLadingNo,
+            AirWayBillNo: this.docsItems.itemImport[key].AirWayBillNo,
+            AirWayBillFile: null,
+            TaxInvoiceNo: this.docsItems.itemImport[key].TaxInvoiceNo,
+            TaxInvoiceFile: null,
+            FreightInvoiceNo: this.docsItems.itemImport[key].FreightInvoiceNo,
+            FreightInvoiceFile: null,
+            FreightInvoiceValue:
+              this.docsItems.itemImport[key].FreightInvoiceValue,
+            DeliveryNoticeFile: null,
+          })
+        }
+      }
     },
     ResetForm() {
       this.$refs.form.reset()
@@ -948,19 +1140,23 @@ export default {
         InvoiceFile: null,
         PackingListNo: '',
         PackingListFile: null,
-        FreightForworder: '',
-        BillOfLadingNo: '',
-        BillOfLadingFile: null,
-        AirWayBillNo: '',
-        AirWayBillFile: null,
-        TaxInvoiceNo: '',
-        TaxInvoiceFile: null,
-        TaxValue: '',
-        ImportDutyValue: '',
-        FreightInvoiceNo: '',
-        FreightInvoiceFile: null,
-        FreightInvoiceValue: '',
-        DeliveryNoticeFile: null,
+        itemsImport: [],
+        itemsImport: [
+          {
+            FreightForworder: '',
+            ImportDutyValue: 0,
+            BillOfLadingNo: '',
+            BillOfLadingNo: null,
+            AirWayBillNo: '',
+            AirWayBillFile: null,
+            TaxInvoiceNo: '',
+            TaxInvoiceFile: null,
+            FreightInvoiceNo: '',
+            FreightInvoiceFile: null,
+            FreightInvoiceValue: 0,
+            DeliveryNoticeFile: null,
+          },
+        ],
       }
     },
     selectFile() {
@@ -1077,61 +1273,7 @@ export default {
         formData.append('files', this.form.PackingListFile, fileName)
         fileManage.push({ name: 'PackingListFile', filename: fileName })
       }
-      if (this.form.BillOfLadingFile) {
-        fileName =
-          'BillOfLadingFile-' +
-          uuidv4() +
-          '.' +
-          this.form.BillOfLadingFile.name.split('.')[
-            this.form.BillOfLadingFile.name.split('.').length - 1
-          ]
-        formData.append('files', this.form.BillOfLadingFile, fileName)
-        fileManage.push({ name: 'BillOfLadingFile', filename: fileName })
-      }
-      if (this.form.AirWayBillFile) {
-        fileName =
-          'AirWayBillFile-' +
-          uuidv4() +
-          '.' +
-          this.form.AirWayBillFile.name.split('.')[
-            this.form.AirWayBillFile.name.split('.').length - 1
-          ]
-        formData.append('files', this.form.AirWayBillFile, fileName)
-        fileManage.push({ name: 'AirWayBillFile', filename: fileName })
-      }
-      if (this.form.FreightInvoiceFile) {
-        fileName =
-          'FreightInvoiceFile-' +
-          uuidv4() +
-          '.' +
-          this.form.FreightInvoiceFile.name.split('.')[
-            this.form.FreightInvoiceFile.name.split('.').length - 1
-          ]
-        formData.append('files', this.form.FreightInvoiceFile, fileName)
-        fileManage.push({ name: 'FreightInvoiceFile', filename: fileName })
-      }
-      if (this.form.DeliveryNoticeFile) {
-        fileName =
-          'DeliveryNoticeFile-' +
-          uuidv4() +
-          '.' +
-          this.form.DeliveryNoticeFile.name.split('.')[
-            this.form.DeliveryNoticeFile.name.split('.').length - 1
-          ]
-        formData.append('files', this.form.DeliveryNoticeFile, fileName)
-        fileManage.push({ name: 'DeliveryNoticeFile', filename: fileName })
-      }
-      if (this.form.TaxInvoiceFile) {
-        fileName =
-          'DeliveryNoticeFile-' +
-          uuidv4() +
-          '.' +
-          this.form.TaxInvoiceFile.name.split('.')[
-            this.form.TaxInvoiceFile.name.split('.').length - 1
-          ]
-        formData.append('files', this.form.TaxInvoiceFile, fileName)
-        fileManage.push({ name: 'TaxInvoiceFile', filename: fileName })
-      }
+
       let itemPR = this.form.itemPR
       let doc = 1
       for (const key in itemPR) {
@@ -1153,6 +1295,21 @@ export default {
         this.form.itemPR[key].JobNo = this.form.itemPR[key].JobNo.trim()
         doc++
       }
+      let itemImp = this.itemsImport
+      doc = 1
+      for (const key in itemImp) {
+        if (itemImp[key].BillOfLadingFile) {
+          fileName = `BillOfLadingFile-${uuidv4()}-${doc}.${
+            itemImp[key].BillOfLadingFile.name.split('.')[
+              itemImp[key].BillOfLadingFile.name.split('.').length - 1
+            ]
+          }`
+          itemImp[key].BillOfLadingFileName = fileName
+          formData.append('files', itemImp[key].BillOfLadingFile, fileName)
+          fileManage.push({ name: 'BillOfLadingFile', filename: fileName })
+        }
+        doc++
+      }
       //Data
       formData.append('DocNo', this.form.DocNo)
       formData.append('DocDate', this.form.DocDate)
@@ -1169,17 +1326,9 @@ export default {
       formData.append('DeliveryDate', this.form.DeliveryDate)
       formData.append('InvoiceNo', this.form.InvoiceNo.trim())
       formData.append('PackingListNo', this.form.PackingListNo.trim())
-      formData.append('FreightForworder', this.form.FreightForworder.trim())
-      formData.append('BillOfLadingNo', this.form.BillOfLadingNo.trim())
-      formData.append('AirWayBillNo', this.form.AirWayBillNo.trim())
-      formData.append('TaxInvoiceNo', this.form.TaxInvoiceNo.trim())
-      formData.append('FreightInvoiceNo', this.form.FreightInvoiceNo.trim())
-      formData.append(
-        'FreightInvoiceValue',
-        this.form.FreightInvoiceValue.trim()
-      )
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))
+      formData.append('itemImport', JSON.stringify(this.itemsImport))
       formData.append('updateBy', this.$store.getters.isName)
       this.$emit(this.mode, formData)
     },

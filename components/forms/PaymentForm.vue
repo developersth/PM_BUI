@@ -288,7 +288,7 @@ export default {
       headers: [
         { text: 'No.', value: 'Number', width: '7%' },
         { text: 'รายละเอียด', value: 'PRDetail', width: '30%' },
-        { text: 'Job No.', value: 'JobNo' },
+        { text: 'Job No.', value: 'JobNo',width: '100px' },
         { text: 'PR No.', value: 'PRNo' },
         { text: 'ราคา', value: 'Price' },
         { text: 'Actions', value: 'actions', sortable: false },
