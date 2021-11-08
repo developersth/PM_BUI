@@ -754,11 +754,11 @@
                                 </v-menu>
                               </template>
                               <template v-slot:[`item.detail`]="{ item }">
-                                  <v-text-field v-model="item.detail" />
-                                </template>
-                                                <template v-slot:[`item.remarks`]="{ item }">
-                                  <v-text-field v-model="item.remarks" />
-                                </template>
+                                <v-text-field v-model="item.detail" />
+                              </template>
+                              <template v-slot:[`item.remarks`]="{ item }">
+                                <v-text-field v-model="item.remarks" />
+                              </template>
                               <template v-slot:[`item.actions`]="{ item }">
                                 <v-btn
                                   class="mx-2"
