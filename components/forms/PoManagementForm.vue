@@ -236,11 +236,12 @@
                             type="number"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
+                            outlined
+                            dense
                           ></v-text-field>
                         </v-col>
                         <v-col class="d-flex" cols="4" md="2">
                           <v-select
-                            class="mt-3"
                             v-model="form.Currency"
                             :items="currency"
                             label="สกุลเงิน"
@@ -315,6 +316,8 @@
                             prepend-icon="mdi-card-account-details"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
+                            outlined
+                            dense
                           >
                           </v-textarea>
                         </v-col>
@@ -380,6 +383,8 @@
                             prepend-icon="mdi-card-account-details"
                             :disabled="mode === 'show'"
                             :readonly="mode === 'show'"
+                            outlined
+                            dense
                           >
                           </v-textarea>
                         </v-col>
