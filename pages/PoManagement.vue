@@ -191,9 +191,10 @@ export default {
       loading: false,
     }
   },
-  mounted() {
-    this.fetchData()
-  },
+  created () {
+        this.fetchData();
+        this.timer = setInterval(this.fetchData, 10000);
+    },
   methods: {
     vadidateAction() {
       if (this.action === 'ลบ') {

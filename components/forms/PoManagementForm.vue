@@ -569,24 +569,26 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.BillOfLadingFile`]="{ item }">
-                          <v-file-input
-                            v-model="item.BillOfLadingFile"
-                            :rules="FileRules"
-                            show-size
-                            small-chips
-                            accept=".jpg,.jpeg,.png,.pdf"
-                            truncate-length="15"
-                          ></v-file-input>
-                          <div v-if="docsItems.BillOfLadingFile">
-                            <v-btn
-                              depressed
-                              small
-                              color="pink"
-                              @click="showFileModal(docsItems.BillOfLadingFile)"
-                            >
-                              <v-icon> mdi-eye</v-icon>
-                            </v-btn>
-                          </div>
+                          <v-row>
+                            <v-file-input
+                              v-model="item.BillOfLadingFile"
+                              :rules="FileRules"
+                              show-size
+                              small-chips
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              truncate-length="15"
+                            ></v-file-input>
+                            <div v-if="item.BillOfLadingFileURL" class="mt-4">
+                              <v-btn
+                                depressed
+                                small
+                                color="pink"
+                                @click="showFileModal(item.BillOfLadingFileURL)"
+                              >
+                                <v-icon> mdi-eye</v-icon>
+                              </v-btn>
+                            </div>
+                          </v-row>
                         </template>
                         <template v-slot:[`item.AirWayBillNo`]="{ item }">
                           <v-text-field
@@ -594,6 +596,7 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.AirWayBillFile`]="{ item }">
+                        <v-row>
                           <v-file-input
                             v-model="item.AirWayBillFile"
                             :rules="FileRules"
@@ -602,16 +605,17 @@
                             accept=".jpg,.jpeg,.png,.pdf"
                             truncate-length="15"
                           ></v-file-input>
-                          <div v-if="docsItems.AirWayBillFile">
+                          <div v-if="item.AirWayBillFileURL" class="mt-4">
                             <v-btn
                               depressed
                               small
                               color="pink"
-                              @click="showFileModal(docsItems.AirWayBillFile)"
+                              @click="showFileModal(item.AirWayBillFileURL)"
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
+                          </v-row>
                         </template>
                         <template v-slot:[`item.TaxInvoiceNo`]="{ item }">
                           <v-text-field
@@ -619,6 +623,7 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.TaxInvoiceFile`]="{ item }">
+                        <v-row>
                           <v-file-input
                             v-model="item.TaxInvoiceFile"
                             :rules="FileRules"
@@ -627,16 +632,17 @@
                             accept=".jpg,.jpeg,.png,.pdf"
                             truncate-length="15"
                           ></v-file-input>
-                          <div v-if="docsItems.TaxInvoiceFile">
+                          <div v-if="item.TaxInvoiceFileURL" class="mt-4">
                             <v-btn
                               depressed
                               small
                               color="pink"
-                              @click="showFileModal(docsItems.TaxInvoiceFile)"
+                              @click="showFileModal(item.TaxInvoiceFileURL)"
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
+                          </v-row>
                         </template>
                         <template v-slot:[`item.FreightInvoiceNo`]="{ item }">
                           <v-text-field
@@ -655,6 +661,7 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.FreightInvoiceFile`]="{ item }">
+                        <v-row>
                           <v-file-input
                             v-model="item.FreightInvoiceFile"
                             :rules="FileRules"
@@ -663,20 +670,22 @@
                             accept=".jpg,.jpeg,.png,.pdf"
                             truncate-length="15"
                           ></v-file-input>
-                          <div v-if="docsItems.FreightInvoiceFile">
+                          <div v-if="item.FreightInvoiceFileURL" class="mt-4">
                             <v-btn
                               depressed
                               small
                               color="pink"
                               @click="
-                                showFileModal(docsItems.FreightInvoiceFile)
+                                showFileModal(item.FreightInvoiceFileURL)
                               "
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
+                          </v-row>
                         </template>
                         <template v-slot:[`item.DeliveryNoticeFile`]="{ item }">
+                        <v-row>
                           <v-file-input
                             v-model="item.DeliveryNoticeFile"
                             :rules="FileRules"
@@ -685,18 +694,19 @@
                             accept=".jpg,.jpeg,.png,.pdf"
                             truncate-length="15"
                           ></v-file-input>
-                          <div v-if="docsItems.DeliveryNoticeFile">
+                          <div v-if="item.DeliveryNoticeFileURL" class="mt-4">
                             <v-btn
                               depressed
                               small
                               color="pink"
                               @click="
-                                showFileModal(docsItems.DeliveryNoticeFile)
+                                showFileModal(item.DeliveryNoticeFileURL)
                               "
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
                           </div>
+                          </v-row>
                         </template>
                         <template v-slot:[`item.actions`]="{ item }">
                           <v-btn
@@ -956,14 +966,18 @@ export default {
           ImportDutyValue: 0,
           BillOfLadingNo: '',
           BillOfLadingFile: null,
+          BillOfLadingFileURL: '',
           AirWayBillNo: '',
           AirWayBillFile: null,
+          AirWayBillFileURL: '',
           TaxInvoiceNo: '',
           TaxInvoiceFile: null,
           FreightInvoiceNo: '',
           FreightInvoiceFile: null,
+          FreightInvoiceFileURL: '',
           FreightInvoiceValue: 0,
           DeliveryNoticeFile: null,
+          DeliveryNoticeFileURL: '',
         },
       ],
       itemEventLog: [],
@@ -1101,20 +1115,30 @@ export default {
       console.log(this.docsItems)
       if (this.docsItems.itemImport) {
         this.itemsImport = []
-        for (var key in this.docsItems.itemPR) {
+        for (var key in this.docsItems.itemImport) {
           this.itemsImport.push({
             FreightForworder: this.docsItems.itemImport[key].FreightForworder,
             ImportDutyValue: this.docsItems.itemImport[key].ImportDutyValue,
             BillOfLadingNo: this.docsItems.itemImport[key].BillOfLadingNo,
+            BillOfLadingFile: null,
+            BillOfLadingFileURL:this.docsItems.itemImport[key].BillOfLadingFile,
             AirWayBillNo: this.docsItems.itemImport[key].AirWayBillNo,
             AirWayBillFile: null,
+            AirWayBillFileName:
+              this.docsItems.itemImport[key].AirWayBillFileName,
+            AirWayBillFileURL: this.docsItems.itemImport[key].AirWayBillFile,
             TaxInvoiceNo: this.docsItems.itemImport[key].TaxInvoiceNo,
             TaxInvoiceFile: null,
+            TaxInvoiceFileURL: this.docsItems.itemImport[key].TaxInvoiceFile,
             FreightInvoiceNo: this.docsItems.itemImport[key].FreightInvoiceNo,
             FreightInvoiceFile: null,
+            FreightInvoiceFileURL:
+              this.docsItems.itemImport[key].FreightInvoiceFile,
             FreightInvoiceValue:
               this.docsItems.itemImport[key].FreightInvoiceValue,
             DeliveryNoticeFile: null,
+            DeliveryNoticeFileURL:
+              this.docsItems.itemImport[key].DeliveryNoticeFile,
           })
         }
       }
@@ -1312,6 +1336,46 @@ export default {
           itemImp[key].BillOfLadingFileName = fileName
           formData.append('files', itemImp[key].BillOfLadingFile, fileName)
           fileManage.push({ name: 'BillOfLadingFile', filename: fileName })
+        }
+        if (itemImp[key].AirWayBillFile) {
+          fileName = `AirWayBillFile-${uuidv4()}-${doc}.${
+            itemImp[key].AirWayBillFile.name.split('.')[
+              itemImp[key].AirWayBillFile.name.split('.').length - 1
+            ]
+          }`
+          itemImp[key].AirWayBillFileName = fileName
+          formData.append('files', itemImp[key].AirWayBillFile, fileName)
+          fileManage.push({ name: 'AirWayBillFile', filename: fileName })
+        }
+        if (itemImp[key].TaxInvoiceFile) {
+          fileName = `TaxInvoiceFile-${uuidv4()}-${doc}.${
+            itemImp[key].TaxInvoiceFile.name.split('.')[
+              itemImp[key].TaxInvoiceFile.name.split('.').length - 1
+            ]
+          }`
+          itemImp[key].TaxInvoiceFileName = fileName
+          formData.append('files', itemImp[key].TaxInvoiceFile, fileName)
+          fileManage.push({ name: 'TaxInvoiceFile', filename: fileName })
+        }
+        if (itemImp[key].FreightInvoiceFile) {
+          fileName = `FreightInvoiceFile-${uuidv4()}-${doc}.${
+            itemImp[key].FreightInvoiceFile.name.split('.')[
+              itemImp[key].FreightInvoiceFile.name.split('.').length - 1
+            ]
+          }`
+          itemImp[key].FreightInvoiceFileName = fileName
+          formData.append('files', itemImp[key].FreightInvoiceFile, fileName)
+          fileManage.push({ name: 'FreightInvoiceFile', filename: fileName })
+        }
+        if (itemImp[key].DeliveryNoticeFile) {
+          fileName = `DeliveryNoticeFile-${uuidv4()}-${doc}.${
+            itemImp[key].DeliveryNoticeFile.name.split('.')[
+              itemImp[key].DeliveryNoticeFile.name.split('.').length - 1
+            ]
+          }`
+          itemImp[key].DeliveryNoticeFileName = fileName
+          formData.append('files', itemImp[key].DeliveryNoticeFile, fileName)
+          fileManage.push({ name: 'DeliveryNoticeFile', filename: fileName })
         }
         doc++
       }
