@@ -1112,7 +1112,6 @@ export default {
           'yyyy-MM-dd'
         )
       this.form.DocNo = this.docsItems.DocNo
-      console.log(this.docsItems)
       if (this.docsItems.itemImport) {
         this.itemsImport = []
         for (var key in this.docsItems.itemImport) {

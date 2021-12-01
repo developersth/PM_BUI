@@ -193,7 +193,7 @@ export default {
   },
   created () {
         this.fetchData();
-        this.timer = setInterval(this.fetchData, 10000);
+        //this.timer = setInterval(this.fetchData, 10000);
     },
   methods: {
     vadidateAction() {
