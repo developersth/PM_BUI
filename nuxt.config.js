@@ -47,11 +47,12 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxtjs/date-fns'
+    '@nuxtjs/date-fns',
+    '@nuxtjs/google-fonts',
   ],
   googleFonts: {
     families: {
-      Prompt: [400, 500, 700],
+      Kodchasan: [500, 500, 700],
     }
   },
   // Modules: https://go.nuxtjs.dev/config-modules

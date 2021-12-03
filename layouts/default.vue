@@ -29,7 +29,7 @@ export default {
 }
 </script>
 <style scoped>
-.app{
-  font-family: 'Kanit',sans-serif;
-}
+ .app{
+  font-family: 'Kodchasan',Kodchasan;
+} 
 </style>
