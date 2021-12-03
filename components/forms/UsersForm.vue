@@ -104,6 +104,7 @@ export default {
     return {
       loading: false,
       dialog: false,
+        valid:true,
       mode: '',
       itemsUserRoles: [],
       users: {

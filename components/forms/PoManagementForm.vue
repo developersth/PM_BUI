@@ -528,8 +528,8 @@
                         :hide-default-footer="true"
                         class="elevation-1"
                       >
-                        <template v-slot:[`item.Number`]="{ item }">
-                          {{ itemsImport.indexOf(item) + 1 }}
+                        <template v-slot:[`item.itemNo`]="{ item }">
+                          {{ (item.itemNo = itemsImport.indexOf(item) + 1) }}
                         </template>
                         <template v-slot:[`item.FreightForworder`]="{ item }">
                           <v-row>
@@ -596,25 +596,25 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.AirWayBillFile`]="{ item }">
-                        <v-row>
-                          <v-file-input
-                            v-model="item.AirWayBillFile"
-                            :rules="FileRules"
-                            show-size
-                            small-chips
-                            accept=".jpg,.jpeg,.png,.pdf"
-                            truncate-length="15"
-                          ></v-file-input>
-                          <div v-if="item.AirWayBillFileURL" class="mt-4">
-                            <v-btn
-                              depressed
-                              small
-                              color="pink"
-                              @click="showFileModal(item.AirWayBillFileURL)"
-                            >
-                              <v-icon> mdi-eye</v-icon>
-                            </v-btn>
-                          </div>
+                          <v-row>
+                            <v-file-input
+                              v-model="item.AirWayBillFile"
+                              :rules="FileRules"
+                              show-size
+                              small-chips
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              truncate-length="15"
+                            ></v-file-input>
+                            <div v-if="item.AirWayBillFileURL" class="mt-4">
+                              <v-btn
+                                depressed
+                                small
+                                color="pink"
+                                @click="showFileModal(item.AirWayBillFileURL)"
+                              >
+                                <v-icon> mdi-eye</v-icon>
+                              </v-btn>
+                            </div>
                           </v-row>
                         </template>
                         <template v-slot:[`item.TaxInvoiceNo`]="{ item }">
@@ -623,25 +623,25 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.TaxInvoiceFile`]="{ item }">
-                        <v-row>
-                          <v-file-input
-                            v-model="item.TaxInvoiceFile"
-                            :rules="FileRules"
-                            show-size
-                            small-chips
-                            accept=".jpg,.jpeg,.png,.pdf"
-                            truncate-length="15"
-                          ></v-file-input>
-                          <div v-if="item.TaxInvoiceFileURL" class="mt-4">
-                            <v-btn
-                              depressed
-                              small
-                              color="pink"
-                              @click="showFileModal(item.TaxInvoiceFileURL)"
-                            >
-                              <v-icon> mdi-eye</v-icon>
-                            </v-btn>
-                          </div>
+                          <v-row>
+                            <v-file-input
+                              v-model="item.TaxInvoiceFile"
+                              :rules="FileRules"
+                              show-size
+                              small-chips
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              truncate-length="15"
+                            ></v-file-input>
+                            <div v-if="item.TaxInvoiceFileURL" class="mt-4">
+                              <v-btn
+                                depressed
+                                small
+                                color="pink"
+                                @click="showFileModal(item.TaxInvoiceFileURL)"
+                              >
+                                <v-icon> mdi-eye</v-icon>
+                              </v-btn>
+                            </div>
                           </v-row>
                         </template>
                         <template v-slot:[`item.FreightInvoiceNo`]="{ item }">
@@ -661,51 +661,51 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.FreightInvoiceFile`]="{ item }">
-                        <v-row>
-                          <v-file-input
-                            v-model="item.FreightInvoiceFile"
-                            :rules="FileRules"
-                            show-size
-                            small-chips
-                            accept=".jpg,.jpeg,.png,.pdf"
-                            truncate-length="15"
-                          ></v-file-input>
-                          <div v-if="item.FreightInvoiceFileURL" class="mt-4">
-                            <v-btn
-                              depressed
-                              small
-                              color="pink"
-                              @click="
-                                showFileModal(item.FreightInvoiceFileURL)
-                              "
-                            >
-                              <v-icon> mdi-eye</v-icon>
-                            </v-btn>
-                          </div>
+                          <v-row>
+                            <v-file-input
+                              v-model="item.FreightInvoiceFile"
+                              :rules="FileRules"
+                              show-size
+                              small-chips
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              truncate-length="15"
+                            ></v-file-input>
+                            <div v-if="item.FreightInvoiceFileURL" class="mt-4">
+                              <v-btn
+                                depressed
+                                small
+                                color="pink"
+                                @click="
+                                  showFileModal(item.FreightInvoiceFileURL)
+                                "
+                              >
+                                <v-icon> mdi-eye</v-icon>
+                              </v-btn>
+                            </div>
                           </v-row>
                         </template>
                         <template v-slot:[`item.DeliveryNoticeFile`]="{ item }">
-                        <v-row>
-                          <v-file-input
-                            v-model="item.DeliveryNoticeFile"
-                            :rules="FileRules"
-                            show-size
-                            small-chips
-                            accept=".jpg,.jpeg,.png,.pdf"
-                            truncate-length="15"
-                          ></v-file-input>
-                          <div v-if="item.DeliveryNoticeFileURL" class="mt-4">
-                            <v-btn
-                              depressed
-                              small
-                              color="pink"
-                              @click="
-                                showFileModal(item.DeliveryNoticeFileURL)
-                              "
-                            >
-                              <v-icon> mdi-eye</v-icon>
-                            </v-btn>
-                          </div>
+                          <v-row>
+                            <v-file-input
+                              v-model="item.DeliveryNoticeFile"
+                              :rules="FileRules"
+                              show-size
+                              small-chips
+                              accept=".jpg,.jpeg,.png,.pdf"
+                              truncate-length="15"
+                            ></v-file-input>
+                            <div v-if="item.DeliveryNoticeFileURL" class="mt-4">
+                              <v-btn
+                                depressed
+                                small
+                                color="pink"
+                                @click="
+                                  showFileModal(item.DeliveryNoticeFileURL)
+                                "
+                              >
+                                <v-icon> mdi-eye</v-icon>
+                              </v-btn>
+                            </div>
                           </v-row>
                         </template>
                         <template v-slot:[`item.actions`]="{ item }">
@@ -823,7 +823,7 @@ export default {
   data() {
     return {
       headers: [
-        { text: 'No.', value: 'Number', class: 'primary--text', width: '70px' },
+        { text: 'No.', value: 'itemNo', class: 'primary--text', width: '70px' },
         {
           text: 'Freight',
           value: 'FreightForworder',
@@ -904,7 +904,7 @@ export default {
         },
       ],
       HeaderEventlog: [
-        { text: 'No.', value: 'Number', width: '7%' },
+        { text: 'No.', value: 'itemNo', width: '7%' },
         { text: 'Event Date', value: 'event_date', width: '15%' },
         { text: 'status', value: 'status', width: '10%' },
         { text: 'รายละเอียด.', value: 'detail', width: '25%' },
@@ -917,7 +917,7 @@ export default {
         DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
         Status: 'S10',
         PoNo: '',
-        itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
+        itemPR: [{ itemNo: 1, PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -962,6 +962,7 @@ export default {
       itemsFreightForworder: [],
       itemsImport: [
         {
+          itemNo: 1,
           FreightForworder: '',
           ImportDutyValue: 0,
           BillOfLadingNo: '',
@@ -992,6 +993,7 @@ export default {
   methods: {
     addPR(index) {
       this.form.itemPR.push({
+        itemNo:'',
         PRNo: '',
         JobNo: '',
         PRFile: null,
@@ -1004,7 +1006,10 @@ export default {
       }
     },
     addItemImport() {
+      let itemNo = this.itemsImport.length + 1
+      console.log('itemNo', itemNo)
       this.itemsImport.push({
+        itemNo: '',
         FreightForworder: '',
         ImportDutyValue: 0,
         BillOfLadingNo: '',
@@ -1120,7 +1125,9 @@ export default {
             ImportDutyValue: this.docsItems.itemImport[key].ImportDutyValue,
             BillOfLadingNo: this.docsItems.itemImport[key].BillOfLadingNo,
             BillOfLadingFile: null,
-            BillOfLadingFileURL:this.docsItems.itemImport[key].BillOfLadingFile,
+            BillOfLadingFileName: this.docsItems.itemImport[key].BillOfLadingFileName,
+            BillOfLadingFileURL:
+              this.docsItems.itemImport[key].BillOfLadingFile,
             AirWayBillNo: this.docsItems.itemImport[key].AirWayBillNo,
             AirWayBillFile: null,
             AirWayBillFileName:
@@ -1128,14 +1135,17 @@ export default {
             AirWayBillFileURL: this.docsItems.itemImport[key].AirWayBillFile,
             TaxInvoiceNo: this.docsItems.itemImport[key].TaxInvoiceNo,
             TaxInvoiceFile: null,
+            TaxInvoiceFileName: this.docsItems.itemImport[key].TaxInvoiceFileName,
             TaxInvoiceFileURL: this.docsItems.itemImport[key].TaxInvoiceFile,
             FreightInvoiceNo: this.docsItems.itemImport[key].FreightInvoiceNo,
             FreightInvoiceFile: null,
+            FreightInvoiceFileName: this.docsItems.itemImport[key].FreightInvoiceFileName,
             FreightInvoiceFileURL:
               this.docsItems.itemImport[key].FreightInvoiceFile,
             FreightInvoiceValue:
               this.docsItems.itemImport[key].FreightInvoiceValue,
             DeliveryNoticeFile: null,
+            DeliveryNoticeFileName: this.docsItems.itemImport[key].DeliveryNoticeFileName,
             DeliveryNoticeFileURL:
               this.docsItems.itemImport[key].DeliveryNoticeFile,
           })
@@ -1153,7 +1163,7 @@ export default {
         PoNo: '',
         PoFile: null,
         itemPR: [],
-        itemPR: [{ PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
+        itemPR: [{itemNo:'', PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -1319,6 +1329,7 @@ export default {
           itemPR[key].PRFileName = fileName
           fileManage.push({ name: 'PRFile', filename: fileName })
         }
+        this.form.itemPR[key].itemNo = doc
         this.form.itemPR[key].PRNo = this.form.itemPR[key].PRNo.trim()
         this.form.itemPR[key].JobNo = this.form.itemPR[key].JobNo.trim()
         doc++

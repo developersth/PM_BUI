@@ -52,7 +52,7 @@ export default {
   ],
   googleFonts: {
     families: {
-      Kodchasan: [500, 500, 700],
+      Kodchasan: [400, 500, 700],
     }
   },
   // Modules: https://go.nuxtjs.dev/config-modules
