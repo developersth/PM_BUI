@@ -596,7 +596,7 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.AirWayBillFile`]="{ item }">
-                          <v-row>
+                            <v-row>
                             <v-file-input
                               v-model="item.AirWayBillFile"
                               :rules="FileRules"
@@ -846,7 +846,7 @@ export default {
           text: 'ไฟล์แนบ(เลขใบขน)',
           value: 'BillOfLadingFile',
           class: 'primary--text',
-          width: '200px',
+          width: '400px',
         },
         {
           text: 'AirWayBillNo.',
@@ -1127,27 +1127,27 @@ export default {
             BillOfLadingFile: null,
             BillOfLadingFileName: this.docsItems.itemImport[key].BillOfLadingFileName,
             BillOfLadingFileURL:
-              this.docsItems.itemImport[key].BillOfLadingFile,
+              this.docsItems.itemImport[key].BillOfLadingFileURL,
             AirWayBillNo: this.docsItems.itemImport[key].AirWayBillNo,
             AirWayBillFile: null,
             AirWayBillFileName:
               this.docsItems.itemImport[key].AirWayBillFileName,
-            AirWayBillFileURL: this.docsItems.itemImport[key].AirWayBillFile,
+            AirWayBillFileURL: this.docsItems.itemImport[key].AirWayBillFileURL,
             TaxInvoiceNo: this.docsItems.itemImport[key].TaxInvoiceNo,
             TaxInvoiceFile: null,
             TaxInvoiceFileName: this.docsItems.itemImport[key].TaxInvoiceFileName,
-            TaxInvoiceFileURL: this.docsItems.itemImport[key].TaxInvoiceFile,
+            TaxInvoiceFileURL: this.docsItems.itemImport[key].TaxInvoiceFileURL,
             FreightInvoiceNo: this.docsItems.itemImport[key].FreightInvoiceNo,
             FreightInvoiceFile: null,
             FreightInvoiceFileName: this.docsItems.itemImport[key].FreightInvoiceFileName,
             FreightInvoiceFileURL:
-              this.docsItems.itemImport[key].FreightInvoiceFile,
+              this.docsItems.itemImport[key].FreightInvoiceFileURL,
             FreightInvoiceValue:
               this.docsItems.itemImport[key].FreightInvoiceValue,
             DeliveryNoticeFile: null,
             DeliveryNoticeFileName: this.docsItems.itemImport[key].DeliveryNoticeFileName,
             DeliveryNoticeFileURL:
-              this.docsItems.itemImport[key].DeliveryNoticeFile,
+              this.docsItems.itemImport[key].DeliveryNoticeFileURL,
           })
         }
       }
