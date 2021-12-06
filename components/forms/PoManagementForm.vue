@@ -916,7 +916,7 @@ export default {
         { text: 'status', value: 'status', width: '10%' },
         { text: 'รายละเอียด.', value: 'details', width: '25%' },
         { text: 'วันที่บันทึก', value: 'record_date', width: '15%' },
-        { text: 'หมายเหตุ', value: 'remark', width: '15%' },
+        { text: 'หมายเหตุ', value: 'remark', width: '23%' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       form: {
@@ -1214,24 +1214,32 @@ export default {
         InvoiceFile: null,
         PackingListNo: '',
         PackingListFile: null,
-        itemsImport: [],
-        itemsImport: [
-          {
-            FreightForworder: '',
-            ImportDutyValue: 0,
-            BillOfLadingNo: '',
-            BillOfLadingNo: null,
-            AirWayBillNo: '',
-            AirWayBillFile: null,
-            TaxInvoiceNo: '',
-            TaxInvoiceFile: null,
-            FreightInvoiceNo: '',
-            FreightInvoiceFile: null,
-            FreightInvoiceValue: 0,
-            DeliveryNoticeFile: null,
-          },
-        ],
       }
+      this.itemsImport = []
+      this.itemsImport.push({
+        FreightForworder: '',
+        ImportDutyValue: 0,
+        BillOfLadingNo: '',
+        BillOfLadingNo: null,
+        AirWayBillNo: '',
+        AirWayBillFile: null,
+        TaxInvoiceNo: '',
+        TaxInvoiceFile: null,
+        FreightInvoiceNo: '',
+        FreightInvoiceFile: null,
+        FreightInvoiceValue: 0,
+        DeliveryNoticeFile: null,
+      })
+      this.itemEventLog = []
+      this.itemEventLog.push({
+        itemNo: 0,
+        event_date: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
+        menuEventDate: false,
+        status: this.form.Status,
+        details: 'เพิ่มข้อมูล',
+        record_date: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
+        remark: 'Add Data',
+      })
     },
     selectFile() {
       if (this.form.OrderAckFile) {
