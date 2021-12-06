@@ -195,13 +195,13 @@
                             :label="`
                              (PR) #${k + 1}`"
                           ></v-file-input>
-                          <div v-if="itemPR.PRUrl">
+                          <div v-if="itemPR.PRFileURL">
                             <v-btn
                               class="mt-6"
                               depressed
                               small
                               color="pink"
-                              @click="showFileModal(itemPR.PRUrl)"
+                              @click="showFileModal(itemPR.PRFileURL)"
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
@@ -409,13 +409,13 @@
                         truncate-length="30"
                         label="ไฟล์แนบ Order Acknowledgement"
                       ></v-file-input>
-                      <div v-if="docsItems.OrderAckFile">
+                      <div v-if="docsItems.OrderAckFileURL">
                         <v-btn
                           class="mt-6"
                           depressed
                           small
                           color="pink"
-                          @click="showFileModal(docsItems.OrderAckFile)"
+                          @click="showFileModal(docsItems.OrderAckFileURL)"
                         >
                           <v-icon> mdi-eye</v-icon>
                         </v-btn>
@@ -469,13 +469,13 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (Inv)"
                           ></v-file-input>
-                          <div v-if="docsItems.InvoiceFile">
+                          <div v-if="docsItems.InvoiceFileURL">
                             <v-btn
                               class="mt-6"
                               depressed
                               small
                               color="pink"
-                              @click="showFileModal(docsItems.InvoiceFile)"
+                              @click="showFileModal(docsItems.InvoiceFileURL)"
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
@@ -501,13 +501,15 @@
                             truncate-length="30"
                             label="ไฟล์แนบ (PL)"
                           ></v-file-input>
-                          <div v-if="docsItems.PackingListFile">
+                          <div v-if="docsItems.PackingListFileURL">
                             <v-btn
                               class="mt-6"
                               depressed
                               small
                               color="pink"
-                              @click="showFileModal(docsItems.PackingListFile)"
+                              @click="
+                                showFileModal(docsItems.PackingListFileURL)
+                              "
                             >
                               <v-icon> mdi-eye</v-icon>
                             </v-btn>
@@ -596,7 +598,7 @@
                           ></v-text-field>
                         </template>
                         <template v-slot:[`item.AirWayBillFile`]="{ item }">
-                            <v-row>
+                          <v-row>
                             <v-file-input
                               v-model="item.AirWayBillFile"
                               :rules="FileRules"
@@ -728,7 +730,7 @@
                         </v-btn>
                       </v-card-actions>
                     </v-col>
-                    <v-col cols="12" md="8">
+                    <v-col cols="12" md="10">
                       <template>
                         <v-card>
                           <v-toolbar color="indigo" dark>
@@ -743,12 +745,17 @@
                               :hide-default-footer="true"
                               class="elevation-1"
                             >
+                              <template v-slot:[`item.itemNo`]="{ item }">
+                                {{
+                                  (item.itemNo = itemEventLog.indexOf(item) + 1)
+                                }}
+                              </template>
                               <template v-slot:[`item.Number`]="{ item }">
                                 {{ itemEventLog.indexOf(item) + 1 }}
                               </template>
                               <template v-slot:[`item.event_date`]="{ item }">
                                 <v-menu
-                                  v-model="menuEventDate"
+                                  v-model="item.menuEventDate"
                                   :close-on-content-click="false"
                                   max-width="290"
                                 >
@@ -764,15 +771,15 @@
                                   </template>
                                   <v-date-picker
                                     v-model="item.event_date"
-                                    @change="menuEventDate = false"
+                                    @change="item.menuEventDate = false"
                                   ></v-date-picker>
                                 </v-menu>
                               </template>
-                              <template v-slot:[`item.detail`]="{ item }">
-                                <v-text-field v-model="item.detail" />
+                              <template v-slot:[`item.details`]="{ item }">
+                                <v-text-field v-model="item.details" />
                               </template>
-                              <template v-slot:[`item.remarks`]="{ item }">
-                                <v-text-field v-model="item.remarks" />
+                              <template v-slot:[`item.remark`]="{ item }">
+                                <v-text-field v-model="item.remark" />
                               </template>
                               <template v-slot:[`item.actions`]="{ item }">
                                 <v-btn
@@ -907,9 +914,9 @@ export default {
         { text: 'No.', value: 'itemNo', width: '7%' },
         { text: 'Event Date', value: 'event_date', width: '15%' },
         { text: 'status', value: 'status', width: '10%' },
-        { text: 'รายละเอียด.', value: 'detail', width: '25%' },
+        { text: 'รายละเอียด.', value: 'details', width: '25%' },
         { text: 'วันที่บันทึก', value: 'record_date', width: '15%' },
-        { text: 'หมายเหตุ', value: 'remarks', width: '15%' },
+        { text: 'หมายเหตุ', value: 'remark', width: '15%' },
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       form: {
@@ -917,7 +924,9 @@ export default {
         DocDate: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
         Status: 'S10',
         PoNo: '',
-        itemPR: [{ itemNo: 1, PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
+        itemPR: [
+          { itemNo: 1, PRNo: '', JobNo: '', PRFile: null, PRFileURL: '' },
+        ],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -950,7 +959,7 @@ export default {
       dialogLoading: false,
       menu2: false,
       menuDeliveryDate: false,
-      menuEventDate: true,
+      menuEventDate: [true],
       alignments: ['start', 'center', 'end'],
       currency: ['THB', 'USD', 'CNY', 'EUR'],
       docsItems: [],
@@ -993,7 +1002,7 @@ export default {
   methods: {
     addPR(index) {
       this.form.itemPR.push({
-        itemNo:'',
+        itemNo: '',
         PRNo: '',
         JobNo: '',
         PRFile: null,
@@ -1034,12 +1043,13 @@ export default {
     },
     addEvent(index) {
       this.itemEventLog.push({
-        pm_id: '',
+        itemNo: 0,
         event_date: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
+        menuEventDate: true,
         status: this.form.Status,
-        detail: '',
+        details: '',
         record_date: this.$dateFns.format(Date.now(), 'yyyy-MM-dd'),
-        remarks: '',
+        remark: '',
       })
     },
     removeEvent(item) {
@@ -1100,7 +1110,7 @@ export default {
             JobNo: this.docsItems.itemPR[key].JobNo,
             PRFile: null,
             PRFileName: this.docsItems.itemPR[key].PRFileName,
-            PRUrl: this.docsItems.itemPR[key].PRFile,
+            PRFileURL: this.docsItems.itemPR[key].PRFileURL,
           })
         }
       }
@@ -1125,7 +1135,8 @@ export default {
             ImportDutyValue: this.docsItems.itemImport[key].ImportDutyValue,
             BillOfLadingNo: this.docsItems.itemImport[key].BillOfLadingNo,
             BillOfLadingFile: null,
-            BillOfLadingFileName: this.docsItems.itemImport[key].BillOfLadingFileName,
+            BillOfLadingFileName:
+              this.docsItems.itemImport[key].BillOfLadingFileName,
             BillOfLadingFileURL:
               this.docsItems.itemImport[key].BillOfLadingFileURL,
             AirWayBillNo: this.docsItems.itemImport[key].AirWayBillNo,
@@ -1135,19 +1146,42 @@ export default {
             AirWayBillFileURL: this.docsItems.itemImport[key].AirWayBillFileURL,
             TaxInvoiceNo: this.docsItems.itemImport[key].TaxInvoiceNo,
             TaxInvoiceFile: null,
-            TaxInvoiceFileName: this.docsItems.itemImport[key].TaxInvoiceFileName,
+            TaxInvoiceFileName:
+              this.docsItems.itemImport[key].TaxInvoiceFileName,
             TaxInvoiceFileURL: this.docsItems.itemImport[key].TaxInvoiceFileURL,
             FreightInvoiceNo: this.docsItems.itemImport[key].FreightInvoiceNo,
             FreightInvoiceFile: null,
-            FreightInvoiceFileName: this.docsItems.itemImport[key].FreightInvoiceFileName,
+            FreightInvoiceFileName:
+              this.docsItems.itemImport[key].FreightInvoiceFileName,
             FreightInvoiceFileURL:
               this.docsItems.itemImport[key].FreightInvoiceFileURL,
             FreightInvoiceValue:
               this.docsItems.itemImport[key].FreightInvoiceValue,
             DeliveryNoticeFile: null,
-            DeliveryNoticeFileName: this.docsItems.itemImport[key].DeliveryNoticeFileName,
+            DeliveryNoticeFileName:
+              this.docsItems.itemImport[key].DeliveryNoticeFileName,
             DeliveryNoticeFileURL:
               this.docsItems.itemImport[key].DeliveryNoticeFileURL,
+          })
+        }
+      }
+      if (this.docsItems.itemEventLog) {
+        this.itemEventLog = []
+        for (var key in this.docsItems.itemEventLog) {
+          this.itemEventLog.push({
+            itemNo: this.docsItems.itemEventLog[key].itemNo,
+            event_date: this.$dateFns.format(
+              this.docsItems.itemEventLog[key].event_date,
+              'yyyy-MM-dd'
+            ),
+            menuEventDate: false,
+            status: this.docsItems.itemEventLog[key].status,
+            details: this.docsItems.itemEventLog[key].details,
+            record_date: this.$dateFns.format(
+              this.docsItems.itemEventLog[key].record_date,
+              'yyyy-MM-dd'
+            ),
+            remark: this.docsItems.itemEventLog[key].remark,
           })
         }
       }
@@ -1163,7 +1197,9 @@ export default {
         PoNo: '',
         PoFile: null,
         itemPR: [],
-        itemPR: [{itemNo:'', PRNo: '', JobNo: '', PRFile: null, PRUrl: '' }],
+        itemPR: [
+          { itemNo: '', PRNo: '', JobNo: '', PRFile: null, PRFileURL: '' },
+        ],
         ProductValue: '',
         Currency: 'THB',
         Buyer: '',
@@ -1408,6 +1444,7 @@ export default {
       formData.append('itemPR', JSON.stringify(this.form.itemPR))
       formData.append('fileManage', JSON.stringify(fileManage))
       formData.append('itemImport', JSON.stringify(this.itemsImport))
+      formData.append('itemEventLog', JSON.stringify(this.itemEventLog))
       formData.append('updateBy', this.$store.getters.isName)
       this.$emit(this.mode, formData)
     },
