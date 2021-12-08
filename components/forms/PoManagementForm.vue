@@ -145,13 +145,13 @@
                             label="ไฟล์แนบ (PO)"
                           ></v-file-input>
                         </v-col>
-                        <v-col cols="4" md="4" v-if="docsItems.PoFile">
+                        <v-col cols="4" md="4" v-if="docsItems.PoFileURL">
                           <v-btn
                             class="mt-6"
                             depressed
                             small
                             color="pink"
-                            @click="showFileModal(docsItems.PoFile)"
+                            @click="showFileModal(docsItems.PoFileURL)"
                           >
                             <v-icon> mdi-eye</v-icon>
                           </v-btn>
@@ -835,12 +835,6 @@ export default {
           width: '150px',
         },
         {
-          text: 'ไฟล์แนบ(TaxInvoice).',
-          value: 'TaxInvoiceFile',
-          class: 'primary--text',
-          width: '200px',
-        },
-        {
           text: 'FreightInvNo.',
           value: 'FreightInvoiceNo',
           class: 'primary--text',
@@ -1350,16 +1344,6 @@ export default {
           itemImp[key].AirWayBillFileName = fileName
           formData.append('files', itemImp[key].AirWayBillFile, fileName)
           fileManage.push({ name: 'AirWayBillFile', filename: fileName })
-        }
-        if (itemImp[key].TaxInvoiceFile) {
-          fileName = `TaxInvoiceFile-${uuidv4()}-${doc}.${
-            itemImp[key].TaxInvoiceFile.name.split('.')[
-              itemImp[key].TaxInvoiceFile.name.split('.').length - 1
-            ]
-          }`
-          itemImp[key].TaxInvoiceFileName = fileName
-          formData.append('files', itemImp[key].TaxInvoiceFile, fileName)
-          fileManage.push({ name: 'TaxInvoiceFile', filename: fileName })
         }
         if (itemImp[key].FreightInvoiceFile) {
           fileName = `FreightInvoiceFile-${uuidv4()}-${doc}.${
