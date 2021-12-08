@@ -619,33 +619,6 @@
                             </div>
                           </v-row>
                         </template>
-                        <template v-slot:[`item.TaxInvoiceNo`]="{ item }">
-                          <v-text-field
-                            v-model="item.TaxInvoiceNo"
-                          ></v-text-field>
-                        </template>
-                        <template v-slot:[`item.TaxInvoiceFile`]="{ item }">
-                          <v-row>
-                            <v-file-input
-                              v-model="item.TaxInvoiceFile"
-                              :rules="FileRules"
-                              show-size
-                              small-chips
-                              accept=".jpg,.jpeg,.png,.pdf"
-                              truncate-length="15"
-                            ></v-file-input>
-                            <div v-if="item.TaxInvoiceFileURL" class="mt-4">
-                              <v-btn
-                                depressed
-                                small
-                                color="pink"
-                                @click="showFileModal(item.TaxInvoiceFileURL)"
-                              >
-                                <v-icon> mdi-eye</v-icon>
-                              </v-btn>
-                            </div>
-                          </v-row>
-                        </template>
                         <template v-slot:[`item.FreightInvoiceNo`]="{ item }">
                           <v-text-field
                             v-model="item.FreightInvoiceNo"
@@ -862,18 +835,6 @@ export default {
           width: '150px',
         },
         {
-          text: 'ไฟล์แนบ(AriwayBill).',
-          value: 'AirWayBillFile',
-          class: 'primary--text',
-          width: '200px',
-        },
-        {
-          text: 'TaxInvoiceNo.',
-          value: 'TaxInvoiceNo',
-          class: 'primary--text',
-          width: '150px',
-        },
-        {
           text: 'ไฟล์แนบ(TaxInvoice).',
           value: 'TaxInvoiceFile',
           class: 'primary--text',
@@ -980,8 +941,6 @@ export default {
           AirWayBillNo: '',
           AirWayBillFile: null,
           AirWayBillFileURL: '',
-          TaxInvoiceNo: '',
-          TaxInvoiceFile: null,
           FreightInvoiceNo: '',
           FreightInvoiceFile: null,
           FreightInvoiceFileURL: '',
@@ -1025,8 +984,6 @@ export default {
         BillOfLadingFile: null,
         AirWayBillNo: '',
         AirWayBillFile: null,
-        TaxInvoiceNo: '',
-        TaxInvoiceFile: null,
         FreightInvoiceNo: '',
         FreightInvoiceFile: null,
         FreightInvoiceValue: 0,
@@ -1144,11 +1101,6 @@ export default {
             AirWayBillFileName:
               this.docsItems.itemImport[key].AirWayBillFileName,
             AirWayBillFileURL: this.docsItems.itemImport[key].AirWayBillFileURL,
-            TaxInvoiceNo: this.docsItems.itemImport[key].TaxInvoiceNo,
-            TaxInvoiceFile: null,
-            TaxInvoiceFileName:
-              this.docsItems.itemImport[key].TaxInvoiceFileName,
-            TaxInvoiceFileURL: this.docsItems.itemImport[key].TaxInvoiceFileURL,
             FreightInvoiceNo: this.docsItems.itemImport[key].FreightInvoiceNo,
             FreightInvoiceFile: null,
             FreightInvoiceFileName:
@@ -1223,8 +1175,6 @@ export default {
         BillOfLadingNo: null,
         AirWayBillNo: '',
         AirWayBillFile: null,
-        TaxInvoiceNo: '',
-        TaxInvoiceFile: null,
         FreightInvoiceNo: '',
         FreightInvoiceFile: null,
         FreightInvoiceValue: 0,
@@ -1455,6 +1405,7 @@ export default {
       formData.append('itemEventLog', JSON.stringify(this.itemEventLog))
       formData.append('updateBy', this.$store.getters.isName)
       this.$emit(this.mode, formData)
+
     },
     //UserForm
     submitAddUsers() {
